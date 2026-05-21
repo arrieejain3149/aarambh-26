@@ -1,16 +1,22 @@
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  query, 
-  where, 
-  serverTimestamp 
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  serverTimestamp,
+  type Firestore,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { db, isFirebaseConfigured, FIREBASE_SETUP_MESSAGE } from './firebase';
+
+function requireDb(): Firestore {
+  if (!isFirebaseConfigured() || !db) throw new Error(FIREBASE_SETUP_MESSAGE);
+  return db;
+}
 
 // Registrations
 export const registerUser = async (userData: any) => {
-  return await addDoc(collection(db, 'registrations'), {
+  return await addDoc(collection(requireDb(), 'registrations'), {
     ...userData,
     timestamp: serverTimestamp(),
     status: 'pending'
@@ -19,7 +25,7 @@ export const registerUser = async (userData: any) => {
 
 // Attendance/Check-in
 export const checkInUser = async (userId: string, eventId: string) => {
-  const attendanceRef = collection(db, 'attendance');
+  const attendanceRef = collection(requireDb(), 'attendance');
   return await addDoc(attendanceRef, {
     userId,
     eventId,
@@ -30,15 +36,17 @@ export const checkInUser = async (userId: string, eventId: string) => {
 
 // Volunteer Assignments
 export const getVolunteerAssignments = async (userId: string) => {
-  const q = query(collection(db, 'volunteers'), where('userId', '==', userId));
+  const q = query(collection(requireDb(), 'volunteers'), where('userId', '==', userId));
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
 // Feedback
-export const submitFeedback = async (feedbackData: any) => {
-  return await addDoc(collection(db, 'feedback'), {
+export { isFirebaseConfigured, FIREBASE_SETUP_MESSAGE };
+
+export const submitFeedback = async (feedbackData: Record<string, unknown>) => {
+  return await addDoc(collection(requireDb(), 'feedback'), {
     ...feedbackData,
-    timestamp: serverTimestamp()
+    submittedAt: serverTimestamp(),
   });
 };

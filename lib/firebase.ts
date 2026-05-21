@@ -9,16 +9,39 @@ export const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+/** True when real Firebase web config is present in env (not placeholders). */
+export function isFirebaseConfigured(): boolean {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim();
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim();
+  return Boolean(
+    apiKey &&
+    projectId &&
+    apiKey !== 'your-api-key' &&
+    !apiKey.startsWith('your-')
+  );
+}
 
-export const auth: Auth = getAuth(app);
-export const db: Firestore = initializeFirestore(app, {
-  // Only use persistence on the client side to avoid server-side crashes
-  localCache: typeof window !== 'undefined' ? persistentLocalCache() : undefined
-});
-export const storage: FirebaseStorage = getStorage(app);
+export const FIREBASE_SETUP_MESSAGE =
+  'Firebase is not configured. Copy .env.example to .env.local, add your Firebase web app keys from the Firebase Console (project: aarambh-26), then restart `npm run dev`.';
+
+const app: FirebaseApp | null = isFirebaseConfigured()
+  ? getApps().length === 0
+    ? initializeApp(firebaseConfig)
+    : getApps()[0]
+  : null;
+
+// Only initialize Auth/Firestore when config is valid — avoids auth/invalid-api-key on load
+export const auth: Auth = app ? getAuth(app) : (undefined as unknown as Auth);
+export const db: Firestore = app
+  ? initializeFirestore(app, {
+      localCache: typeof window !== 'undefined' ? persistentLocalCache() : undefined,
+    })
+  : (undefined as unknown as Firestore);
+export const storage: FirebaseStorage = app
+  ? getStorage(app)
+  : (undefined as unknown as FirebaseStorage);
 
 export default app;

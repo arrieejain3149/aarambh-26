@@ -22,6 +22,7 @@ export default function Navbar() {
     { name: 'Schedule', href: '/schedule' },
     { name: 'Speakers', href: '/speakers' },
     { name: 'FAQ', href: '/faq' },
+    { name: 'Feedback', href: '/feedback' },
   ];
 
   return (
