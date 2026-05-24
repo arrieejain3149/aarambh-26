@@ -23,13 +23,13 @@ function RegisterContent() {
     mobile: '',
     email: '',
     registrationNumber: '',
-    fatherName: '',
-    fatherMobile: '',
-    fatherEmail: '',
-    motherName: '',
-    motherMobile: '',
-    motherEmail: '',
+    gender: '',
+    course: '',
+    parentName: '',
+    parentPhone: '',
+    parentEmail: '',
     address: '',
+    pincode: '',
     coupon: '',
   });
 
@@ -158,7 +158,7 @@ function RegisterContent() {
   }
 
   return (
-    <div className="min-h-screen py-24 px-4 flex flex-col items-center relative">
+    <div className="min-h-screen py-24 px-4 flex flex-col items-center relative overflow-hidden">
       <div className="hero-glow w-96 h-96 bg-brand-pink/15 -top-20 -right-20 absolute" />
       <div className="w-full max-w-3xl relative z-10">
         <button onClick={() => router.push('/')} className="flex items-center gap-2 text-brand-cloud/60 hover:text-brand-pink mb-8 transition-colors">
@@ -203,8 +203,27 @@ function RegisterContent() {
                       <input required name="name" value={formData.name} onChange={handleChange} className="input-field w-full py-3" placeholder="Enter your full name" suppressHydrationWarning />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-brand-cloud/60">Registration Number *</label>
+                      <label className="text-sm font-medium text-brand-cloud/60">Application Number *</label>
                       <input required name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} className="input-field w-full py-3" placeholder="20230001" suppressHydrationWarning />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-brand-cloud/60">Gender *</label>
+                      <select required name="gender" value={formData.gender} onChange={handleChange as any} className="input-field w-full py-3" suppressHydrationWarning>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-brand-cloud/60">Course / Programme *</label>
+                      <select required name="course" value={formData.course} onChange={handleChange as any} className="input-field w-full py-3" suppressHydrationWarning>
+                        <option value="">Select Programme</option>
+                        <option value="B.Tech">B.Tech</option>
+                        <option value="BBA">BBA</option>
+                        <option value="B.Des">B.Des</option>
+                        <option value="M.Des">M.Des</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-brand-cloud/60">Mobile Number *</label>
@@ -225,35 +244,21 @@ function RegisterContent() {
                 <form onSubmit={handleNext} className="space-y-8">
                   <div className="flex items-center gap-3 text-brand-blue border-b border-brand-cloud/10 pb-4">
                     <ShieldCheck size={24} />
-                    <h2 className="text-xl font-bold uppercase tracking-wider">Parents Details</h2>
+                    <h2 className="text-xl font-bold uppercase tracking-wider">Parent Details</h2>
                   </div>
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="md:col-span-1 space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Name *</label>
-                        <input required name="fatherName" value={formData.fatherName} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Parent Name *</label>
+                        <input required name="parentName" value={formData.parentName} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Mobile *</label>
-                        <input required name="fatherMobile" value={formData.fatherMobile} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Parent Phone *</label>
+                        <input required type="tel" name="parentPhone" value={formData.parentPhone} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Email</label>
-                        <input name="fatherEmail" value={formData.fatherEmail} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="md:col-span-1 space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Name *</label>
-                        <input required name="motherName" value={formData.motherName} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Mobile *</label>
-                        <input required name="motherMobile" value={formData.motherMobile} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Email</label>
-                        <input name="motherEmail" value={formData.motherEmail} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Parent Email</label>
+                        <input type="email" name="parentEmail" value={formData.parentEmail} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                     </div>
                   </div>
@@ -273,7 +278,11 @@ function RegisterContent() {
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-brand-cloud/60">Full Address *</label>
-                      <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="input-field w-full resize-none py-3" placeholder="House No, Street, Landmark, City, Pincode" suppressHydrationWarning />
+                      <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="input-field w-full resize-none py-3" placeholder="House No, Street, Landmark, City" suppressHydrationWarning />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-brand-cloud/60">Pincode *</label>
+                      <input required name="pincode" value={formData.pincode} onChange={handleChange} maxLength={6} inputMode="numeric" pattern="[0-9]{6}" className="input-field w-full py-3" placeholder="6-digit PIN code" suppressHydrationWarning />
                     </div>
 
                     <div className="space-y-2">

@@ -7,6 +7,13 @@
   --color-brand-ink: #030404;
   --color-brand-cloud: #F5F1E5;
 
+  --color-admin-bg: #F5F1E5;
+  --color-admin-surface: #ffffff;
+  --color-admin-accent: #FF9A00;
+  --color-admin-text: #030404;
+  --color-admin-muted: #64748b;
+  --color-admin-border: #e2e8f0;
+
   --color-primary: #FF188C;
   --color-primary-dark: #E0107A;
 
@@ -29,7 +36,10 @@
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
 }
 
+html,
 body {
+  max-width: 100%;
+  overflow-x: hidden;
   color: var(--color-brand-cloud);
   background-color: var(--color-brand-ink);
   min-height: 100vh;

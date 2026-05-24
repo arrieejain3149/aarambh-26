@@ -43,12 +43,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (configError) {
     return (
       <div className="min-h-screen bg-admin-bg flex items-center justify-center p-6 text-center font-adminBody">
-        <div className="max-w-md bg-admin-border/20 border border-admin-border p-8 rounded-2xl backdrop-blur-md">
-          <h2 className="text-2xl font-bold text-orange-500 mb-4 font-adminHeading">Firebase Unconfigured</h2>
-          <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+        <div className="max-w-md bg-admin-surface border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404]">
+          <h2 className="text-2xl font-black text-brand-orange mb-4 font-adminHeading uppercase tracking-tight">Firebase Unconfigured</h2>
+          <p className="text-brand-ink/75 text-sm mb-6 leading-relaxed font-bold">
             {FIREBASE_SETUP_MESSAGE}
           </p>
-          <div className="text-xs bg-black/40 p-4 rounded-xl text-left font-mono overflow-x-auto text-gray-400">
+          <div className="text-xs bg-brand-cloud border-2 border-brand-ink p-4 rounded-md text-left font-mono overflow-x-auto text-brand-ink font-semibold">
             1. Copy .env.example to .env.local<br/>
             2. Fill in your Firebase configuration keys
           </div>
@@ -69,16 +69,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-admin-bg text-admin-text font-adminBody">
       <Sidebar />
       <main className="flex-1 w-full md:w-[calc(100%-16rem)] pt-16 md:pt-0 overflow-y-auto relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-admin-accent/5 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-        <header className="sticky top-0 z-30 bg-admin-bg/60 backdrop-blur-md px-4 md:px-8 h-16 flex items-center justify-end border-b border-admin-border/50">
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-medium text-admin-muted uppercase tracking-widest hidden sm:block">
-              Admin Portal
-            </span>
-            <div className="h-4 w-px bg-admin-border hidden sm:block" />
-            <img src="/logo.svg" alt="AARAMBH'26" className="h-8 w-auto" />
-          </div>
+        <header className="sticky top-0 z-30 bg-admin-surface px-4 md:px-8 h-16 flex items-center justify-end border-b-2 border-brand-ink">
+          <span className="text-xs font-black text-admin-muted uppercase tracking-widest">
+            Admin Portal
+          </span>
         </header>
 
         <div className="p-4 md:p-8 max-w-6xl mx-auto">{children}</div>

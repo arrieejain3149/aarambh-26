@@ -166,6 +166,11 @@ function DraggableDossierCard({ speaker, theme, onThrow }: { speaker: any, theme
   const [showBio, setShowBio] = useState(false);
   const controls = useAnimation();
 
+  // Handle entry animation on mount
+  React.useEffect(() => {
+    controls.start({ scale: 1, opacity: 1, rotate: 0 });
+  }, [controls]);
+
   // Handles the physics of throwing the card
   const handleDragEnd = async (e: any, info: any) => {
     const swipeThreshold = 100; // How far they have to drag to trigger it
@@ -186,7 +191,6 @@ function DraggableDossierCard({ speaker, theme, onThrow }: { speaker: any, theme
       onDragEnd={handleDragEnd}
       animate={controls}
       initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-      animate={{ scale: 1, opacity: 1, rotate: 0 }}
       exit={{ scale: 0.8, opacity: 0 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
       className="relative w-full max-w-[420px] aspect-[3/4] cursor-grab active:cursor-grabbing group z-20"
