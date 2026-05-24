@@ -38,13 +38,14 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen relative overflow-hidden bg-brand-cloud text-brand-ink">
+    <div className="bg-brand-cloud text-brand-ink min-h-screen relative overflow-hidden">
+      <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen overflow-hidden">
       {/* Halftone dot pattern background */}
-      <div className="absolute inset-0 bg-halftone-black opacity-[0.05] pointer-events-none" />
+      
 
       {/* Retro comic header panel */}
       <header className="text-center mb-16 relative z-10 flex flex-col items-center">
-        <div className="border-comic bg-brand-orange text-brand-ink px-5 py-2 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-8 bg-halftone-black">
+        <div className="border-comic bg-brand-orange text-brand-ink px-5 py-2 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-8">
           SQUAD DEPLOYMENT TIMELINES
         </div>
 
@@ -108,7 +109,7 @@ export default function SchedulePage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4 }}
                     key={idx}
-                    className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic bg-halftone-black text-center relative overflow-hidden my-8"
+                    className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic text-center relative overflow-hidden my-8"
                   >
                     <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-brand-pink/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
                       LEVEL 5 • COHORT EXCURSION
@@ -175,7 +176,7 @@ export default function SchedulePage() {
 
       {/* CTA Footer Section */}
       <section className="mt-20 text-center relative z-10">
-        <div className="border-comic bg-brand-pink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic bg-halftone-black -rotate-1">
+        <div className="border-comic bg-brand-pink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic -rotate-1">
           <h3 className="font-display font-black text-lg uppercase mb-2">DOWNLOAD RULES & INSTRUCTIONS</h3>
           <p className="text-xs uppercase tracking-wide opacity-90 mb-4 font-bold">
             Make sure to download and review the official rule book before check-in.
@@ -190,6 +191,7 @@ export default function SchedulePage() {
           </a>
         </div>
       </section>
+    </div>
     </div>
   );
 }

@@ -29,12 +29,14 @@
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
 }
 
+html { background-color: var(--color-brand-cloud); }
+
 body {
-  color: var(--color-brand-cloud);
-  background-color: var(--color-brand-ink);
-  min-height: 100vh;
-  font-family: var(--font-sans);
+  margin: 0;
 }
+
+
+
 
 .glass-card {
   @apply bg-brand-cloud/5 backdrop-blur-md border border-brand-cloud/15 rounded-md shadow-xl;
