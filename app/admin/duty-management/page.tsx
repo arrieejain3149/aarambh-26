@@ -77,9 +77,22 @@ const convert12to24 = (time12: string) => {
   return `${String(hours).padStart(2, '0')}:${minutes}`;
 };
 
+// Parse time string in "HH:MM" format to minutes since midnight
+const parseTimeToMinutes = (timeStr: string) => {
+  if (!timeStr) return 0;
+  const [h, m] = timeStr.split(':').map(Number);
+  return (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
+};
+
 // Parse single/range event times
 const parseEventTimes = (timeRangeStr: string) => {
   if (!timeRangeStr) return { from: '09:00', to: '10:00' };
+  
+  const cleanStr = timeRangeStr.trim().toLowerCase();
+  if (cleanStr.includes('all day')) {
+    return { from: '00:00', to: '23:59' };
+  }
+
   const parts = timeRangeStr.split('-');
   if (parts.length === 2) {
     const from24 = convert12to24(parts[0]);
@@ -99,6 +112,30 @@ const parseEventTimes = (timeRangeStr: string) => {
   }
   return { from: '09:00', to: '10:00' };
 };
+
+// Find event locations that overlap with the selected time slot on the selected date
+const getOverlappingEventLocations = (events: any[], start: string, end: string) => {
+  const startMin = parseTimeToMinutes(start);
+  const endMin = parseTimeToMinutes(end);
+  if (startMin >= endMin) return [];
+
+  const locations: string[] = [];
+  events.forEach((evt) => {
+    if (!evt.location) return;
+    const evtTimes = parseEventTimes(evt.time);
+    const evtStartMin = parseTimeToMinutes(evtTimes.from);
+    const evtEndMin = parseTimeToMinutes(evtTimes.to);
+
+    // Overlap formula: startA < endB && endA > startB
+    if (startMin < evtEndMin && endMin > evtStartMin) {
+      if (!locations.includes(evt.location)) {
+        locations.push(evt.location);
+      }
+    }
+  });
+  return locations;
+};
+
 
 const VENUES = [
   'Main Gate',
@@ -213,23 +250,34 @@ export default function DutyManagement() {
     return daySchedule ? daySchedule.events : [];
   }, [editDate]);
 
-  // Predefined venues merged with currently selected custom event venue if applicable
-  const venueOptions = useMemo(() => {
-    const options = [...VENUES];
-    if (selectedVenue && !options.includes(selectedVenue)) {
-      options.push(selectedVenue);
-    }
-    return options;
-  }, [selectedVenue]);
+  // Dynamically computed venue options based on overlap with selected date & times
+  const { suggestedVenues, standardVenues } = useMemo(() => {
+    const overlappingLocs = getOverlappingEventLocations(eventsForSelectedDate, timeFrom, timeTo);
+    const std = VENUES.filter(v => !overlappingLocs.includes(v));
+    return {
+      suggestedVenues: overlappingLocs,
+      standardVenues: std
+    };
+  }, [eventsForSelectedDate, timeFrom, timeTo]);
 
-  // Predefined venues merged with edit modal custom event venue if applicable
-  const editVenueOptions = useMemo(() => {
-    const options = [...VENUES];
-    if (editVenue && !options.includes(editVenue)) {
-      options.push(editVenue);
-    }
-    return options;
-  }, [editVenue]);
+  const isCustomVenue = useMemo(() => {
+    return !!(selectedVenue && !suggestedVenues.includes(selectedVenue) && !standardVenues.includes(selectedVenue));
+  }, [selectedVenue, suggestedVenues, standardVenues]);
+
+  // Dynamically computed venue options for edit modal
+  const { editSuggestedVenues, editStandardVenues } = useMemo(() => {
+    const overlappingLocs = getOverlappingEventLocations(eventsForEditDate, editTimeFrom, editTimeTo);
+    const std = VENUES.filter(v => !overlappingLocs.includes(v));
+    return {
+      editSuggestedVenues: overlappingLocs,
+      editStandardVenues: std
+    };
+  }, [eventsForEditDate, editTimeFrom, editTimeTo]);
+
+  const isEditCustomVenue = useMemo(() => {
+    return !!(editVenue && !editSuggestedVenues.includes(editVenue) && !editStandardVenues.includes(editVenue));
+  }, [editVenue, editSuggestedVenues, editStandardVenues]);
+
 
   // Validation Warnings
   const [formWarning, setFormWarning] = useState<string | null>(null);
@@ -298,10 +346,6 @@ export default function DutyManagement() {
   // --------------------------------------------------------------------------
   // TIME VALIDATION & DUPLICATION CHECKS
   // --------------------------------------------------------------------------
-  const parseTimeToMinutes = (timeStr: string) => {
-    const [h, m] = timeStr.split(':').map(Number);
-    return h * 60 + m;
-  };
 
   const checkOverlappingDuty = (volId: string, date: string, start: string, end: string, excludeId?: string) => {
     const startMin = parseTimeToMinutes(start);
@@ -818,12 +862,13 @@ export default function DutyManagement() {
               </div>
             </div>
 
-            {/* STEP 4: Venue & Notes */}
+            {/* STEP 4: Venue Selection */}
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider">
-                  Venue Selection
-                </label>
+              <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">
+                Venue Selection
+              </label>
+              <div className="space-y-1">
+                <span className="hidden md:block text-[10px] font-black text-transparent uppercase select-none">Spacer</span>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-ink/40" size={14} />
                   <select
@@ -833,9 +878,23 @@ export default function DutyManagement() {
                     className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-4 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                   >
                     <option value="">Choose Venue...</option>
-                    {venueOptions.map((ven) => (
-                      <option key={ven} value={ven}>{ven}</option>
-                    ))}
+                    {suggestedVenues.length > 0 && (
+                      <optgroup label="Suggested (Events in this Time Slot)">
+                        {suggestedVenues.map((ven) => (
+                          <option key={ven} value={ven}>{ven}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    <optgroup label="Standard Venues">
+                      {standardVenues.map((ven) => (
+                        <option key={ven} value={ven}>{ven}</option>
+                      ))}
+                    </optgroup>
+                    {isCustomVenue && (
+                      <optgroup label="Custom Venue">
+                        <option value={selectedVenue}>{selectedVenue}</option>
+                      </optgroup>
+                    )}
                   </select>
                 </div>
               </div>
@@ -899,7 +958,7 @@ export default function DutyManagement() {
         </div>
         
         {/* Filter dropdowns */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="w-full md:w-auto grid grid-cols-2 gap-3 md:flex md:items-center">
           <div className="p-2.5 border-2 border-brand-ink bg-brand-cloud text-brand-ink rounded-md hidden md:block">
             <Filter size={16} />
           </div>
@@ -908,7 +967,7 @@ export default function DutyManagement() {
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="bg-white border-2 border-brand-ink rounded-md py-2.5 px-3 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors"
+            className="w-full md:w-auto bg-white border-2 border-brand-ink rounded-md py-2.5 px-3 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors order-1 md:order-none"
           >
             <option value="">All Dates</option>
             {DUTY_DATES.map((dt) => (
@@ -920,7 +979,7 @@ export default function DutyManagement() {
           <select
             value={teamFilter}
             onChange={(e) => setTeamFilter(e.target.value)}
-            className="bg-white border-2 border-brand-ink rounded-md md:py-3 md:px-4 py-2.5 px-3 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors w-[145px] md:w-auto"
+            className="w-full col-span-2 order-3 md:order-none md:col-auto bg-white border-2 border-brand-ink rounded-md md:py-3 md:px-4 py-2.5 px-3 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors md:w-auto"
           >
             <option value="all">All Teams</option>
             {dynamicTeams.map((teamName) => (
@@ -932,7 +991,7 @@ export default function DutyManagement() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white border-2 border-brand-ink rounded-md py-3 px-4 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors"
+            className="w-full order-2 md:order-none bg-white border-2 border-brand-ink rounded-md py-3 px-4 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors md:w-auto"
           >
             <option value="all">Status</option>
             <option value="upcoming">Upcoming</option>
@@ -1145,9 +1204,23 @@ export default function DutyManagement() {
                 className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
               >
                 <option value="">Choose Venue...</option>
-                {editVenueOptions.map((ven) => (
-                  <option key={ven} value={ven}>{ven}</option>
-                ))}
+                {editSuggestedVenues.length > 0 && (
+                  <optgroup label="Suggested (Events in this Time Slot)">
+                    {editSuggestedVenues.map((ven) => (
+                      <option key={ven} value={ven}>{ven}</option>
+                    ))}
+                  </optgroup>
+                )}
+                <optgroup label="Standard Venues">
+                  {editStandardVenues.map((ven) => (
+                    <option key={ven} value={ven}>{ven}</option>
+                  ))}
+                </optgroup>
+                {isEditCustomVenue && (
+                  <optgroup label="Custom Venue">
+                    <option value={editVenue}>{editVenue}</option>
+                  </optgroup>
+                )}
               </select>
             </div>
 
