@@ -232,7 +232,7 @@ export default function Sidebar() {
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
         <Link href="/admin" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
-          <span className="font-adminHeading text-md font-black text-brand-ink hidden xs:block">Admin</span>
+          <span className="font-adminHeading text-md font-black text-brand-ink hidden">Admin</span>
         </Link>
         <button 
           onClick={() => setIsOpen(!isOpen)} 

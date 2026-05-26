@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   collection, 
   onSnapshot, 
@@ -13,7 +14,8 @@ import {
   serverTimestamp, 
   getDocs 
 } from 'firebase/firestore';
-import { db, auth } from '../../../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth, isFirebaseConfigured } from '../../../lib/firebase';
 import { SkeletonTable } from '../../../components/admin/SkeletonLoader';
 import { Modal } from '../../../components/admin/Modal';
 import { logAdminAction } from '../../../lib/audit';
@@ -136,7 +138,6 @@ const getOverlappingEventLocations = (events: any[], start: string, end: string)
   return locations;
 };
 
-
 const VENUES = [
   'Main Gate',
   'Auditorium',
@@ -162,22 +163,18 @@ const DUTY_DATES = [
 // COMPONENT
 // ============================================================================
 
-export default function DutyManagement() {
+export default function TeamLeaderDutyAssignment() {
+  const router = useRouter();
+  
+  // Auth and Profile States
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+
   // DB Collections States
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [dutyAssignments, setDutyAssignments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Dynamically compute unique teams from fetched volunteers (excluding 'Organizing Head')
-  const dynamicTeams = useMemo(() => {
-    const teamsSet = new Set<string>();
-    volunteers.forEach((v) => {
-      if (v.team && v.team.toLowerCase() !== 'organizing head') {
-        teamsSet.add(v.team);
-      }
-    });
-    return Array.from(teamsSet).sort();
-  }, [volunteers]);
+  const [dutiesLoading, setDutiesLoading] = useState(true);
 
   // Form State
   const [selectedDate, setSelectedDate] = useState('2026-07-14');
@@ -189,8 +186,7 @@ export default function DutyManagement() {
   const [notes, setNotes] = useState('');
   const [selectedEventTitle, setSelectedEventTitle] = useState('');
   
-  // Volunteer Selection Search States
-  const [searchLeaderQuery, setSearchLeaderQuery] = useState('');
+  // Volunteer Search State
   const [searchMemberQuery, setSearchMemberQuery] = useState('');
 
   // Table Filters State
@@ -212,6 +208,103 @@ export default function DutyManagement() {
   const [editNotes, setEditNotes] = useState('');
   const [editEventTitle, setEditEventTitle] = useState('');
 
+  // Validation Warnings
+  const [formWarning, setFormWarning] = useState<string | null>(null);
+  const [editWarning, setEditWarning] = useState<string | null>(null);
+
+  // --------------------------------------------------------------------------
+  // AUTH GUARD & REAL-TIME DATA SYNCRONIZATION
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    if (!isFirebaseConfigured() || !auth || !db) {
+      setAuthLoading(false);
+      return;
+    }
+
+    let unsubProfile: (() => void) | undefined;
+    let unsubVolunteers: (() => void) | undefined;
+    let unsubDuties: (() => void) | undefined;
+
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
+      let activeUid = '';
+      let isLocalTL = false;
+      if (user) {
+        activeUid = user.uid;
+      } else {
+        const stored = localStorage.getItem('aarambh_session');
+        if (stored) {
+          try {
+            const session = JSON.parse(stored);
+            activeUid = session.uid;
+            if (session.role === 'team_leader') {
+              isLocalTL = true;
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      if (!activeUid) {
+        router.push('/login');
+        return;
+      }
+
+      if (isLocalTL) {
+        setIsAuthorized(true);
+      }
+
+      // Profile real-time snapshot
+      unsubProfile = onSnapshot(doc(db, 'volunteers', activeUid), (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfile(data);
+          if (data.role === 'Team Leader') {
+            setIsAuthorized(true);
+          } else {
+            router.push('/volunteer');
+          }
+        } else {
+          router.push('/login');
+        }
+        setAuthLoading(false);
+      }, (err) => {
+        console.error("Auth guard check failed:", err);
+        router.push('/login');
+        setAuthLoading(false);
+      });
+
+      // Synchronize Volunteers
+      unsubVolunteers = onSnapshot(collection(db, 'volunteers'), (snap) => {
+        setVolunteers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      });
+
+      // Synchronize Duties
+      unsubDuties = onSnapshot(collection(db, 'dutyAssignments'), (snap) => {
+        setDutyAssignments(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        setDutiesLoading(false);
+      });
+    });
+
+    return () => {
+      unsubAuth();
+      if (unsubProfile) unsubProfile();
+      if (unsubVolunteers) unsubVolunteers();
+      if (unsubDuties) unsubDuties();
+    };
+  }, [router]);
+
+  // Dynamically compute unique teams/committees from fetched volunteers (excluding 'Organizing Head')
+  const dynamicTeams = useMemo(() => {
+    const teamsSet = new Set<string>();
+    volunteers.forEach((v) => {
+      if (v.team && v.team.toLowerCase() !== 'organizing head') {
+        teamsSet.add(v.team);
+      }
+    });
+    return Array.from(teamsSet).sort();
+  }, [volunteers]);
+
   // Get events scheduled for the currently selected date
   const eventsForSelectedDate = useMemo(() => {
     if (!selectedDate) return [];
@@ -224,7 +317,7 @@ export default function DutyManagement() {
     ];
     const monthStr = monthNames[dateObj.getMonth()];
     const dayNum = dateObj.getDate();
-    const formattedDate = `${monthStr} ${dayNum}`; // e.g. "July 14"
+    const formattedDate = `${monthStr} ${dayNum}`;
     
     const daySchedule = SCHEDULE_DATA.find(
       (d) => d.date.trim().toLowerCase() === formattedDate.trim().toLowerCase()
@@ -280,71 +373,6 @@ export default function DutyManagement() {
     return !!(editVenue && !editSuggestedVenues.includes(editVenue) && !editStandardVenues.includes(editVenue));
   }, [editVenue, editSuggestedVenues, editStandardVenues]);
 
-
-  // Validation Warnings
-  const [formWarning, setFormWarning] = useState<string | null>(null);
-  const [editWarning, setEditWarning] = useState<string | null>(null);
-
-  // --------------------------------------------------------------------------
-  // DB DATA SYNCRONIZATION & SEEDING
-  // --------------------------------------------------------------------------
-  useEffect(() => {
-    // Seed initial mock volunteers if volunteers collection is empty
-    const seedInitialVolunteers = async () => {
-      try {
-        const snap = await getDocs(collection(db, 'volunteers'));
-        if (snap.empty) {
-          const mockVolunteers = [
-            { name: 'Aman Sharma', team: 'Registration Team', email: 'aman@aarambh.com', role: 'Team Leader' },
-            { name: 'Tanya Saxena', team: 'Registration Team', email: 'tanya@aarambh.com', role: 'Volunteer' },
-            { name: 'Devam', team: 'Technical Team', email: 'devam@aarambh.com', role: 'Team Leader' },
-            { name: 'Manant Srivastava', team: 'Technical Team', email: 'manant@aarambh.com', role: 'Volunteer' },
-            { name: 'Rohan Gupta', team: 'Technical Team', email: 'rohan@aarambh.com', role: 'Volunteer' },
-            { name: 'Vikram Singh', team: 'Discipline Team', email: 'vikram@aarambh.com', role: 'Team Leader' },
-            { name: 'Aditi Rao', team: 'Discipline Team', email: 'aditi@aarambh.com', role: 'Volunteer' },
-            { name: 'Neha Sharma', team: 'Hospitality Team', email: 'neha@aarambh.com', role: 'Team Leader' },
-            { name: 'Rahul Kapoor', team: 'Hospitality Team', email: 'rahul@aarambh.com', role: 'Volunteer' },
-            { name: 'Sanya Mehta', team: 'Decoration Team', email: 'sanya@aarambh.com', role: 'Team Leader' },
-            { name: 'Karan Johar', team: 'Decoration Team', email: 'karan@aarambh.com', role: 'Volunteer' },
-            { name: 'Priya Malhotra', team: 'Anchoring Team', email: 'priya@aarambh.com', role: 'Team Leader' },
-            { name: 'Kabir Sen', team: 'Anchoring Team', email: 'kabir@aarambh.com', role: 'Volunteer' },
-            { name: 'Arjun Reddy', team: 'Photography Team', email: 'arjun@aarambh.com', role: 'Team Leader' },
-            { name: 'Meera Nair', team: 'Photography Team', email: 'meera@aarambh.com', role: 'Volunteer' },
-            { name: 'Riya Sen', team: 'Social Media Team', email: 'riya@aarambh.com', role: 'Team Leader' },
-            { name: 'Yash Vardhan', team: 'Social Media Team', email: 'yash@aarambh.com', role: 'Volunteer' },
-          ];
-          
-          const batch = writeBatch(db);
-          mockVolunteers.forEach((vol) => {
-            const docRef = doc(collection(db, 'volunteers'));
-            batch.set(docRef, vol);
-          });
-          await batch.commit();
-          await logAdminAction('SEED_VOLUNTEERS', 'volunteers', 'Seeded initial mock volunteers to database');
-        }
-      } catch (err) {
-        console.error("Failed to seed initial volunteers:", err);
-      }
-    };
-
-    seedInitialVolunteers();
-
-    // Set up listeners for real-time data sync
-    const unsubVolunteers = onSnapshot(collection(db, 'volunteers'), (snap) => {
-      setVolunteers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-
-    const unsubDuties = onSnapshot(collection(db, 'dutyAssignments'), (snap) => {
-      setDutyAssignments(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-
-    return () => {
-      unsubVolunteers();
-      unsubDuties();
-    };
-  }, []);
-
   // --------------------------------------------------------------------------
   // TIME VALIDATION & DUPLICATION CHECKS
   // --------------------------------------------------------------------------
@@ -364,7 +392,6 @@ export default function DutyManagement() {
       const dutyStart = parseTimeToMinutes(duty.timeFrom);
       const dutyEnd = parseTimeToMinutes(duty.timeTo);
 
-      // Overlap formula: startA < endB && endA > startB
       return startMin < dutyEnd && endMin > dutyStart;
     });
 
@@ -398,7 +425,7 @@ export default function DutyManagement() {
 
     try {
       const batch = writeBatch(db);
-      const adminEmail = auth?.currentUser?.email || auth?.currentUser?.uid || 'Admin';
+      const tlEmail = profile?.email || auth?.currentUser?.email || auth?.currentUser?.uid || 'Team Leader';
 
       selectedVolunteers.forEach((vol) => {
         const docRef = doc(collection(db, 'dutyAssignments'));
@@ -412,7 +439,7 @@ export default function DutyManagement() {
           venue: selectedVenue,
           notes: notes.trim(),
           eventTitle: selectedEventTitle,
-          assignedBy: adminEmail,
+          assignedBy: tlEmail,
           status: 'upcoming',
           createdAt: serverTimestamp()
         });
@@ -437,13 +464,13 @@ export default function DutyManagement() {
       await logAdminAction(
         'CREATE_DUTY_ASSIGNMENTS', 
         'dutyAssignments', 
-        `Assigned duties to: [${volNames}] at ${selectedVenue} on ${selectedDate}${selectedEventTitle ? ` (Event: ${selectedEventTitle})` : ''}`
+        `Assigned duties to: [${volNames}] at ${selectedVenue} on ${selectedDate}${selectedEventTitle ? ` (Event: ${selectedEventTitle})` : ''}`,
+        tlEmail
       );
 
       // Reset form fields
       setSelectedVolunteers([]);
       setNotes('');
-      setSearchLeaderQuery('');
       setSearchMemberQuery('');
     } catch (err: any) {
       console.error(err);
@@ -459,7 +486,6 @@ export default function DutyManagement() {
     setTimeTo('13:00');
     setSelectedVenue('');
     setNotes('');
-    setSearchLeaderQuery('');
     setSearchMemberQuery('');
     setSelectedEventTitle('');
     setFormWarning(null);
@@ -470,10 +496,12 @@ export default function DutyManagement() {
       await updateDoc(doc(db, 'dutyAssignments', duty.id), {
         status: 'completed'
       });
+      const performer = profile?.email || 'Team Leader';
       await logAdminAction(
         'COMPLETE_DUTY_ASSIGNMENT', 
         `dutyAssignments/${duty.id}`, 
-        `Marked duty as completed for ${duty.volunteerName}`
+        `Marked duty as completed for ${duty.volunteerName}`,
+        performer
       );
     } catch (err: any) {
       alert(`Error: ${err.message}`);
@@ -531,10 +559,12 @@ export default function DutyManagement() {
         timestamp: serverTimestamp()
       });
 
+      const performer = profile?.email || 'Team Leader';
       await logAdminAction(
         'EDIT_DUTY_ASSIGNMENT', 
         `dutyAssignments/${editingDuty.id}`, 
-        `Updated duty details for ${editingDuty.volunteerName}${editEventTitle ? ` (Event: ${editEventTitle})` : ''}`
+        `Updated duty details for ${editingDuty.volunteerName}${editEventTitle ? ` (Event: ${editEventTitle})` : ''}`,
+        performer
       );
 
       setEditingDuty(null);
@@ -558,10 +588,12 @@ export default function DutyManagement() {
         timestamp: serverTimestamp()
       });
 
+      const performer = profile?.email || 'Team Leader';
       await logAdminAction(
         'DELETE_DUTY_ASSIGNMENT', 
         `dutyAssignments/${deletingDuty.id}`, 
-        `Removed duty for ${deletingDuty.volunteerName}`
+        `Removed duty for ${deletingDuty.volunteerName}`,
+        performer
       );
       setDeletingDuty(null);
     } catch (err: any) {
@@ -577,25 +609,7 @@ export default function DutyManagement() {
     return volunteers.filter(v => v.team === selectedTeam);
   }, [volunteers, selectedTeam]);
 
-  // Separate Leaders and Members (de-duplicated by name)
-  const teamLeaders = useMemo(() => {
-    const seen = new Set();
-    const unique = [];
-    const list = availableVolunteers.filter(v => 
-      v.role?.toLowerCase() === 'team leader' && 
-      v.team?.toLowerCase() !== 'organizing head' &&
-      v.team?.toLowerCase() !== 'cohort leader'
-    );
-    for (const v of list) {
-      const key = v.name.trim().toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        unique.push(v);
-      }
-    }
-    return unique;
-  }, [availableVolunteers]);
-
+  // Exclude all Team Leaders (v.role !== 'Team Leader') except cohort leaders and organizing heads
   const teamMembers = useMemo(() => {
     const seen = new Set();
     const unique = [];
@@ -615,33 +629,11 @@ export default function DutyManagement() {
   }, [availableVolunteers]);
 
   // Filtered by Search Queries
-  const filteredLeaders = useMemo(() => {
-    return teamLeaders.filter(v => 
-      v.name.toLowerCase().includes(searchLeaderQuery.toLowerCase())
-    );
-  }, [teamLeaders, searchLeaderQuery]);
-
   const filteredMembers = useMemo(() => {
     return teamMembers.filter(v => 
       v.name.toLowerCase().includes(searchMemberQuery.toLowerCase())
     );
   }, [teamMembers, searchMemberQuery]);
-
-  const selectedLeadersCount = useMemo(() => {
-    return selectedVolunteers.filter(sv => 
-      sv.role?.toLowerCase() === 'team leader' && 
-      sv.team?.toLowerCase() !== 'organizing head' &&
-      sv.team?.toLowerCase() !== 'cohort leader'
-    ).length;
-  }, [selectedVolunteers]);
-
-  const selectedMembersCount = useMemo(() => {
-    return selectedVolunteers.filter(sv => 
-      sv.role?.toLowerCase() !== 'team leader' || 
-      sv.team?.toLowerCase() === 'organizing head' ||
-      sv.team?.toLowerCase() === 'cohort leader'
-    ).length;
-  }, [selectedVolunteers]);
 
   const toggleVolunteerSelection = (vol: any) => {
     const isSelected = selectedVolunteers.some(v => v.id === vol.id);
@@ -689,21 +681,26 @@ export default function DutyManagement() {
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-pink" />
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
+
   return (
     <div className="space-y-10 select-none font-adminBody">
       {/* Title Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Duty Management</h1>
-          <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Manage volunteer duty assignments for AARAMBH’26</p>
+          <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Duty Assignment</h1>
+          <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Assign operational duties to volunteers for AARAMBH’26</p>
         </div>
-        <a 
-          href="/credentials.txt" 
-          download="credentials.txt"
-          className="bg-brand-blue hover:bg-secondary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
-        >
-          Download Credentials
-        </a>
       </div>
 
       {/* ==================================================================== */}
@@ -735,7 +732,7 @@ export default function DutyManagement() {
                   value={selectedDate}
                   onChange={(e) => {
                     setSelectedDate(e.target.value);
-                    setSelectedEventTitle(''); // Clear selected event on date change
+                    setSelectedEventTitle('');
                   }}
                   className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
@@ -761,11 +758,9 @@ export default function DutyManagement() {
                     if (title) {
                       const eventObj = eventsForSelectedDate.find(evt => evt.title === title);
                       if (eventObj) {
-                        // Autofill times
                         const times = parseEventTimes(eventObj.time);
                         setTimeFrom(times.from);
                         setTimeTo(times.to);
-                        // Autofill venue location if set
                         if (eventObj.location) {
                           setSelectedVenue(eventObj.location);
                         }
@@ -800,8 +795,7 @@ export default function DutyManagement() {
                   value={selectedTeam}
                   onChange={(e) => {
                     setSelectedTeam(e.target.value);
-                    setSelectedVolunteers([]); // clear selected list on team swap
-                    setSearchLeaderQuery('');
+                    setSelectedVolunteers([]);
                     setSearchMemberQuery('');
                   }}
                   className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
@@ -814,7 +808,7 @@ export default function DutyManagement() {
               </div>
             </div>
 
-            {/* STEP 3: Select Team Member & Leader Side-by-Side */}
+            {/* STEP 3: Select Team Member only */}
             <div className="col-span-1 md:col-span-2 space-y-3">
               <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider">
                 Step 3 — Select Volunteer(s)
@@ -828,11 +822,8 @@ export default function DutyManagement() {
                       key={vol.id}
                       className="flex items-center gap-1.5 bg-[#ffffff] border-2 border-brand-ink rounded-md px-2.5 py-1 text-xs font-bold text-brand-ink shadow-[2px_2px_0px_0px_#030404]"
                     >
-                      <User size={12} className="text-brand-pink" />
+                      <User size={12} className="text-brand-blue" />
                       <span>{vol.name}</span>
-                      <span className="text-[9px] px-1 bg-brand-cloud border border-brand-ink/30 rounded uppercase font-black text-admin-muted scale-90">
-                        {(vol.role === 'Team Leader' && vol.team?.toLowerCase() !== 'organizing head' && vol.team?.toLowerCase() !== 'cohort leader') ? 'Ldr' : 'Mbr'}
-                      </span>
                       <button 
                         type="button" 
                         onClick={() => handleRemoveVolunteer(vol.id)}
@@ -850,109 +841,54 @@ export default function DutyManagement() {
                   Please select a Team first in Step 2 to view and assign volunteers.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Left Column: Team Leaders */}
-                  <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-5 flex flex-col gap-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <h3 className="text-xs font-black uppercase text-brand-pink tracking-widest flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-brand-pink border border-brand-ink inline-block" />
-                        Team Leaders
-                      </h3>
-                      <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
-                        {selectedLeadersCount} Selected
-                      </span>
-                    </div>
-
-                    {/* Search box for Leaders */}
-                    <div className="relative mb-1">
-                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={13} />
-                      <input
-                        type="text"
-                        placeholder="Search leader..."
-                        value={searchLeaderQuery}
-                        onChange={(e) => setSearchLeaderQuery(e.target.value)}
-                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
-                      />
-                    </div>
-
-                    {/* Excel Grid Layout */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 p-3 border-2 border-brand-ink rounded-md bg-brand-cloud/10">
-                      {filteredLeaders.length > 0 ? (
-                        filteredLeaders.map((vol) => {
-                          const isAssigned = selectedVolunteers.some(v => v.id === vol.id);
-                          return (
-                            <button
-                              key={vol.id}
-                              type="button"
-                              onClick={() => toggleVolunteerSelection(vol)}
-                              className={`p-3 border-2 border-brand-ink text-[10px] font-black uppercase rounded-md text-center transition-all cursor-pointer shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[0.5px] hover:translate-y-[0.5px] hover:shadow-[1.5px_1.5px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none min-h-[44px] flex items-center justify-center break-words leading-tight ${
-                                isAssigned 
-                                  ? 'bg-brand-pink text-white shadow-none translate-x-[1px] translate-y-[1px]'
-                                  : 'bg-white hover:bg-brand-cloud text-brand-ink'
-                              }`}
-                            >
-                              {vol.name}
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <div className="col-span-full py-6 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
-                          No leaders found
-                        </div>
-                      )}
-                    </div>
+                <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-5 flex flex-col gap-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <h3 className="text-xs font-black uppercase text-brand-blue tracking-widest flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-brand-blue border border-brand-ink inline-block" />
+                      Volunteers
+                    </h3>
+                    <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
+                      {selectedVolunteers.length} Selected
+                    </span>
                   </div>
 
-                  {/* Right Column: Team Members */}
-                  <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-5 flex flex-col gap-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <h3 className="text-xs font-black uppercase text-brand-blue tracking-widest flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-brand-blue border border-brand-ink inline-block" />
-                        Team Members
-                      </h3>
-                      <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
-                        {selectedMembersCount} Selected
-                      </span>
-                    </div>
+                  {/* Search box for Members */}
+                  <div className="relative mb-1">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={13} />
+                    <input
+                      type="text"
+                      placeholder="Search volunteer by name..."
+                      value={searchMemberQuery}
+                      onChange={(e) => setSearchMemberQuery(e.target.value)}
+                      className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                    />
+                  </div>
 
-                    {/* Search box for Members */}
-                    <div className="relative mb-1">
-                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={13} />
-                      <input
-                        type="text"
-                        placeholder="Search member..."
-                        value={searchMemberQuery}
-                        onChange={(e) => setSearchMemberQuery(e.target.value)}
-                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
-                      />
-                    </div>
-
-                    {/* Excel Grid Layout */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 p-3 border-2 border-brand-ink rounded-md bg-brand-cloud/10">
-                      {filteredMembers.length > 0 ? (
-                        filteredMembers.map((vol) => {
-                          const isAssigned = selectedVolunteers.some(v => v.id === vol.id);
-                          return (
-                            <button
-                              key={vol.id}
-                              type="button"
-                              onClick={() => toggleVolunteerSelection(vol)}
-                              className={`p-3 border-2 border-brand-ink text-[10px] font-black uppercase rounded-md text-center transition-all cursor-pointer shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[0.5px] hover:translate-y-[0.5px] hover:shadow-[1.5px_1.5px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none min-h-[44px] flex items-center justify-center break-words leading-tight ${
-                                isAssigned 
-                                  ? 'bg-brand-blue text-white shadow-none translate-x-[1px] translate-y-[1px]'
-                                  : 'bg-white hover:bg-brand-cloud text-brand-ink'
-                              }`}
-                            >
-                              {vol.name}
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <div className="col-span-full py-6 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
-                          No members found
-                        </div>
-                      )}
-                    </div>
+                  {/* Excel Grid Layout */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3 border-2 border-brand-ink rounded-md bg-brand-cloud/10">
+                    {filteredMembers.length > 0 ? (
+                      filteredMembers.map((vol) => {
+                        const isAssigned = selectedVolunteers.some(v => v.id === vol.id);
+                        return (
+                          <button
+                            key={vol.id}
+                            type="button"
+                            onClick={() => toggleVolunteerSelection(vol)}
+                            className={`p-3 border-2 border-brand-ink text-[10px] font-black uppercase rounded-md text-center transition-all cursor-pointer shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[0.5px] hover:translate-y-[0.5px] hover:shadow-[1.5px_1.5px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none min-h-[44px] flex items-center justify-center break-words leading-tight ${
+                              isAssigned 
+                                ? 'bg-brand-blue text-white shadow-none translate-x-[1px] translate-y-[1px]'
+                                : 'bg-white hover:bg-brand-cloud text-brand-ink'
+                            }`}
+                          >
+                            {vol.name}
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="col-span-full py-6 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
+                        No volunteers found
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1135,7 +1071,7 @@ export default function DutyManagement() {
       {/* ==================================================================== */}
       {/* ASSIGNED DUTIES TABLE */}
       {/* ==================================================================== */}
-      {loading ? (
+      {dutiesLoading ? (
         <SkeletonTable rows={8} />
       ) : (
         <div className="bg-white border-4 border-brand-ink rounded-md shadow-[6px_6px_0px_0px_#030404] overflow-hidden flex flex-col">
@@ -1259,7 +1195,7 @@ export default function DutyManagement() {
                 value={editDate}
                 onChange={(e) => {
                   setEditDate(e.target.value);
-                  setEditEventTitle(''); // Clear selected event on date change
+                  setEditEventTitle('');
                 }}
                 className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
               >
