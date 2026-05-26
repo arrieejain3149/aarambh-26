@@ -11,6 +11,15 @@ export const viewport: Viewport = {
   themeColor: '#FF9A00',
 }
 
+import { Tiro_Devanagari_Hindi } from 'next/font/google'
+
+const tiroDevanagari = Tiro_Devanagari_Hindi({
+  weight: '400',
+  subsets: ['devanagari'],
+  variable: '--font-devanagari',
+  display: 'swap',
+})
+
 import ConditionalLayout from '../components/layout/ConditionalLayout'
 
 export default function RootLayout({
@@ -19,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={tiroDevanagari.variable}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
