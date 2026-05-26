@@ -25,7 +25,13 @@ export default function VolunteerLayout({ children }: { children: React.ReactNod
 
         {/* Content Area */}
         <main className="flex-1 p-6 md:p-8 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(#030404_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
+          <div 
+            className="absolute inset-0 opacity-[0.25] pointer-events-none" 
+            style={{
+              backgroundImage: 'linear-gradient(to right, #030404 1px, transparent 1px), linear-gradient(to bottom, #030404 1px, transparent 1px)',
+              backgroundSize: '48px 48px'
+            }}
+          />
           <div className="relative z-10">
             {children}
           </div>
