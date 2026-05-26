@@ -454,62 +454,64 @@ export default function Home() {
           </div>
 
           {/* Comic Styled Heading Stack */}
-          <div className="relative mb-6 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center">
+          <div className="relative mb-8 select-none p-3 max-w-full">
             {/* Outline back text */}
-            <h1 className="font-display text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-[1.1] sm:leading-none tracking-tighter text-outline-pink select-none break-words max-w-[95vw]">
+            <h1 className="font-display text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-none tracking-tighter text-outline-pink select-none">
               BOLD & BEYOND
             </h1>            {/* Centered Primary Logo */}
             <div className="absolute inset-0 flex items-center justify-center p-2 mt-2 z-20 perspective-[1500px]">
               <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group">
                 {/* Base logo card with drop shadow */}
-                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-4 sm:p-8 drop-shadow-[6px_6px_0px_#030404] sm:drop-shadow-[10px_10px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[100px] sm:min-h-[200px] md:min-h-[260px]">
+                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-6 sm:p-8 drop-shadow-[10px_10px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[140px] sm:min-h-[200px] md:min-h-[260px]">
                                     {loadingComplete && (
                     <>
-                      {/* Logo Container Fill Animation */}
-                      <div className="relative w-full aspect-[550/120] z-20 pointer-events-none flex items-center justify-center">
-                        
-                        {/* Empty Container Logo (Grayscale/Faded) */}
-                        <Image 
-                           src="/logo.svg" 
-                           alt="" 
-                           fill 
-                           className="object-contain filter grayscale opacity-20 drop-shadow-[2px_2px_0_#030404]" 
-                        />
-                        
-                        {/* The Fill Animation (Original Logo Colors) */}
-                        <motion.div
-                          initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
-                          animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
-                          transition={{ duration: 4.0, ease: "easeInOut", delay: 0.5 }}
-                          className="absolute inset-0 w-full h-full"
-                        >
-                          <Image 
-                             src="/logo.svg" 
-                             alt="AARAMBH'26" 
-                             fill 
-                             className="object-contain filter drop-shadow-[6px_6px_0_#030404]" 
-                             priority 
-                             loading="eager" 
-                          />
-                        </motion.div>
-                        
-                        {/* Final Pop & Glow */}
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: [0, 1, 0], scale: [0.8, 1.2, 1] }}
-                          transition={{ delay: 4.5, duration: 0.6 }}
-                          className="absolute inset-0 bg-brand-pink blur-[30px] mix-blend-screen pointer-events-none"
-                        />
-                        
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
-                          transition={{ delay: 4.5, duration: 0.8 }}
-                          className="absolute top-0 -right-2 text-brand-orange z-30"
-                        >
-                          <Sparkles size={40} />
-                        </motion.div>
-                      </div>
+                      {/* Clean Comic Pop-In Reveal */}
+                      
+                      {/* The Logo Pop */}
+                      <motion.div 
+                         className="relative w-full aspect-[550/120] z-50 pointer-events-none"
+                         initial={{ scale: 0, opacity: 0, y: 30 }}
+                         animate={{ 
+                           scale: [0, 1.1, 1], 
+                           opacity: [0, 1, 1],
+                           y: [30, -5, 0]
+                         }}
+                         transition={{ delay: 0.3, duration: 0.6, times: [0, 0.7, 1], ease: "easeOut" }}
+                      >
+                         {/* Halftone offset shadow (pops in precisely after logo lands) */}
+                         <motion.div
+                           initial={{ x: 0, y: 0, opacity: 0 }}
+                           animate={{ x: 12, y: 12, opacity: 1 }}
+                           transition={{ delay: 0.7, duration: 0.2, type: "spring", stiffness: 300 }}
+                           className="absolute inset-0 w-full h-full mix-blend-multiply"
+                         >
+                            <Image
+                             src="/logo.svg"
+                             alt=""
+                             fill
+                             className="object-contain filter brightness-0"
+                             priority
+                           />
+                         </motion.div>
+                         
+                         {/* Main Logo Image */}
+                         <Image
+                           src="/logo.svg"
+                           alt="AARAMBH'26"
+                           fill
+                           className="object-contain relative z-10"
+                           priority
+                           loading="eager"
+                         />
+                      </motion.div>
+                      
+                      {/* Clean Flash Effect */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 0.5, 0] }}
+                        transition={{ delay: 0.3, duration: 0.3 }}
+                        className="absolute inset-0 bg-brand-cloud z-[60] pointer-events-none mix-blend-overlay"
+                      />
                     </>
                   )}
                 </div>
@@ -518,7 +520,7 @@ export default function Home() {
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-4 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
+          <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
             <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
               <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
@@ -527,11 +529,11 @@ export default function Home() {
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
-                className={`p-2 sm:p-4 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+                className={`p-3 sm:p-4 border-comic rounded-lg shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
               >
                 <div className="relative h-8 sm:h-10 overflow-hidden flex items-center justify-center w-full">
                   <AnimatePresence mode="popLayout">

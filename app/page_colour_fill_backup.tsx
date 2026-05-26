@@ -454,15 +454,15 @@ export default function Home() {
           </div>
 
           {/* Comic Styled Heading Stack */}
-          <div className="relative mb-6 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center">
+          <div className="relative mb-8 select-none p-3 max-w-full">
             {/* Outline back text */}
-            <h1 className="font-display text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-[1.1] sm:leading-none tracking-tighter text-outline-pink select-none break-words max-w-[95vw]">
+            <h1 className="font-display text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-none tracking-tighter text-outline-pink select-none">
               BOLD & BEYOND
             </h1>            {/* Centered Primary Logo */}
             <div className="absolute inset-0 flex items-center justify-center p-2 mt-2 z-20 perspective-[1500px]">
               <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group">
                 {/* Base logo card with drop shadow */}
-                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-4 sm:p-8 drop-shadow-[6px_6px_0px_#030404] sm:drop-shadow-[10px_10px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[100px] sm:min-h-[200px] md:min-h-[260px]">
+                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-6 sm:p-8 drop-shadow-[10px_10px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[140px] sm:min-h-[200px] md:min-h-[260px]">
                                     {loadingComplete && (
                     <>
                       {/* Logo Container Fill Animation */}
@@ -518,7 +518,7 @@ export default function Home() {
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-4 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
+          <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
             <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
               <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
@@ -527,11 +527,11 @@ export default function Home() {
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
-                className={`p-2 sm:p-4 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+                className={`p-3 sm:p-4 border-comic rounded-lg shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
               >
                 <div className="relative h-8 sm:h-10 overflow-hidden flex items-center justify-center w-full">
                   <AnimatePresence mode="popLayout">
