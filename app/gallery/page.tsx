@@ -386,6 +386,8 @@ export default function GalleryLanding() {
   const animRef = useRef<number | null>(null)
   const zOffsetRef = useRef(0)
   const targetZOffsetRef = useRef(0)
+  // Sequential counter so recycled cards always get the NEXT photo in order — no random swaps
+  const recycleCounterRef = useRef(CARD_COUNT % PHOTOS.length)
 
   useEffect(() => {
     setMounted(true)
@@ -429,7 +431,9 @@ export default function GalleryLanding() {
       card.dataset.baseZ = String(baseZ)
       card.dataset.wallIdx = String(wallIdx)
       card.dataset.photoIdx = String(photoIdx)
+      // Store photoId and photoSrc in dataset – animation loop keeps these in sync
       card.dataset.photoId = String(photo.id)
+      card.dataset.photoSrc = photo.src
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08"
@@ -454,10 +458,13 @@ export default function GalleryLanding() {
 
       card.appendChild(img)
 
+      // Read photoId directly from dataset (animation loop keeps it in sync with img.src)
       card.addEventListener('click', () => {
-        const activePhotoId = card.dataset.photoId ? parseInt(card.dataset.photoId) : photo.id
-        console.log("Clicked card photo ID:", activePhotoId, "Displayed Src:", img.getAttribute('src'))
-        setLightboxId(activePhotoId)
+        const photoId = parseInt(card.dataset.photoId || '0', 10)
+        const found = PHOTOS.find(p => p.id === photoId)
+        if (found) {
+          setLightboxId(found.id)
+        }
       })
 
       scene.appendChild(card)
@@ -484,6 +491,7 @@ export default function GalleryLanding() {
           let z = baseZ + zOffsetRef.current
 
           if (z > 300) {
+            // Card flew past the viewer — send it to the far back
             const newBaseZ = baseZ - (CARD_COUNT * BASE_Z_STEP)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
@@ -492,13 +500,18 @@ export default function GalleryLanding() {
             const newWallPos = (oldWallPos + 3) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
 
-            const randomPhoto = PHOTOS[Math.floor(Math.random() * PHOTOS.length)]
+            // Use sequential counter — NOT random — so images never jump unexpectedly
+            const nextIdx = recycleCounterRef.current % PHOTOS.length
+            recycleCounterRef.current = (recycleCounterRef.current + 1) % PHOTOS.length
+            const nextPhoto = PHOTOS[nextIdx]
             const img = card.querySelector('img')
-            if (img && randomPhoto) {
-              img.setAttribute('src', randomPhoto.src)
-              card.dataset.photoId = String(randomPhoto.id)
+            if (img && nextPhoto) {
+              img.setAttribute('src', nextPhoto.src)
+              card.dataset.photoId = String(nextPhoto.id)
+              card.dataset.photoSrc = nextPhoto.src
             }
           } else if (z < BASE_Z_FAR - 100) {
+            // Card scrolled backward past the far end — bring it to the front
             const newBaseZ = baseZ + (CARD_COUNT * BASE_Z_STEP)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
@@ -507,11 +520,15 @@ export default function GalleryLanding() {
             const newWallPos = (oldWallPos - 3 + WALL_POSITIONS.length) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
 
-            const randomPhoto = PHOTOS[Math.floor(Math.random() * PHOTOS.length)]
+            // Sequential counter for backward scrolling too
+            const nextIdx = ((recycleCounterRef.current - 1) + PHOTOS.length) % PHOTOS.length
+            recycleCounterRef.current = nextIdx
+            const nextPhoto = PHOTOS[nextIdx]
             const img = card.querySelector('img')
-            if (img && randomPhoto) {
-              img.setAttribute('src', randomPhoto.src)
-              card.dataset.photoId = String(randomPhoto.id)
+            if (img && nextPhoto) {
+              img.setAttribute('src', nextPhoto.src)
+              card.dataset.photoId = String(nextPhoto.id)
+              card.dataset.photoSrc = nextPhoto.src
             }
           }
 
