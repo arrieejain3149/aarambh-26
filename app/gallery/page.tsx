@@ -429,6 +429,7 @@ export default function GalleryLanding() {
       card.dataset.baseZ = String(baseZ)
       card.dataset.wallIdx = String(wallIdx)
       card.dataset.photoIdx = String(photoIdx)
+      card.dataset.photoId = String(photo.id)
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08"
@@ -454,7 +455,9 @@ export default function GalleryLanding() {
       card.appendChild(img)
 
       card.addEventListener('click', () => {
-        setLightboxId(photo.id)
+        const activePhotoId = card.dataset.photoId ? parseInt(card.dataset.photoId) : photo.id
+        console.log("Clicked card photo ID:", activePhotoId, "Displayed Src:", img.getAttribute('src'))
+        setLightboxId(activePhotoId)
       })
 
       scene.appendChild(card)
@@ -493,6 +496,7 @@ export default function GalleryLanding() {
             const img = card.querySelector('img')
             if (img && randomPhoto) {
               img.setAttribute('src', randomPhoto.src)
+              card.dataset.photoId = String(randomPhoto.id)
             }
           } else if (z < BASE_Z_FAR - 100) {
             const newBaseZ = baseZ + (CARD_COUNT * BASE_Z_STEP)
@@ -502,6 +506,13 @@ export default function GalleryLanding() {
             const oldWallPos = parseInt(card.dataset.wallIdx || '0')
             const newWallPos = (oldWallPos - 3 + WALL_POSITIONS.length) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
+
+            const randomPhoto = PHOTOS[Math.floor(Math.random() * PHOTOS.length)]
+            const img = card.querySelector('img')
+            if (img && randomPhoto) {
+              img.setAttribute('src', randomPhoto.src)
+              card.dataset.photoId = String(randomPhoto.id)
+            }
           }
 
           const wallPos = WALL_POSITIONS[parseInt(card.dataset.wallIdx || '0')]
