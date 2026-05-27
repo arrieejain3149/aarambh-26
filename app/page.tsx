@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -449,12 +450,57 @@ const col2Images = PHOTOS.slice(16, 32).map(p => p.src);
 const col3Images = PHOTOS.slice(32, 48).map(p => p.src);
 const col4Images = PHOTOS.slice(48, 64).map(p => p.src);
 
+
+
 export default function Home() {
   const router = useRouter();
 
   const [galleryMounted, setGalleryMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [introStarted, setIntroStarted] = useState(true);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+
+  // Generate Mario Animation Arrays for loading screen
+  const NUM_SLICES = 5;
+  const TOTAL_DURATION = 5.0; // 1.0s per slice
+  
+  const marioLeft: string[] = ['-10%'];
+  const marioLeftTimes: number[] = [0];
+  const marioY: number[] = [0];
+  const marioYTimes: number[] = [0];
+  
+  for (let i = 0; i < NUM_SLICES; i++) {
+    const hitTimeSec = (i + 1) * 1.0; 
+    const hitNorm = hitTimeSec / TOTAL_DURATION; 
+    
+    marioLeft.push(`${(i * 20) + 10}%`);
+    marioLeftTimes.push(hitNorm);
+    
+    const jumpStart = Math.max(0, hitNorm - 0.05);
+    const jumpEnd = Math.min(1, hitNorm + 0.05);
+    marioY.push(0, -80, 0);
+    marioYTimes.push(jumpStart, hitNorm, jumpEnd);
+  }
+
+  // Mario Intro Animation Sequence
+  useEffect(() => {
+    if (!introStarted || loadingComplete) return;
+    
+    const timeouts = Array.from({ length: 5 }).map((_, i) => {
+      const hitTimeMs = (i + 1) * 1000;
+      return setTimeout(() => playSynthSound('bang'), hitTimeMs - 100); 
+    });
+    
+    const completeTimeout = setTimeout(() => {
+      setLoadingComplete(true);
+    }, TOTAL_DURATION * 1000 + 500);
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+      clearTimeout(completeTimeout);
+    };
+  }, [introStarted, loadingComplete]);
 
   // Function to create comic dot explosion particles
   const spawnParticles = (x: number, y: number) => {
@@ -523,9 +569,108 @@ export default function Home() {
 
 
   return (
-    <main className="flex flex-col items-center overflow-x-hidden relative bg-brand-ink text-brand-cloud font-sans">
+    <main className="flex flex-col items-center overflow-x-hidden relative bg-brand-cloud text-brand-ink font-sans">
       {/* Noise/Grain Overlay */}
       <div className="noise-overlay" />
+
+      {/* Full Screen Intro Overlay (Resolves Autoplay Policy) - Removed as per user request */}
+
+      {/* Mario Loading Screen Overlay */}
+      <AnimatePresence>
+        {introStarted && !loadingComplete && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-[90] bg-brand-ink flex flex-col items-center justify-center overflow-hidden"
+          >
+            <button 
+              onClick={() => setLoadingComplete(true)}
+              className="absolute top-6 right-6 text-xs font-mono font-bold tracking-widest uppercase bg-brand-ink text-brand-cloud/60 border border-brand-cloud/20 px-4 py-2 rounded hover:text-brand-cloud hover:border-brand-cloud/50 transition-colors z-[100]"
+            >
+              SKIP INTRO &gt;&gt;
+            </button>
+
+            <div className="relative w-full max-w-xl h-56 mt-20 border-b-4 border-brand-orange">
+              {/* The Logo SVG Slices (Invisible to Color) */}
+              <div className="absolute top-0 w-full flex items-center justify-center pointer-events-none mt-2">
+                <div className="relative w-full aspect-[550/120] z-20">
+                  {Array.from({ length: 5 }).map((_, sliceIndex) => {
+                    const leftPercent = sliceIndex * 20;
+                    const rightPercent = 100 - ((sliceIndex + 1) * 20);
+                    const hitTime = (sliceIndex + 1) * 1.0;
+                    
+                    return (
+                      <motion.div
+                        key={`mario-slice-${sliceIndex}`}
+                        initial={{ opacity: 0, y: 0 }}
+                        animate={{ 
+                          opacity: [0, 1, 1], // Appear on hit
+                          filter: [
+                            "brightness(1.5) contrast(1.2)", // Flash bright color on impact
+                            "brightness(1) contrast(1)", // Settle to original colors
+                            "brightness(1) contrast(1)"
+                          ],
+                          y: [0, -15, 0] // Bump up slightly when hit
+                        }}
+                        transition={{ 
+                          delay: hitTime, 
+                          duration: 0.4, 
+                          times: [0, 0.3, 1] 
+                        }}
+                        className="absolute inset-0 w-full h-full"
+                        style={{ 
+                          clipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`,
+                          WebkitClipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`
+                        }}
+                      >
+                        <Image
+                          src="/logo.svg"
+                          alt="AARAMBH"
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* Mario Sprite */}
+              <motion.div 
+                animate={{ left: marioLeft }}
+                transition={{ left: { duration: TOTAL_DURATION, times: marioLeftTimes, ease: "linear" } }}
+                className="absolute bottom-0 w-8 h-10"
+              >
+                <motion.div
+                   animate={{ y: marioY }}
+                   transition={{ y: { duration: TOTAL_DURATION, times: marioYTimes, ease: "easeOut" } }}
+                   className="relative w-full h-full"
+                >
+                  {/* Hat */}
+                  <div className="absolute top-0 left-[4px] w-[20px] h-[6px] bg-brand-orange" />
+                  {/* Face */}
+                  <div className="absolute top-[6px] left-[8px] w-[16px] h-[10px] bg-[#fcdbb6]" />
+                  {/* Mustache/Eye */}
+                  <div className="absolute top-[8px] left-[18px] w-[8px] h-[4px] bg-brand-ink" />
+                  {/* Body */}
+                  <div className="absolute top-[16px] left-[6px] w-[16px] h-[10px] bg-brand-orange" />
+                  {/* Overalls */}
+                  <div className="absolute top-[20px] left-[8px] w-[12px] h-[8px] bg-brand-blue" />
+                  {/* Legs */}
+                  <div className="absolute top-[28px] left-[8px] w-[6px] h-[8px] bg-brand-blue" />
+                  <div className="absolute top-[28px] left-[14px] w-[6px] h-[8px] bg-brand-blue" />
+                  {/* Shoes */}
+                  <div className="absolute top-[36px] left-[8px] w-[8px] h-[4px] bg-brand-ink" />
+                  <div className="absolute top-[36px] left-[16px] w-[8px] h-[4px] bg-brand-ink" />
+                </motion.div>
+              </motion.div>
+            </div>
+            <h3 className="font-display font-black text-brand-pink text-xl mt-12 animate-pulse uppercase">LOADING...</h3>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Particle Overlay for click explosions */}
       <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
@@ -639,42 +784,88 @@ export default function Home() {
         >
           {/* Comic Magazine Header Band */}
           <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+            JK LAKSHMIPAT UNIVERSITY PRESENTS
           </div>
 
           {/* Comic Styled Heading Stack */}
-          <div className="relative mb-8 select-none p-3 max-w-full">
+          <div className="relative mb-6 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center">
             {/* Outline back text */}
-            <h1 className="font-display text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-none tracking-tighter text-outline-pink select-none">
+            <h1 className="font-display text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-[1.1] sm:leading-none tracking-tighter text-outline-pink select-none break-words max-w-[95vw]">
               BOLD & BEYOND
-            </h1>
-            {/* Centered Primary Logo */}
-            <div className="absolute inset-0 flex items-center justify-center p-2 mt-2">
-              <Image
-                src="/logo.svg"
-                alt="AARAMBH'26"
-                width={550}
-                height={120}
-                className="w-full max-w-xs sm:max-w-md md:max-w-xl h-auto drop-shadow-[8px_8px_0px_#030404] hover:scale-[1.03] transition-transform duration-300 border-comic p-4 bg-brand-cloud rounded-xl"
-                priority
-                loading="eager"
-              />
+            </h1>            {/* Centered Primary Logo */}
+            <div className="absolute inset-0 flex items-center justify-center p-2 mt-2 z-20 perspective-[1500px]">
+              <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group">
+                {/* Base logo card with drop shadow */}
+                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-4 sm:p-8 drop-shadow-[6px_6px_0px_#030404] sm:drop-shadow-[10px_10px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[100px] sm:min-h-[200px] md:min-h-[260px]">
+                                    {loadingComplete && (
+                    <>
+                      {/* Logo Container Fill Animation */}
+                      <div className="relative w-full aspect-[550/120] z-20 pointer-events-none flex items-center justify-center">
+                        
+                        {/* Empty Container Logo (Grayscale/Faded) */}
+                        <Image 
+                           src="/logo.svg" 
+                           alt="" 
+                           fill 
+                           className="object-contain filter grayscale opacity-20 drop-shadow-[2px_2px_0_#030404]" 
+                        />
+                        
+                        {/* The Fill Animation (Original Logo Colors) */}
+                        <motion.div
+                          initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
+                          animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+                          transition={{ duration: 4.0, ease: "easeInOut", delay: 0.5 }}
+                          className="absolute inset-0 w-full h-full"
+                        >
+                          <Image 
+                             src="/logo.svg" 
+                             alt="AARAMBH'26" 
+                             fill 
+                             className="object-contain filter drop-shadow-[6px_6px_0_#030404]" 
+                             priority 
+                             loading="eager" 
+                          />
+                        </motion.div>
+                        
+                        {/* Final Pop & Glow */}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: [0, 1, 0], scale: [0.8, 1.2, 1] }}
+                          transition={{ delay: 4.5, duration: 0.6 }}
+                          className="absolute inset-0 bg-brand-pink blur-[30px] mix-blend-screen pointer-events-none"
+                        />
+                        
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
+                          transition={{ delay: 4.5, duration: 0.8 }}
+                          className="absolute top-0 -right-2 text-brand-orange z-30"
+                        >
+                          <Sparkles size={40} />
+                        </motion.div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-2xl shadow-comic rotate-1 bg-halftone-cloud mb-10">
-            <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase">
-              “SQUAD REPORT: A FRESH BEGINNING IS INITIATED! CLICK ANYWHERE TO UNLEASH HALFTONE PARTICLES AND SYNTH SOUNDS!”
+          <div className="border-comic bg-brand-ink text-brand-cloud p-4 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
+            <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
+              <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+              Where strangers become friends and dreams find direction.
+              <span className="text-brand-orange"> This is not just an induction&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud">
+          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
-                className={`p-3 sm:p-4 border-comic rounded-lg shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+                className={`p-2 sm:p-4 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
               >
                 <div className="relative h-8 sm:h-10 overflow-hidden flex items-center justify-center w-full">
                   <AnimatePresence mode="popLayout">
@@ -713,11 +904,10 @@ export default function Home() {
           >
             {[...Array(4)].map((_, i) => (
               <React.Fragment key={i}>
-                <span className="text-brand-pink">💥 BOLD & BEYOND!</span>
-                <span className="text-brand-blue">🌟 LIMITLESS!</span>
-                <span className="text-brand-orange">⚡ ENERGY!</span>
-                <span className="text-brand-ink">🎨 CRASH!</span>
-                <span className="text-brand-pink">🔥 FEARLESS!</span>
+                <span className="text-brand-pink">💥 AARAMBH &apos;26</span>
+                <span className="text-brand-blue">🎓 JK LAKSHMIPAT UNIVERSITY</span>
+                <span className="text-brand-orange">💥 AARAMBH &apos;26</span>
+                <span className="text-brand-ink">🎓 JK LAKSHMIPAT UNIVERSITY</span>
               </React.Fragment>
             ))}
           </motion.div>
@@ -830,8 +1020,64 @@ export default function Home() {
 
           @media (max-width: 768px) {
             .gl-slider-column {
-              display: none !important;
+              display: flex !important;
+              flex-direction: row !important;
+              width: 250% !important;
+              height: 105px !important;
+              left: -75% !important;
+              right: auto !important;
+              top: auto !important;
+              gap: 12px !important;
+              opacity: 0.7 !important;
             }
+            
+            /* Position columns as horizontal rows */
+            .gl-slider-column.left:not(.inner) {
+              top: 4% !important;
+            }
+            .gl-slider-column.left.inner {
+              display: flex !important;
+              top: 17% !important;
+            }
+            .gl-slider-column.right.inner {
+              display: flex !important;
+              bottom: 17% !important;
+            }
+            .gl-slider-column.right:not(.inner) {
+              bottom: 4% !important;
+            }
+
+            .gl-slider-img-container {
+              width: 140px !important;
+              height: 95px !important;
+              box-shrink: 0 !important;
+              flex-shrink: 0 !important;
+              box-shadow: 3px 3px 0px 0px #030404 !important;
+            }
+
+            .gl-slider-track-up {
+              display: flex !important;
+              flex-direction: row !important;
+              gap: 12px !important;
+              animation: slideLeft 22s linear infinite !important;
+            }
+
+            .gl-slider-track-down {
+              display: flex !important;
+              flex-direction: row !important;
+              gap: 12px !important;
+              animation: slideRight 22s linear infinite !important;
+            }
+          }
+
+          @keyframes slideLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+
+          @keyframes slideRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
           }
 
           /* Starburst badge */
@@ -1025,18 +1271,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Starburst top-right */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0, rotate: 20 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-            style={{ position: 'absolute', top: '20%', right: '23%', zIndex: 15 }}
-          >
-            <div style={{ position: 'relative', width: 80, height: 80 }}>
-              <div className="gl-starburst" />
-              <div className="gl-starburst-text">NEW<br />PICS!</div>
-            </div>
-          </motion.div>
+
 
           {/* Main Content Container */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10, padding: '0 20px', textAlign: 'center' }}>
@@ -1070,7 +1305,7 @@ export default function Home() {
                   color: '#030404',
                   lineHeight: 1.6
                 }}>
-                  Experience the best moments of Aarambh 2025 with our curated memories. From engaging workshops to inspiring guest lectures, relive the magic that made this event unforgettable!
+                  Experience the best moments of Aarambh 2025 with our curated memories.
                 </p>
               </motion.div>
             )}
@@ -1105,6 +1340,38 @@ export default function Home() {
                 </div>
               </motion.div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Static Registration Section */}
+      <section className="py-24 px-6 w-full max-w-5xl pb-32 relative z-10 mx-auto">
+        <div className="border-comic bg-brand-orange text-brand-ink shadow-comic-lg bg-halftone-black p-8 sm:p-12 md:p-16 rounded-xl text-center relative overflow-hidden">
+          {/* Action starburst backing design */}
+          <div className="absolute top-2 left-2 w-16 h-16 border-comic-thin bg-brand-pink text-brand-cloud font-display font-black text-[10px] uppercase tracking-tighter flex items-center justify-center rotate-[-12deg] shadow-comic-sm">
+            REG
+          </div>
+
+          <span className="relative z-10 px-3 py-1 bg-brand-ink text-brand-cloud font-display text-[10px] font-black uppercase tracking-widest rounded-md">
+            OFFICIAL REGISTRATION GATEWAY
+          </span>
+
+          <h2 className="text-3xl md:text-5xl font-display font-black uppercase mb-4 tracking-tight mt-6">
+            COMPLETE YOUR REGISTRATION!
+          </h2>
+          <p className="text-brand-ink/80 text-xs sm:text-sm mb-10 max-w-md mx-auto leading-relaxed font-bold uppercase">
+            COMPLETE YOUR ONLINE REGISTRATION AND SECURE YOUR SEAT FOR AARAMBH &apos;26. FULL ENROLLMENT GRANTS ACCESS TO ALL KEYNOTES, HANDS-ON WORKSHOPS & FESTIVAL ACTIVITIES!
+          </p>
+          <div className="flex justify-center relative z-10">
+            <Link href="/register">
+              <motion.button 
+                whileHover={{ scale: 1.05, rotate: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="comic-interactive border-comic py-4 px-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all font-display font-black text-lg uppercase tracking-wider text-brand-ink bg-brand-pink text-brand-cloud rounded-lg cursor-pointer"
+              >
+                REGISTER ONLINE NOW →
+              </motion.button>
+            </Link>
           </div>
         </div>
       </section>

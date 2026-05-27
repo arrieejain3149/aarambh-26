@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { auth, isFirebaseConfigured } from '../../lib/firebase';
+import { auth, db, isFirebaseConfigured } from '../../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 // Bespoke geometric SVG icons
 const CustomDashboardIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
@@ -122,6 +124,52 @@ export default function VolunteerSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isTeamLeader, setIsTeamLeader] = useState(false);
+
+  useEffect(() => {
+    if (!isFirebaseConfigured() || !auth || !db) return;
+
+    let unsubFirestore: (() => void) | undefined;
+
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
+      if (unsubFirestore) {
+        unsubFirestore();
+        unsubFirestore = undefined;
+      }
+
+      let activeUid = '';
+      if (user) {
+        activeUid = user.uid;
+      } else {
+        const stored = localStorage.getItem('aarambh_session');
+        if (stored) {
+          try {
+            const session = JSON.parse(stored);
+            activeUid = session.uid;
+            if (session.role === 'team_leader') {
+              setIsTeamLeader(true);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      if (activeUid) {
+        unsubFirestore = onSnapshot(doc(db, 'volunteers', activeUid), (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setIsTeamLeader(data.role === 'Team Leader');
+          }
+        });
+      }
+    });
+
+    return () => {
+      unsubAuth();
+      if (unsubFirestore) unsubFirestore();
+    };
+  }, []);
 
   const handleLogout = async () => {
     let performer = 'Volunteer';
@@ -151,7 +199,8 @@ export default function VolunteerSidebar() {
 
   const navItems = [
     { name: 'Overview', href: '/volunteer', icon: CustomDashboardIcon },
-    { name: 'My Schedule', href: '/volunteer/schedule', icon: CustomCalendarIcon }
+    { name: 'My Schedule', href: '/volunteer/schedule', icon: CustomCalendarIcon },
+    ...(isTeamLeader ? [{ name: 'Duty Assignment', href: '/volunteer/duty-assignment', icon: CustomDutyIcon }] : [])
   ];
 
   return (
@@ -160,7 +209,7 @@ export default function VolunteerSidebar() {
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
         <Link href="/volunteer" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
-          <span className="font-adminHeading text-md font-black text-brand-ink hidden xs:block">Volunteer</span>
+          <span className="font-adminHeading text-md font-black text-brand-ink hidden">Volunteer</span>
         </Link>
         <button 
           onClick={() => setIsOpen(!isOpen)} 

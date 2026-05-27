@@ -15,6 +15,14 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  images: {
+    remotePatterns: [{
+      protocol: 'https',
+      hostname: 'aarambh.jklu.edu.in',
+      pathname: '/**',
+    }],
+    unoptimized: true,
+  },
   async headers() {
     return [
       {
