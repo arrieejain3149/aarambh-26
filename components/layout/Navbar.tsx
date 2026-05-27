@@ -96,11 +96,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/register"
-              className={`relative group overflow-hidden rounded-full py-2 px-5 font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 ${
-                pathname?.startsWith('/register')
-                  ? 'text-brand-cloud bg-brand-blue shadow-[0_4px_12px_rgba(13,33,221,0.4)]'
-                  : 'text-brand-cloud bg-brand-pink shadow-[0_4px_12px_rgba(255,24,140,0.3)] hover:shadow-[0_4px_20px_rgba(255,24,140,0.5)]'
-              }`}
+              className={`relative group overflow-hidden rounded-full py-2 px-5 font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 ${pathname?.startsWith('/register')
+                ? 'text-brand-cloud bg-brand-blue shadow-[0_4px_12px_rgba(13,33,221,0.4)]'
+                : 'text-brand-cloud bg-brand-pink shadow-[0_4px_12px_rgba(255,24,140,0.3)] hover:shadow-[0_4px_20px_rgba(255,24,140,0.5)]'
+                }`}
             >
               <span className="relative z-10 transition-colors">Register</span>
               {!pathname?.startsWith('/register') && (
@@ -143,11 +142,10 @@ export default function Navbar() {
 
               <Link
                 href="/register"
-                className={`w-full text-center py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-colors shadow-lg mt-2 ${
-                  pathname?.startsWith('/register')
-                    ? 'text-brand-cloud bg-brand-blue'
-                    : 'text-brand-cloud bg-brand-pink hover:bg-brand-blue'
-                }`}
+                className={`w-full text-center py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-colors shadow-lg mt-2 ${pathname?.startsWith('/register')
+                  ? 'text-brand-cloud bg-brand-blue'
+                  : 'text-brand-cloud bg-brand-pink hover:bg-brand-blue'
+                  }`}
               >
                 Register
               </Link>

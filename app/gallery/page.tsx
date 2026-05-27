@@ -472,6 +472,12 @@ export default function GalleryLanding() {
 
     const tick = () => {
       try {
+        // Auto-scroll continuously if no image is open in the lightbox
+        const isLightboxOpen = document.querySelector('.gp-lb-overlay') !== null
+        if (!isLightboxOpen) {
+          targetZOffsetRef.current += 1.8 // Auto forward speed
+        }
+
         const diff = targetZOffsetRef.current - zOffsetRef.current
         zOffsetRef.current += diff * 0.08
 
@@ -631,6 +637,13 @@ export default function GalleryLanding() {
           setLightboxId(null)
         } else {
           router.push('/')
+        }
+      } else if (lightboxId !== null) {
+        const currentIdx = PHOTOS.findIndex(p => p.id === lightboxId)
+        if (e.key === 'ArrowLeft' && currentIdx > 0) {
+          setLightboxId(PHOTOS[currentIdx - 1].id)
+        } else if (e.key === 'ArrowRight' && currentIdx >= 0 && currentIdx < PHOTOS.length - 1) {
+          setLightboxId(PHOTOS[currentIdx + 1].id)
         }
       }
     }
