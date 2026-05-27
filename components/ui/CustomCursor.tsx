@@ -63,7 +63,9 @@ export default function CustomCursor() {
     let lastAmbientSpawnTime = 0;
 
     const hindiLetters = [
-      'आरम्भ', 'सफ़र', 'उत्सव', 'कला', 'राग', 'JKLU'
+      'आरम्भ', 'सफ़र', 'उत्सव', 'कला', 'राग', 'सृजन', 'लक्ष्य', 'उमंग', 'ज्ञान', 'मंच', 'ध्वनि', 'स्वप्न',
+      'JKLU', '2026', 'TECH', 'DESIGN', 'BIZ', 'SQUAD', 'FEST', 'LAUNCH', 'BOLD', 'BEYOND', 'CREATE', 
+      'DREAM', 'GROW', 'CONNECT', 'INDUCTION', 'PIONEER', 'LEAD', 'LEARN', 'UNITY', 'VIBES', 'START'
     ];
     const colors = [
       '#FF188C', // Brand Pink
@@ -73,8 +75,8 @@ export default function CustomCursor() {
     ];
 
     const spawnParticle = (x: number, y: number) => {
-      // Allow up to 4 words maximum on screen to keep it extremely clean
-      if (particles.length >= 4) {
+      // Allow up to 30 words maximum on screen for a rich, flowing scattered trail
+      if (particles.length >= 30) {
         particles.shift();
       }
 
@@ -82,22 +84,22 @@ export default function CustomCursor() {
       const color = colors[Math.floor(Math.random() * colors.length)];
 
       const randAngle = Math.random() * Math.PI * 2;
-      const speed = 1.2 + Math.random() * 1.6;
+      const speed = 0.6 + Math.random() * 1.0;
 
       particles.push({
         text: letter,
-        x: x + (Math.random() - 0.5) * 20,
-        y: y + (Math.random() - 0.5) * 20,
+        x: x + (Math.random() - 0.5) * 8,
+        y: y + (Math.random() - 0.5) * 8,
         vx: Math.cos(randAngle) * speed,
         vy: Math.sin(randAngle) * speed,
-        baseSize: Math.floor(Math.random() * 10) + 26, // 26px to 36px range for readability
-        scale: 0.9, // grow on move
-        angle: (Math.random() - 0.5) * 0.25, // rotate slightly
+        baseSize: 3.5, // 3.5px base size
+        scale: 0.75, // start smaller
+        angle: (Math.random() - 0.5) * 0.2, // rotate slightly
         va: (Math.random() - 0.5) * 0.005, // slow spin
         opacity: 1,
         color,
         life: 0,
-        maxLife: 60 // stay on screen for exactly 1 second (60 frames at 60fps)
+        maxLife: 30 // disappear quickly to keep the scatter clean
       });
     };
 
@@ -112,8 +114,10 @@ export default function CustomCursor() {
       const dy = y - lastSpawn.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // Spawn a single word every 150px of movement so they stay sparse
-      if (distance > 150) {
+      // Spawn 3 words at once every 30px of movement for a gorgeous scattering burst
+      if (distance > 30) {
+        spawnParticle(x, y);
+        spawnParticle(x, y);
         spawnParticle(x, y);
         lastSpawn.x = x;
         lastSpawn.y = y;
@@ -163,9 +167,9 @@ export default function CustomCursor() {
         p.vx *= 0.985;
         p.vy *= 0.985;
 
-        // Scale grows slightly larger for depth effect
-        if (p.scale < 1.35) {
-          p.scale += 0.003;
+        // Scale grows slightly larger for elegant depth effect
+        if (p.scale < 0.95) {
+          p.scale += 0.002;
         }
 
         // Keep text fully opaque for first 75% of life (0.75s), then fade out over final 25% (0.25s)
@@ -181,7 +185,7 @@ export default function CustomCursor() {
         ctx.translate(p.x, p.y);
         ctx.rotate(p.angle);
 
-        ctx.font = `bold ${Math.round(p.baseSize * p.scale)}px Outfit, system-ui, sans-serif`;
+        ctx.font = `500 ${(p.baseSize * p.scale).toFixed(1)}px Outfit, system-ui, sans-serif`;
         ctx.globalAlpha = p.opacity;
 
         ctx.textAlign = 'center';

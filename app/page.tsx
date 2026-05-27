@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -457,6 +458,8 @@ export default function Home() {
   const [galleryMounted, setGalleryMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [introStarted, setIntroStarted] = useState(true);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   // Generate Mario Animation Arrays for loading screen
   const NUM_SLICES = 5;
@@ -781,7 +784,7 @@ export default function Home() {
         >
           {/* Comic Magazine Header Band */}
           <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+            JK LAKSHMIPAT UNIVERSITY PRESENTS
           </div>
 
           {/* Comic Styled Heading Stack */}
@@ -1017,8 +1020,64 @@ export default function Home() {
 
           @media (max-width: 768px) {
             .gl-slider-column {
-              display: none !important;
+              display: flex !important;
+              flex-direction: row !important;
+              width: 250% !important;
+              height: 105px !important;
+              left: -75% !important;
+              right: auto !important;
+              top: auto !important;
+              gap: 12px !important;
+              opacity: 0.7 !important;
             }
+            
+            /* Position columns as horizontal rows */
+            .gl-slider-column.left:not(.inner) {
+              top: 4% !important;
+            }
+            .gl-slider-column.left.inner {
+              display: flex !important;
+              top: 17% !important;
+            }
+            .gl-slider-column.right.inner {
+              display: flex !important;
+              bottom: 17% !important;
+            }
+            .gl-slider-column.right:not(.inner) {
+              bottom: 4% !important;
+            }
+
+            .gl-slider-img-container {
+              width: 140px !important;
+              height: 95px !important;
+              box-shrink: 0 !important;
+              flex-shrink: 0 !important;
+              box-shadow: 3px 3px 0px 0px #030404 !important;
+            }
+
+            .gl-slider-track-up {
+              display: flex !important;
+              flex-direction: row !important;
+              gap: 12px !important;
+              animation: slideLeft 22s linear infinite !important;
+            }
+
+            .gl-slider-track-down {
+              display: flex !important;
+              flex-direction: row !important;
+              gap: 12px !important;
+              animation: slideRight 22s linear infinite !important;
+            }
+          }
+
+          @keyframes slideLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+
+          @keyframes slideRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
           }
 
           /* Starburst badge */
@@ -1212,18 +1271,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Starburst top-right */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0, rotate: 20 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-            style={{ position: 'absolute', top: '20%', right: '23%', zIndex: 15 }}
-          >
-            <div style={{ position: 'relative', width: 80, height: 80 }}>
-              <div className="gl-starburst" />
-              <div className="gl-starburst-text">NEW<br />PICS!</div>
-            </div>
-          </motion.div>
+
 
           {/* Main Content Container */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10, padding: '0 20px', textAlign: 'center' }}>
@@ -1257,7 +1305,7 @@ export default function Home() {
                   color: '#030404',
                   lineHeight: 1.6
                 }}>
-                  Experience the best moments of Aarambh 2025 with our curated memories. From engaging workshops to inspiring guest lectures, relive the magic that made this event unforgettable!
+                  Experience the best moments of Aarambh 2025 with our curated memories.
                 </p>
               </motion.div>
             )}
@@ -1292,6 +1340,38 @@ export default function Home() {
                 </div>
               </motion.div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Static Registration Section */}
+      <section className="py-24 px-6 w-full max-w-5xl pb-32 relative z-10 mx-auto">
+        <div className="border-comic bg-brand-orange text-brand-ink shadow-comic-lg bg-halftone-black p-8 sm:p-12 md:p-16 rounded-xl text-center relative overflow-hidden">
+          {/* Action starburst backing design */}
+          <div className="absolute top-2 left-2 w-16 h-16 border-comic-thin bg-brand-pink text-brand-cloud font-display font-black text-[10px] uppercase tracking-tighter flex items-center justify-center rotate-[-12deg] shadow-comic-sm">
+            REG
+          </div>
+
+          <span className="relative z-10 px-3 py-1 bg-brand-ink text-brand-cloud font-display text-[10px] font-black uppercase tracking-widest rounded-md">
+            OFFICIAL REGISTRATION GATEWAY
+          </span>
+
+          <h2 className="text-3xl md:text-5xl font-display font-black uppercase mb-4 tracking-tight mt-6">
+            COMPLETE YOUR REGISTRATION!
+          </h2>
+          <p className="text-brand-ink/80 text-xs sm:text-sm mb-10 max-w-md mx-auto leading-relaxed font-bold uppercase">
+            COMPLETE YOUR ONLINE REGISTRATION AND SECURE YOUR SEAT FOR AARAMBH &apos;26. FULL ENROLLMENT GRANTS ACCESS TO ALL KEYNOTES, HANDS-ON WORKSHOPS & FESTIVAL ACTIVITIES!
+          </p>
+          <div className="flex justify-center relative z-10">
+            <Link href="/register">
+              <motion.button 
+                whileHover={{ scale: 1.05, rotate: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="comic-interactive border-comic py-4 px-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all font-display font-black text-lg uppercase tracking-wider text-brand-ink bg-brand-pink text-brand-cloud rounded-lg cursor-pointer"
+              >
+                REGISTER ONLINE NOW →
+              </motion.button>
+            </Link>
           </div>
         </div>
       </section>
