@@ -386,6 +386,8 @@ export default function GalleryLanding() {
   const animRef = useRef<number | null>(null)
   const zOffsetRef = useRef(0)
   const targetZOffsetRef = useRef(0)
+  // Sequential counter so recycled cards always get the NEXT photo in order — no random swaps
+  const recycleCounterRef = useRef(CARD_COUNT % PHOTOS.length)
 
   useEffect(() => {
     setMounted(true)
@@ -429,6 +431,9 @@ export default function GalleryLanding() {
       card.dataset.baseZ = String(baseZ)
       card.dataset.wallIdx = String(wallIdx)
       card.dataset.photoIdx = String(photoIdx)
+      // Store photoId and photoSrc in dataset – animation loop keeps these in sync
+      card.dataset.photoId = String(photo.id)
+      card.dataset.photoSrc = photo.src
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08"
@@ -453,8 +458,13 @@ export default function GalleryLanding() {
 
       card.appendChild(img)
 
+      // Read photoId directly from dataset (animation loop keeps it in sync with img.src)
       card.addEventListener('click', () => {
-        setLightboxId(photo.id)
+        const photoId = parseInt(card.dataset.photoId || '0', 10)
+        const found = PHOTOS.find(p => p.id === photoId)
+        if (found) {
+          setLightboxId(found.id)
+        }
       })
 
       scene.appendChild(card)
@@ -481,6 +491,7 @@ export default function GalleryLanding() {
           let z = baseZ + zOffsetRef.current
 
           if (z > 300) {
+            // Card flew past the viewer — send it to the far back
             const newBaseZ = baseZ - (CARD_COUNT * BASE_Z_STEP)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
@@ -489,12 +500,18 @@ export default function GalleryLanding() {
             const newWallPos = (oldWallPos + 3) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
 
-            const randomPhoto = PHOTOS[Math.floor(Math.random() * PHOTOS.length)]
+            // Use sequential counter — NOT random — so images never jump unexpectedly
+            const nextIdx = recycleCounterRef.current % PHOTOS.length
+            recycleCounterRef.current = (recycleCounterRef.current + 1) % PHOTOS.length
+            const nextPhoto = PHOTOS[nextIdx]
             const img = card.querySelector('img')
-            if (img && randomPhoto) {
-              img.setAttribute('src', randomPhoto.src)
+            if (img && nextPhoto) {
+              img.setAttribute('src', nextPhoto.src)
+              card.dataset.photoId = String(nextPhoto.id)
+              card.dataset.photoSrc = nextPhoto.src
             }
           } else if (z < BASE_Z_FAR - 100) {
+            // Card scrolled backward past the far end — bring it to the front
             const newBaseZ = baseZ + (CARD_COUNT * BASE_Z_STEP)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
@@ -502,6 +519,17 @@ export default function GalleryLanding() {
             const oldWallPos = parseInt(card.dataset.wallIdx || '0')
             const newWallPos = (oldWallPos - 3 + WALL_POSITIONS.length) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
+
+            // Sequential counter for backward scrolling too
+            const nextIdx = ((recycleCounterRef.current - 1) + PHOTOS.length) % PHOTOS.length
+            recycleCounterRef.current = nextIdx
+            const nextPhoto = PHOTOS[nextIdx]
+            const img = card.querySelector('img')
+            if (img && nextPhoto) {
+              img.setAttribute('src', nextPhoto.src)
+              card.dataset.photoId = String(nextPhoto.id)
+              card.dataset.photoSrc = nextPhoto.src
+            }
           }
 
           const wallPos = WALL_POSITIONS[parseInt(card.dataset.wallIdx || '0')]
@@ -521,7 +549,6 @@ export default function GalleryLanding() {
           const hS = parseFloat(card.dataset.hoverScale || "1")
 
           card.style.transform = `translate(-50%, -50%) scale(${scale * hS})`
-          card.style.zIndex = String(Math.round(z + 3000))
 
           let opacity = 0.02
           if (z < -3600) {
@@ -530,12 +557,25 @@ export default function GalleryLanding() {
             opacity = 0.12 + ((z + 3600) / 2000) * 0.65
           } else if (z < -400) {
             opacity = 0.77 + ((z + 1600) / 1200) * 0.23
-          } else if (z < 200) {
+          } else if (z < 150) {
             opacity = 1
           } else {
             opacity = 0
           }
-          card.style.opacity = String(Math.max(0, Math.min(1, opacity)))
+          const finalOpacity = Math.max(0, Math.min(1, opacity))
+          card.style.opacity = String(finalOpacity)
+
+          // KEY FIX: invisible/fading cards must NEVER intercept clicks.
+          // Only cards that are clearly visible (opacity > 0.15) should be clickable.
+          // Also cap z-index so fading-out cards (z≥150) can't float above visible ones.
+          if (finalOpacity < 0.15) {
+            card.style.pointerEvents = 'none'
+            card.style.zIndex = '1'  // push invisible cards to the very bottom
+          } else {
+            card.style.pointerEvents = 'auto'
+            // z-index based on depth: closer cards (higher z) get higher index
+            card.style.zIndex = String(Math.round(z + 3000))
+          }
         })
 
         animRef.current = requestAnimationFrame(tick)
