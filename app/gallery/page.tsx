@@ -455,9 +455,12 @@ export default function GalleryLanding() {
       card.appendChild(img)
 
       card.addEventListener('click', () => {
-        const activePhotoId = card.dataset.photoId ? parseInt(card.dataset.photoId) : photo.id
-        console.log("Clicked card photo ID:", activePhotoId, "Displayed Src:", img.getAttribute('src'))
-        setLightboxId(activePhotoId)
+        const displayedSrc = img.getAttribute('src')
+        const clickedPhoto = PHOTOS.find(p => p.src === displayedSrc)
+        if (clickedPhoto) {
+          console.log("Clicked photo source:", displayedSrc, "Found ID:", clickedPhoto.id)
+          setLightboxId(clickedPhoto.id)
+        }
       })
 
       scene.appendChild(card)
