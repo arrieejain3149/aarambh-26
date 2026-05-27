@@ -16,7 +16,7 @@ export const TEAM_DATA = {
   vc: {
     name: "Vijaya Sekhar Chellaboina",
     designation: "Vice Chancellor",
-    photo: "/chellaboina.jpg",
+    photo: "/Team Photos/Admin and Student Affairs/VC Sir.jpg",
     department: "Administration",
     socials: {
       linkedin: "https://www.linkedin.com/in/vchellaboina/",
@@ -28,7 +28,7 @@ export const TEAM_DATA = {
     {
       name: "Deepak Sogani",
       designation: "Head - Student Affairs",
-      photo: "/sogani.jpg",
+      photo: "/Team Photos/Admin and Student Affairs/Deepak Sogani.jpg",
       department: "Office of Student Affairs",
       socials: {
         linkedin: "https://www.linkedin.com/in/deepak-sogani/",
@@ -38,7 +38,7 @@ export const TEAM_DATA = {
     {
       name: "Anushka Pathak",
       designation: "Executive - Student Affairs",
-      photo: "/anushka.jpg",
+      photo: "/Team Photos/Admin and Student Affairs/Anushka Pathak.jpg",
       department: "Office of Student Affairs",
       socials: {
         email: "anushkapathak@jklu.edu.in"
@@ -47,7 +47,7 @@ export const TEAM_DATA = {
     {
       name: "Vaibhav Topiwala",
       designation: "Sports Officer - Student Affairs",
-      photo: "/topiwala.png",
+      photo: "/Team Photos/Admin and Student Affairs/Vaibhav Topiwala.png",
       department: "Office of Student Affairs",
       socials: {
         email: "vaibhavtopiwala@jklu.edu.in"
@@ -108,7 +108,7 @@ export const TEAM_DATA = {
       name: "Smile Chhabra",
       designation: "Food & Accommodation Lead",
       department: "Food & Accommodation",
-      photo: "https://docs.google.com/uc?export=view&id=1u8eymBp9i5d8V5TkBouVEfk-MAn6RV0o",
+      photo: "/Team Photos/Team Leaders/Smile Chhabra.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/smile-chhabra-15a49830a",
         email: "smilechhabra@jklu.edu.in"
@@ -118,7 +118,7 @@ export const TEAM_DATA = {
       name: "Pratigya Bomb",
       designation: "Discipline Lead",
       department: "Discipline",
-      photo: "https://docs.google.com/uc?export=view&id=1jZQpdcmHp1tQxSp7q3tOlYzAKkxOnvCq",
+      photo: "/Team Photos/Team Leaders/Pratigya Bomb.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/pratigya-bomb-295857349",
         email: "pratigyabomb@jklu.edu.in"
@@ -128,7 +128,7 @@ export const TEAM_DATA = {
       name: "Vaibhav Khandelwal",
       designation: "Social Media Lead",
       department: "Social Media",
-      photo: "https://docs.google.com/uc?export=view&id=1YQIwjbrZLEtw6j3FzAXlPD-Ed0Y1OMuV",
+      photo: "/Team Photos/Team Leaders/Vaibhav Khandelwal.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/vaibhav-khandelwal-001831338",
         email: "vaibhavkhandelwal@jklu.edu.in",
@@ -139,7 +139,7 @@ export const TEAM_DATA = {
       name: "Naman Shukla",
       designation: "Internal Arrangements Lead",
       department: "Internal Arrangements",
-      photo: "https://docs.google.com/uc?export=view&id=1aXpnANlcdWUfRYH3htS7EbhBfXdCwHny",
+      photo: "/Team Photos/Team Leaders/naman shukla.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/naman-shukla-87ba40325",
         email: "namanshukla@jklu.edu.in",
@@ -150,7 +150,7 @@ export const TEAM_DATA = {
       name: "Devam Gupta",
       designation: "Technical Lead",
       department: "Technical",
-      photo: "https://docs.google.com/uc?export=view&id=1dqMMlRNL05uVl9beQiuZ2PT_F1XBULsT",
+      photo: "/Team Photos/Team Leaders/Devam Gupta.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/devam-gupta/",
         email: "devamgupta@jklu.edu.in",
@@ -162,7 +162,7 @@ export const TEAM_DATA = {
       name: "Varra Srivalli",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1xaYj-8NAXN86SLBANmBlIwR7sip85AdX",
+      photo: "/Team Photos/Cluster Heads/Varra Srivallika.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/varrasrivalli",
         email: "Varrasrivalli@jklu.edu.in",
@@ -174,7 +174,7 @@ export const TEAM_DATA = {
       name: "Mayank Gautam",
       designation: "Internal Arrangements Lead",
       department: "Internal Arrangements",
-      photo: "https://docs.google.com/uc?export=view&id=1dt0VN_pVUuTUIuYphhv3Gt6eTJNhkzdK",
+      photo: "/Team Photos/Team Leaders/Mayank Gautam.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/mayank-gautam29",
         email: "mayank@jklu.edu.in",
@@ -186,7 +186,7 @@ export const TEAM_DATA = {
       name: "Khushi Soni",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=13-JMM7hw60OHJq_hUchGJeYdhOwqv9ec",
+      photo: "/Team Photos/Cluster Heads/Khushi Soni.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/khushi-soni--ks0906",
         email: "khushisoni@jklu.edu.in",
@@ -197,7 +197,7 @@ export const TEAM_DATA = {
       name: "Rishika Singh",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1hOcqabKjKA6Iwal8auDP47GVIYe4YJtz",
+      photo: "/Team Photos/Cluster Heads/Rishika Singh.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/rishika-singh19/",
         email: "rishikasingh2024@jklu.edu.in",
@@ -208,7 +208,7 @@ export const TEAM_DATA = {
       name: "Vankayala Pavani",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1WeFZElT4IQZNLurYnSLsCOLeL09frUQK",
+      photo: "/Team Photos/Cluster Heads/Pavani Vankayala.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/vankayalapavani",
         email: "vankayalapavani@jklu.edu.in",
@@ -219,7 +219,7 @@ export const TEAM_DATA = {
       name: "Shlok Chaturvedi",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1i-EYWu40OcrPQbDfBh-u4zcRcBvvCUFH",
+      photo: "/Team Photos/Team Leaders/Shlok Chaturvedi.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/shlok-chaturvedi",
         email: "shlokchaturvedi@jklu.edu.in"
@@ -229,7 +229,7 @@ export const TEAM_DATA = {
       name: "Rishika Sharma",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1vacP8qUzWGGgx6NGH3F_lBzblKzeo9rS",
+      photo: "/Team Photos/Cluster Heads/Rishika Sharma.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/rishika-sharma-3b2168336",
         email: "rishikasharma@jklu.edu.in"
@@ -239,7 +239,7 @@ export const TEAM_DATA = {
       name: "Doddapuneni Jahanavi",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1MiOaxp-Qg1jr-GyNxky8WBgtjllt1vPy",
+      photo: "/Team Photos/Cluster Heads/Jahnavi chowdary.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/doddapuneni-jahanavi",
         email: "doddapunenijahanavi@jklu.edu.in",
@@ -251,7 +251,7 @@ export const TEAM_DATA = {
       name: "Aditya Nayak",
       designation: "Social Media Lead",
       department: "Social Media",
-      photo: "https://docs.google.com/uc?export=view&id=1wd8tvVWBppHx-vptLr-xs5jaWaEaOT-f",
+      photo: "/Team Photos/Team Leaders/Aditya Nayak .webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/aditya-nayak-a008b43b5/",
         email: "adityanayak@jklu.edu.in",
@@ -262,7 +262,7 @@ export const TEAM_DATA = {
       name: "Kartik Sharma",
       designation: "Discipline Lead",
       department: "Discipline",
-      photo: "https://docs.google.com/uc?export=view&id=1VmMQsdcDgOo-0O7V2oYRR1IWvIe-s_Rw",
+      photo: "/Team Photos/Team Leaders/Kartik Sharma.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/kartik-sharma-ks12",
         email: "kartiksharma2024@jklu.edu.in",
@@ -273,7 +273,7 @@ export const TEAM_DATA = {
       name: "Medha Gupta",
       designation: "Design Lead",
       department: "Design",
-      photo: "https://docs.google.com/uc?export=view&id=190n3RxS7qENARqQJGctEj1POW1y05PrG",
+      photo: "/Team Photos/Team Leaders/Medha Gupta.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/medhaguptadesign/",
         email: "medhagupta@jklu.edu.in",
@@ -284,7 +284,7 @@ export const TEAM_DATA = {
       name: "Swadha Saxena",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1lzUY2VW3Ge-vnIeD2LfHA-oEunewlppJ",
+      photo: "/Team Photos/Cluster Heads/swadha.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/swadha-saxena-24b365363",
         email: "swadhasaxena@jklu.edu.in",
@@ -295,7 +295,7 @@ export const TEAM_DATA = {
       name: "Gourang Tak",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1vl2eiFBw-i3q4k6pQKORcdq5Ifx3TjIH",
+      photo: "/Team Photos/Team Leaders/Gourang Tak.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/gourang-tak-153489353",
         email: "gaurang@jklu.edu.in",
@@ -307,7 +307,7 @@ export const TEAM_DATA = {
       name: "Arjun Singh Tanwar",
       designation: "Food & Accommodation Lead",
       department: "Food & Accommodation",
-      photo: "https://docs.google.com/uc?export=view&id=1ShnkjaGaBbO8sD6mPlakzx_HQUaDJpYi",
+      photo: "/Team Photos/Team Leaders/Arjun Singh Tanwar.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/arjun-singh-tanwar-28348a353",
         email: "arjunsinghtanwar@jklu.edu.in",
@@ -318,7 +318,7 @@ export const TEAM_DATA = {
       name: "Kartavya Garhwal",
       designation: "Food & Accommodation Lead",
       department: "Food & Accommodation",
-      photo: "https://docs.google.com/uc?export=view&id=1Rw_ypo86jVIgEwYU0u0-OvB4ZI6GmwRP",
+      photo: "/Team Photos/Team Leaders/Kartavya Garhwal.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/kartavya-garhwal-developer/",
         email: "kartavyagarhwal@jklu.edu.in",
@@ -329,7 +329,7 @@ export const TEAM_DATA = {
       name: "Aryan Gupta",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1RYOtcmTSp9ImNceLiBNGu0HvohSRFw55",
+      photo: "/Team Photos/Cluster Heads/Aryan.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/aryan-gupta-30dec2006",
         email: "aryangupta2024@jklu.edu.in",
@@ -340,7 +340,7 @@ export const TEAM_DATA = {
       name: "Daksh Kumar",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1IP7JjH5cfPmZAcw0TGpjAJscdMRYT8IO",
+      photo: "/Team Photos/Cluster Heads/Daksh Kumar.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/dakshkkumar",
         email: "dakshkumar@jklu.edu.in",
@@ -352,7 +352,7 @@ export const TEAM_DATA = {
       name: "Mohit Khurana",
       designation: "Photography Lead",
       department: "Photography",
-      photo: "https://docs.google.com/uc?export=view&id=1qQX5b6nCI4bcNaVSEYgHd50FGXMPFMIe",
+      photo: "/Team Photos/Team Leaders/Mohit Khurana.webp",
       socials: {
         email: "mohitkhurana@jklu.edu.in",
         instagram: "https://www.instagram.com/framing_emotions_"
@@ -362,7 +362,7 @@ export const TEAM_DATA = {
       name: "Adityavardhan Singh Chauhan",
       designation: "Media Lead",
       department: "Media",
-      photo: "https://docs.google.com/uc?export=view&id=1gyQymuytFrz0BpNGOz7iJ02i1aBE_OD8",
+      photo: "/Team Photos/Team Leaders/Adityavardhan Singh.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/adityavardhan-singh-work",
         email: "adityavardhansinghchauhan@jklu.edu.in"
@@ -372,7 +372,7 @@ export const TEAM_DATA = {
       name: "Roshan Jangir",
       designation: "Photography Lead",
       department: "Photography",
-      photo: "https://docs.google.com/uc?export=view&id=1_sYWNSydDOGumUnF3QZE8LKEWq5BGLyr",
+      photo: "/Team Photos/Team Leaders/Roshan.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/roshan-jangir-a614a430a",
         email: "roshanjangir@jklu.edu.in"
@@ -382,7 +382,7 @@ export const TEAM_DATA = {
       name: "Pulkit Dosi",
       designation: "Feedback & Registration Lead",
       department: "Feedback & Registration",
-      photo: "https://docs.google.com/uc?export=view&id=1eibkXxRk7qIoO0Utuhdzh8tweeMgXVf0",
+      photo: "/Team Photos/Team Leaders/Pulkit Dosi.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/pulkit-dosi-9b5810350",
         email: "pulkitdosi@jklu.edi.in"
@@ -392,7 +392,7 @@ export const TEAM_DATA = {
       name: "Kandela Nandini",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=18Kngtw3FD2yYv6DRwP9FQ6Cc29izRjrp",
+      photo: "/Team Photos/Cluster Heads/Nandini Kandela.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/nandini-kandela-cse/",
         email: "kandelanandini@jklu.edu.in",
@@ -404,7 +404,7 @@ export const TEAM_DATA = {
       name: "Jheel Jain",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1rVB2fYR88V2Z-0w22DLe2Os4bWq38Wnf",
+      photo: "/Team Photos/Team Leaders/Jheel Jain.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/jheel-jain-a14913357",
         email: "jheeljain@jklu.edu.in"
@@ -414,7 +414,7 @@ export const TEAM_DATA = {
       name: "Chestha Kulshrestha",
       designation: "Media Lead",
       department: "Media",
-      photo: "https://docs.google.com/uc?export=view&id=1oEx6i3JC0gJic1LFoQuus31y2VB-RczK",
+      photo: "/Team Photos/Team Leaders/chestha.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/chestha-kulshrestha11",
         email: "chesthakulshrestha@jklu.edu.in"
@@ -424,7 +424,7 @@ export const TEAM_DATA = {
       name: "Vidhi Chamaria",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1UvXWjmcQOLQY36K6YQ_VBHaeTy7otMUm",
+      photo: "/Team Photos/Cluster Heads/Vidhi Chamaria.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/vidhi-chamaria-a1b301404",
         email: "vidhichamaria@jklu.edu.in"
@@ -434,7 +434,7 @@ export const TEAM_DATA = {
       name: "Bhavya Bang",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://docs.google.com/uc?export=view&id=1GOBdwulPNgKJC4l9WU2mnNNrRQ8QVBWP",
+      photo: "/Team Photos/Cluster Heads/Bhavya.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/bhavya-bang",
         email: "bhavya@jklu.edu.in"

@@ -823,7 +823,7 @@ export default function FeedbackTeamPortalPage() {
 
           <div className="hidden md:flex" />
 
-          <span className="text-xs font-black text-brand-ink/50 uppercase tracking-widest">
+          <span className="hidden md:inline text-xs font-black text-brand-ink/50 uppercase tracking-widest">
             Feedback Portal
           </span>
         </header>
