@@ -2,28 +2,56 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
-  title: {
-    default: "AARAMBH'26 | JK Lakshmipat University",
-    template: "%s | AARAMBH'26"
+  metadataBase: new URL('https://aarambh-26.web.app'),
+  alternates: {
+    canonical: 'https://aarambh-26.web.app',
   },
-  description: "Aarambh '26 is the ultimate convergence of technology, culture, and innovation. The signature first-year induction and pop-art festival at JK Lakshmipat University.",
+  title: {
+    default: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
+    template: "%s | Aarambh 2026"
+  },
+  description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Get complete event schedules, rules, guidelines, student club details, and registration forms.",
   manifest: '/manifest.json',
+  keywords: [
+    "Aarambh", "Aarambh 2026", "Aarambh JKLU", "JKLU Orientation", "JKLU Orientation 2026",
+    "JK Lakshmipat University", "JK Lakshmipat University Orientation", "Aarambh JKLU Orientation",
+    "JKLU Welcome Week", "JKLU Welcome Week 2026", "Aarambh orientation week", "JKLU student orientation",
+    "college orientation Jaipur", "Aarambh festival registration", "Aarambh Jaipur", "JKLU student affairs"
+  ],
+  authors: [{ name: "JKLU Tech Team" }],
+  creator: "JKLU Tech Team",
   openGraph: {
-    title: "AARAMBH'26 | JK Lakshmipat University",
-    description: "Aarambh '26 is the ultimate convergence of technology, culture, and innovation. The signature first-year induction and pop-art festival at JK Lakshmipat University.",
-    url: 'https://aarambh.jklu.edu.in',
+    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
+    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Register, view schedules, rules, guidelines, and highlights.",
+    url: 'https://aarambh-26.web.app',
     siteName: "Aarambh '26 Portal",
+    images: [
+      {
+        url: '/aarambh-2025-poster.jpg',
+        width: 1200,
+        height: 630,
+        alt: "Aarambh 2026 Banner"
+      }
+    ],
     locale: 'en_IN',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: "AARAMBH'26 | JK Lakshmipat University",
-    description: "The signature first-year induction and pop-art festival at JK Lakshmipat University.",
+    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
+    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur.",
+    images: ['/aarambh-2025-poster.jpg'],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   }
 }
 
@@ -51,13 +79,56 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={tiroDevanagari.variable} data-scroll-behavior="smooth">
+    <html lang="en" className={tiroDevanagari.variable}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Event",
+              "name": "Aarambh '26",
+              "startDate": "2026-07-14T09:00:00+05:30",
+              "endDate": "2026-07-21T18:00:00+05:30",
+              "eventStatus": "https://schema.org/EventScheduled",
+              "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+              "location": {
+                "@type": "Place",
+                "name": "JK Lakshmipat University Campus",
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": "Near Mahindra SEZ, Ajmer Road",
+                  "addressLocality": "Jaipur",
+                  "addressRegion": "Rajasthan",
+                  "postalCode": "302026",
+                  "addressCountry": "IN"
+                }
+              },
+              "image": [
+                "https://aarambh-26.web.app/aarambh-2025-poster.jpg"
+              ],
+              "description": "Aarambh '26 is the signature first-year orientation program and pop-art welcome festival of JK Lakshmipat University (JKLU), Jaipur. Experience engaging workshops, cultural nights, sports tournaments, and student club showcases.",
+              "organizer": {
+                "@type": "EducationalOrganization",
+                "name": "JK Lakshmipat University",
+                "url": "https://jklu.edu.in"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": "https://aarambh-26.web.app/register",
+                "price": "2500",
+                "priceCurrency": "INR",
+                "availability": "https://schema.org/InStock",
+                "validFrom": "2026-06-01T00:00:00+05:30"
+              }
+            })
+          }}
         />
         <script
           dangerouslySetInnerHTML={{

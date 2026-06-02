@@ -476,7 +476,7 @@ export default function GalleryLanding() {
 
 
         const diff = targetZOffsetRef.current - zOffsetRef.current
-        zOffsetRef.current += diff * 0.08
+        zOffsetRef.current += diff * 0.15
 
         if (Math.abs(zOffsetRef.current) > 60) {
           setShowScrollHint(false)
@@ -611,7 +611,7 @@ export default function GalleryLanding() {
       e.preventDefault()
       const touchY = e.touches[0].clientY
       const deltaY = touchStartY - touchY
-      targetZOffsetRef.current += deltaY * 3.0
+      targetZOffsetRef.current += deltaY * 0.8
       touchStartY = touchY
     }
 
@@ -914,7 +914,7 @@ export default function GalleryLanding() {
 
         .tunnel-card {
           position: absolute;
-          width: clamp(170px, 22vw, 320px);
+          width: clamp(240px, 35vw, 500px);
           aspect-ratio: 3 / 2;
           border: 3.5px solid #030404;
           border-radius: 12px;
@@ -987,6 +987,15 @@ export default function GalleryLanding() {
           border: 4px solid #030404;
           border-radius: 20px;
           box-shadow: 16px 16px 0px 0px #030404;
+        }
+
+        @media (max-width: 768px) {
+          .gp-lb-img {
+            max-width: 96vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 8px 8px 0px 0px #030404;
+          }
         }
 
         .gp-lb-close {

@@ -450,7 +450,7 @@ export default function Home() {
         >
           {/* Comic Magazine Header Band */}
           <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA Welcome Fest
           </div>
 
           {/* Comic Styled Heading Stack */}
@@ -524,7 +524,7 @@ export default function Home() {
             <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
               <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
-              <span className="text-brand-orange"> This is not just an induction&mdash;this is your first step toward the future.</span>
+              <span className="text-brand-orange"> This is not just a welcome&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 

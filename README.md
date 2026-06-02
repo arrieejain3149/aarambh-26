@@ -1,6 +1,6 @@
 # 🚀 AARAMBH '26 | Event Registration Portal
 
-> The official ultra-premium, high-performance, neobrutalist convergence portal for the Aarambh '26 pop-art festival and first-year induction at **JK Lakshmipat University**.
+> The official ultra-premium, high-performance, neobrutalist convergence portal for the Aarambh '26 pop-art festival and first-year orientation at **JK Lakshmipat University**.
 
 ---
 

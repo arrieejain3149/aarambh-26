@@ -126,7 +126,7 @@ const playSynthSound = (type: 'boom' | 'pow' | 'bang' | 'stamp' | 'click' | 'jum
 
 
 export default function Home() {
-  const [introStarted, setIntroStarted] = useState(false);
+  const [introStarted, setIntroStarted] = useState(true);
   const [introComplete, setIntroComplete] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [hasRegistered, setHasRegistered] = useState(false);
@@ -153,12 +153,7 @@ export default function Home() {
   useEffect(() => {
     if (!introStarted) return;
     
-    // Jump times corresponding to the character hitting the 5 letters (1s, 2s, 3s, 4s, 5s)
-    const timeouts = Array.from({ length: 5 }).map((_, i) => {
-      const hitTimeMs = (i + 1) * 1000;
-      return setTimeout(() => playSynthSound('bang'), hitTimeMs - 100); // Play bang sound right before impact
-    });
-    return () => timeouts.forEach(clearTimeout);
+    // Sound removed as requested
   }, [introStarted]);
 
   // Generate Mario Animation Arrays
@@ -338,22 +333,7 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      {/* Full Screen Intro Overlay (Resolves Autoplay Policy) */}
-      <AnimatePresence>
-        {!introStarted && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            onClick={() => setIntroStarted(true)}
-            className="fixed inset-0 z-[100] bg-brand-ink flex flex-col items-center justify-center cursor-pointer overflow-hidden"
-          >
-             <h2 className="font-display text-4xl sm:text-6xl text-brand-cloud animate-pulse tracking-tighter drop-shadow-md z-10">PRESS START</h2>
-             <p className="text-brand-cloud/60 mt-4 font-mono text-sm uppercase z-10">Tap anywhere to enter and enable audio</p>
-             <div className="absolute inset-0 bg-halftone-white opacity-[0.05] pointer-events-none" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Full Screen Intro Overlay (Resolves Autoplay Policy) - Removed for automatic playback */}
 
       {/* Comic Magazine Cover Hero */}
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
@@ -426,7 +406,7 @@ export default function Home() {
         >
           {/* Comic Magazine Header Band */}
           <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA Welcome Fest
           </div>
 
           {/* Comic Styled Heading Stack */}
@@ -630,7 +610,7 @@ export default function Home() {
           WHAT&apos;S IN THE COMIC?
         </h2>
         <p className="text-center text-brand-cloud/60 max-w-xl mb-16 text-sm">
-          A preview of the episodes scheduled across this multi-day campus induction program.
+          A preview of the episodes scheduled across this multi-day campus welcome program.
         </p>
 
         {/* 4 Comic Book Grid Panels */}

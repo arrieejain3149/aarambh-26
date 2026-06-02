@@ -206,6 +206,16 @@ export default function Registrations() {
       'Transaction ID'
     ];
 
+    const formatSinglePhone = (phone: string): string => {
+      if (!phone) return '';
+      if (phone.includes(':') || phone.includes('|')) return phone;
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length >= 10) {
+        return `+91 ${digits.slice(-10)}`;
+      }
+      return phone;
+    };
+
     const rows = sortedRegistrations.map((r, index) => {
       const pin = r.pincode || (r.address ? (r.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A');
       const formattedDate = r.dateOfPayment || (r.registeredAt ? r.registeredAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' }).replace(/ /g, '-') : 'N/A');
@@ -217,9 +227,9 @@ export default function Registrations() {
         `"${r.name || ''}"`,
         `"${r.gender || 'N/A'}"`,
         `"${r.rollNumber || ''}"`,
-        `"${r.phone || ''}"`,
+        `"${formatSinglePhone(r.phone || '')}"`,
         `"${r.parentName || r.fatherName || ''}"`,
-        `"${r.parentPhone || r.fatherMobile || ''}"`,
+        `"${formatSinglePhone(r.parentPhone || r.fatherMobile || '')}"`,
         `"${r.email || ''}"`,
         `"${r.parentEmail || r.fatherEmail || 'N/A'}"`,
         `"${pin}"`,
@@ -266,7 +276,7 @@ export default function Registrations() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink">Registration Data</h1>
-          <p className="text-admin-muted font-bold text-xs uppercase tracking-wider mt-1">Student induction portal listings</p>
+          <p className="text-admin-muted font-bold text-xs uppercase tracking-wider mt-1">Student orientation portal listings</p>
         </div>
         <button 
           onClick={exportCSV}

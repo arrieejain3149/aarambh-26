@@ -363,7 +363,7 @@ export default function Home() {
         >
           {/* Comic Magazine Header Band */}
           <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA Welcome Fest
           </div>
 
           {/* Comic Styled Heading Stack */}
@@ -548,7 +548,7 @@ export default function Home() {
           WHAT&apos;S IN THE COMIC?
         </h2>
         <p className="text-center text-brand-cloud/60 max-w-xl mb-16 text-sm">
-          A preview of the episodes scheduled across this multi-day campus induction program.
+          A preview of the episodes scheduled across this multi-day campus welcome program.
         </p>
 
         {/* 4 Comic Book Grid Panels */}

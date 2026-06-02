@@ -266,7 +266,7 @@ export default function Home() {
               
               <div className="relative z-10">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 border-[3px] border-brand-ink bg-brand-ink text-brand-cloud text-xs font-black uppercase tracking-widest mb-8 transform -skew-x-12 shadow-[4px_4px_0_0_rgba(255,154,0,1)]">
-                  <span className="transform skew-x-12">Episode 01: The Induction</span>
+                  <span className="transform skew-x-12">Episode 01: The Welcome</span>
                 </div>
                 
                 <h1 className="font-display text-7xl sm:text-8xl lg:text-[7rem] xl:text-[8.5rem] font-black uppercase leading-[0.85] tracking-tighter mb-8">

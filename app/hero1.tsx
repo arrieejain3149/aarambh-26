@@ -221,11 +221,45 @@ export default function Home() {
   }, []);
 
   const stickers = [
-    { text: "BOOM!", type: "boom", color: "bg-brand-pink text-brand-cloud", top: "12%", left: "6%", starburst: true, rotate: "-8deg" },
-    { text: "POW!", type: "pow", color: "bg-brand-orange text-brand-ink font-extrabold", top: "15%", right: "8%", starburst: true, rotate: "6deg" },
-    { text: "BANG!", type: "bang", color: "bg-brand-blue text-brand-cloud", bottom: "25%", left: "8%", starburst: true, rotate: "-12deg" },
-    { text: "APPROVED", type: "stamp", subtext: "BY THE SQUAD", color: "bg-brand-cloud text-brand-pink border-4 border-dashed border-brand-pink", bottom: "22%", right: "8%", stamp: true, rotate: "15deg" },
+    {
+      src: "/images/july_14_21.png",
+      alt: "14-21 July Sticker",
+      type: "stamp",
+      rotate: "6deg",
+      floatDelay: 0.7,
+      className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[220px] lg:h-[220px]"
+    },
+    {
+      src: "/images/edition_2026.png?v=5",
+      alt: "2026 Edition Sticker",
+      type: "pow",
+      rotate: "-8deg",
+      floatDelay: 0,
+      className: "top-[10%] left-[2%] lg:top-[14%] lg:left-[5%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[230px] lg:h-[230px]"
+    },
+    {
+      src: "/images/first_step.png",
+      alt: "First Step Sticker",
+      type: "bang",
+      rotate: "-5deg",
+      floatDelay: 1.4,
+      className: "bottom-[12%] left-[4%] lg:bottom-[23%] lg:left-[6%]",
+      imgClassName: "w-[100px] h-[50px] lg:w-[240px] lg:h-[120px]"
+    },
+    {
+      src: "/images/next_dimension.png?v=4",
+      alt: "Next Dimension Sticker",
+      type: "boom",
+      rotate: "7deg",
+      floatDelay: 2.1,
+      className: "bottom-[10%] right-[4%] lg:bottom-[20%] lg:right-[6%]",
+      imgClassName: "w-[110px] h-[55px] lg:w-[260px] lg:h-[130px]"
+    },
   ];
+
+
 
   const countdownBlocks = [
     { label: 'Days', valueKey: 'days', bg: 'bg-brand-orange text-brand-ink', rotate: '-rotate-2' },
@@ -286,7 +320,7 @@ export default function Home() {
                         }}
                       >
                         <Image
-                          src="/logo.svg"
+                          src="/aarambh_logo_extruded.png"
                           alt="AARAMBH"
                           fill
                           className="object-contain"
@@ -366,7 +400,7 @@ export default function Home() {
       </div>
 
       {/* Comic Magazine Cover Hero */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-8 sm:py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
 
         {/* Dynamic Light Background Image */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -374,24 +408,59 @@ export default function Home() {
             src="/hero-bg-light.png" 
             alt="Dynamic comic background" 
             fill 
-            className="object-cover opacity-80 mix-blend-darken" 
+            className="object-cover opacity-65 mix-blend-darken" 
             priority
           />
         </div>
+        {/* Subtle radial gradient overlay to ensure central text readability & keep margins clean */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,241,229,0.75)_0%,rgba(245,241,229,0.1)_100%)] pointer-events-none z-0" />
 
         {/* Comic Pattern Backdrop for extra texture */}
         <div className="absolute inset-0 bg-halftone-black opacity-15 pointer-events-none z-0 mix-blend-overlay" />
 
         {/* Draggable Pop-Art Stickers with synthesized audio triggers */}
-        <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute inset-0 z-10 pointer-events-none">
           {stickers.map((sticker, idx) => (
             <motion.div
               key={idx}
               drag
-              dragConstraints={{ left: -400, right: 400, top: -200, bottom: 200 }}
+              dragConstraints={{ left: -150, right: 150, top: -100, bottom: 100 }}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
-              whileHover={{ scale: 1.15, zIndex: 50, rotate: "0deg" }}
-              whileDrag={{ scale: 1.2, zIndex: 100, cursor: "grabbing" }}
+              initial={{
+                filter: "drop-shadow(3px 12px 18px rgba(3, 4, 4, 0.15)) drop-shadow(1px 4px 6px rgba(3, 4, 4, 0.08))"
+              }}
+              animate={{
+                y: [0, -6, 0],
+                rotate: [sticker.rotate, (parseFloat(sticker.rotate) + 1.5) + "deg", sticker.rotate],
+              }}
+              transition={{
+                y: {
+                  duration: 4.5 + idx * 0.8,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                  delay: sticker.floatDelay,
+                },
+                rotate: {
+                  duration: 5.5 + idx * 0.6,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                  delay: sticker.floatDelay,
+                }
+              }}
+              whileHover={{
+                scale: 1.05,
+                y: -12,
+                zIndex: 50,
+                filter: "drop-shadow(8px 24px 32px rgba(3, 4, 4, 0.22)) drop-shadow(2px 8px 12px rgba(3, 4, 4, 0.12))",
+                transition: { type: "spring", stiffness: 300, damping: 15 }
+              }}
+              whileDrag={{
+                scale: 1.1,
+                zIndex: 100,
+                filter: "drop-shadow(12px 36px 48px rgba(3, 4, 4, 0.26)) drop-shadow(4px 12px 18px rgba(3, 4, 4, 0.15))"
+              }}
               onDragStart={(e) => {
                 // Synthesizes retro sounds when dragging begins
                 playSynthSound(sticker.type as any);
@@ -401,35 +470,24 @@ export default function Home() {
                 spawnParticles(e.clientX, e.clientY);
                 playSynthSound(sticker.type as any);
               }}
-              style={{
-                top: sticker.top,
-                left: sticker.left,
-                right: sticker.right,
-                bottom: sticker.bottom,
-                rotate: sticker.rotate,
-              }}
-              className="absolute pointer-events-auto cursor-grab select-none"
+              className={`absolute pointer-events-auto cursor-grab select-none ${sticker.className}`}
             >
-              {sticker.starburst ? (
-                <div className={`comic-starburst w-36 h-36 border-4 border-brand-ink flex flex-col items-center justify-center text-center p-4 shadow-comic ${sticker.color}`}>
-                  <span className="font-display font-black text-xl leading-none uppercase tracking-tighter drop-shadow-md">
-                    {sticker.text}
-                  </span>
-                </div>
-              ) : sticker.stamp ? (
-                <div className={`w-28 h-28 rounded-full flex flex-col items-center justify-center text-center p-3 rotate-12 shadow-comic-sm bg-brand-cloud ${sticker.color}`}>
-                  <span className="font-display font-black text-xs leading-none uppercase tracking-tighter">
-                    {sticker.text}
-                  </span>
-                  <span className="text-[7px] font-black uppercase mt-1 tracking-widest leading-none">
-                    {sticker.subtext}
-                  </span>
-                </div>
-              ) : (
-                <div className={`px-5 py-3 font-display font-black text-sm uppercase rounded-md border-2 border-brand-ink ${sticker.color}`}>
-                  {sticker.text}
-                </div>
-              )}
+              <div className={`relative overflow-hidden rounded-xl ${sticker.imgClassName}`}>
+                <Image
+                  src={sticker.src}
+                  alt={sticker.alt}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+                {/* Premium Paper Grain overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+                  }}
+                />
+              </div>
             </motion.div>
           ))}
         </div>
@@ -442,145 +500,140 @@ export default function Home() {
           className="z-10 text-center max-w-4xl flex flex-col items-center px-4"
         >
           {/* Comic Magazine Header Band */}
-          <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
-            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
+          <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-5 sm:mb-10 bg-halftone-cloud">
+            JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA Welcome Fest
           </div>
 
           {/* Comic Styled Heading Stack */}
-          <div className="relative mb-8 select-none p-3 max-w-full">
-            {/* Outline back text */}
-            <h1 className="font-display text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[8rem] font-black uppercase leading-none tracking-tighter text-outline-pink select-none">
-              BOLD & BEYOND
-            </h1>            {/* Centered Primary Logo */}
-            <div className="absolute inset-0 flex items-center justify-center p-2 mt-2 z-20 perspective-[1500px]">
-              <div className="relative w-full max-w-xs sm:max-w-md md:max-w-xl group">
-                {/* Base logo card with drop shadow */}
-                <div className="relative z-10 w-full bg-brand-cloud border-comic rounded-xl p-4 sm:p-6 drop-shadow-[8px_8px_0px_#030404] flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[140px] sm:min-h-[180px]">
-                                    {loadingComplete && (
-                    <>
-                      {/* The Portal (Pushed deep back, smaller, fades out completely at the end) */}
-                      <motion.div
-                        initial={{ opacity: 1 }}
-                        animate={{ opacity: [1, 1, 1, 0] }}
-                        transition={{ duration: 5.5, times: [0, 0.8, 0.9, 1], ease: "easeInOut" }}
-                        className="absolute inset-0 flex justify-center items-center pointer-events-none z-0"
-                      >
-                        {/* The Double Doors Frame */}
-                        <div className="relative w-24 h-32 sm:w-28 sm:h-36 flex" style={{ transform: 'translateZ(-400px)' }}>
-                          {/* Door Background/Inside */}
-                          <div className="absolute inset-0 bg-[#0a0a0a] border-2 border-brand-ink rounded-t-xl overflow-hidden flex items-center justify-center shadow-[inset_0_10px_20px_rgba(0,0,0,0.8)]">
-                            {/* Glowing Light Inside Portal */}
-                            <motion.div 
-                               initial={{ opacity: 0, scale: 0.2 }}
-                               animate={{ opacity: [0, 1, 1], scale: [0.2, 1.5, 1] }}
-                               transition={{ delay: 0.5, duration: 1.5 }}
-                               className="absolute inset-0 bg-brand-pink blur-md opacity-70 mix-blend-screen"
-                            />
-                          </div>
-                          
-                          {/* Left Door */}
-                          <motion.div
-                            initial={{ rotateY: 0 }}
-                            animate={{ rotateY: -110 }}
-                            transition={{ delay: 0.2, duration: 1.0, ease: "easeInOut" }}
-                            style={{ transformOrigin: 'left', width: '50%' }}
-                            className="relative h-full bg-brand-orange border-y-2 border-l-2 border-r border-brand-ink rounded-tl-xl flex items-center justify-end pr-0.5"
-                          >
-                             <div className="w-1 h-4 bg-brand-ink rounded-sm" />
-                          </motion.div>
-                          
-                          {/* Right Door */}
-                          <motion.div
-                            initial={{ rotateY: 0 }}
-                            animate={{ rotateY: 110 }}
-                            transition={{ delay: 0.2, duration: 1.0, ease: "easeInOut" }}
-                            style={{ transformOrigin: 'right', width: '50%' }}
-                            className="relative h-full bg-brand-orange border-y-2 border-r-2 border-l border-brand-ink rounded-tr-xl flex items-center justify-start pl-0.5"
-                          >
-                             <div className="w-1 h-4 bg-brand-ink rounded-sm" />
-                          </motion.div>
+          <div className="relative mb-4 sm:mb-8 select-none p-3 max-w-full text-center flex justify-center w-full">
+            {/* Centered Primary Logo */}
+            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-xl group z-20 perspective-[1500px]">
+              {/* Base logo container (no card background, border, or drop shadow) */}
+              <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[140px] sm:min-h-[180px]">
+                {loadingComplete && (
+                  <>
+                    {/* The Portal (Pushed deep back, smaller, fades out completely at the end) */}
+                    <motion.div
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: [1, 1, 1, 0] }}
+                      transition={{ duration: 5.5, times: [0, 0.8, 0.9, 1], ease: "easeInOut" }}
+                      className="absolute inset-0 flex justify-center items-center pointer-events-none z-0"
+                    >
+                      {/* The Double Doors Frame */}
+                      <div className="relative w-24 h-32 sm:w-28 sm:h-36 flex" style={{ transform: 'translateZ(-400px)' }}>
+                        {/* Door Background/Inside */}
+                        <div className="absolute inset-0 bg-[#0a0a0a] border-2 border-brand-ink rounded-t-xl overflow-hidden flex items-center justify-center shadow-[inset_0_10px_20px_rgba(0,0,0,0.8)]">
+                          {/* Glowing Light Inside Portal */}
+                          <motion.div 
+                             initial={{ opacity: 0, scale: 0.2 }}
+                             animate={{ opacity: [0, 1, 1], scale: [0.2, 1.5, 1] }}
+                             transition={{ delay: 0.5, duration: 1.5 }}
+                             className="absolute inset-0 bg-brand-pink blur-md opacity-70 mix-blend-screen"
+                          />
                         </div>
-                      </motion.div>
+                        
+                        {/* Left Door */}
+                        <motion.div
+                          initial={{ rotateY: 0 }}
+                          animate={{ rotateY: -110 }}
+                          transition={{ delay: 0.2, duration: 1.0, ease: "easeInOut" }}
+                          style={{ transformOrigin: 'left', width: '50%' }}
+                          className="relative h-full bg-brand-orange border-y-2 border-l-2 border-r border-brand-ink rounded-tl-xl flex items-center justify-end pr-0.5"
+                        >
+                           <div className="w-1 h-4 bg-brand-ink rounded-sm" />
+                        </motion.div>
+                        
+                        {/* Right Door */}
+                        <motion.div
+                          initial={{ rotateY: 0 }}
+                          animate={{ rotateY: 110 }}
+                          transition={{ delay: 0.2, duration: 1.0, ease: "easeInOut" }}
+                          style={{ transformOrigin: 'right', width: '50%' }}
+                          className="relative h-full bg-brand-orange border-y-2 border-r-2 border-l border-brand-ink rounded-tr-xl flex items-center justify-start pl-0.5"
+                        >
+                           <div className="w-1 h-4 bg-brand-ink rounded-sm" />
+                        </motion.div>
+                      </div>
+                    </motion.div>
 
-                      {/* Logo Container for Sliced SVG Assembly */}
-                      <motion.div 
-                         className="relative w-full aspect-[550/120] z-20 pointer-events-none"
-                         animate={{ rotate: [0, 0, -1, 1, -0.5, 0.5, 0] }} // Subtle shake on impact
-                         transition={{ duration: 4.0, times: [0, 0.85, 0.87, 0.89, 0.91, 0.93, 1], ease: "easeInOut" }}
-                      >
-                        {[0, 1, 2, 3].map((sliceIndex) => {
-                          // Slice into 4 equal horizontal pieces
-                          const leftPercent = sliceIndex * 25;
-                          const rightPercent = 100 - ((sliceIndex + 1) * 25);
-                          
-                          return (
-                            <motion.div
-                              key={`slice-${sliceIndex}`}
-                              initial={{ z: -250, opacity: 0, scale: 0.1 }}
-                              animate={{ 
-                                z: [-250, 0, 0], 
-                                opacity: [0, 1, 1],
-                                scale: [0.1, 1.1, 1] 
-                              }}
-                              transition={{ 
-                                delay: 1.5 + sliceIndex * 0.3, // Staggered exit from portal
-                                duration: 0.9, 
-                                times: [0, 0.6, 1],
-                                ease: "easeOut"
-                              }}
-                              className="absolute inset-0 w-full h-full"
-                              style={{ 
-                                clipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`,
-                                WebkitClipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`
-                              }}
-                            >
-                              <Image
-                                src="/logo.svg"
-                                alt="AARAMBH'26 Chunk"
-                                fill
-                                className="object-contain drop-shadow-sm"
-                                priority
-                                loading="eager"
-                              />
-                            </motion.div>
-                          );
-                        })}
-                      </motion.div>
+                    {/* Logo Container for Sliced SVG Assembly */}
+                    <motion.div 
+                       className="relative w-full aspect-[550/120] z-20 pointer-events-none"
+                       animate={{ rotate: [0, 0, -1, 1, -0.5, 0.5, 0] }} // Subtle shake on impact
+                       transition={{ duration: 4.0, times: [0, 0.85, 0.87, 0.89, 0.91, 0.93, 1], ease: "easeInOut" }}
+                    >
+                      {[0, 1, 2, 3].map((sliceIndex) => {
+                        // Slice into 4 equal horizontal pieces
+                        const leftPercent = sliceIndex * 25;
+                        const rightPercent = 100 - ((sliceIndex + 1) * 25);
+                        
+                        return (
+                          <motion.div
+                            key={`slice-${sliceIndex}`}
+                            initial={{ z: -250, opacity: 0, scale: 0.1 }}
+                            animate={{ 
+                              z: [-250, 0, 0], 
+                              opacity: [0, 1, 1],
+                              scale: [0.1, 1.1, 1] 
+                            }}
+                            transition={{ 
+                              delay: 1.5 + sliceIndex * 0.3, // Staggered exit from portal
+                              duration: 0.9, 
+                              times: [0, 0.6, 1],
+                              ease: "easeOut"
+                            }}
+                            className="absolute inset-0 w-full h-full"
+                            style={{ 
+                              clipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`,
+                              WebkitClipPath: `inset(0% ${rightPercent}% 0% ${leftPercent}%)`
+                            }}
+                          >
+                            <Image
+                              src="/aarambh_logo_extruded.png"
+                              alt="AARAMBH'26 Chunk"
+                              fill
+                              className="object-contain"
+                              priority
+                              loading="eager"
+                            />
+                          </motion.div>
+                        );
+                      })}
+                    </motion.div>
 
-                      {/* Final Cinematic Polish */}
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0, 0, 1, 0] }}
-                        transition={{ duration: 5.0, times: [0, 0.7, 0.8, 1] }}
-                        className="absolute inset-0 bg-brand-pink blur-[40px] z-10 pointer-events-none mix-blend-screen"
-                      />
-                      
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
-                        transition={{ delay: 3.5, duration: 0.8 }}
-                        className="absolute top-0 right-4 text-brand-orange z-30"
-                      >
-                        <Sparkles size={32} />
-                      </motion.div>
-                    </>
-                  )}
-                </div>
+                    {/* Final Cinematic Polish */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 0, 1, 0] }}
+                      transition={{ duration: 5.0, times: [0, 0.7, 0.8, 1] }}
+                      className="absolute inset-0 bg-brand-pink blur-[40px] z-10 pointer-events-none mix-blend-screen"
+                    />
+                    
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
+                      transition={{ delay: 3.5, duration: 0.8 }}
+                      className="absolute top-0 right-4 text-brand-orange z-30"
+                    >
+                      <Sparkles size={32} />
+                    </motion.div>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
-            <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+          <div className="border-comic bg-brand-ink text-brand-cloud p-3 sm:p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-5 sm:mb-10 mx-auto">
+            <p className="font-display font-black text-xs sm:text-base leading-relaxed tracking-wide uppercase text-center">
+              <span className="text-brand-pink text-sm sm:text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
-              <span className="text-brand-orange"> This is not just an induction&mdash;this is your first step toward the future.</span>
+              <span className="text-brand-orange"> This is not just a welcome&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-12 w-full max-w-md text-brand-cloud">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}

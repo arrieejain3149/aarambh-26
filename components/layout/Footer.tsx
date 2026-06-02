@@ -163,8 +163,8 @@ export default function Footer() {
   return (
     <footer className="relative bg-white border-t-4 border-brand-ink py-16 px-6 overflow-hidden select-none">
       
-      {/* 3-Column Neobrutalist Grid */}
-      <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      {/* 4-Column Neobrutalist Grid */}
+      <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
         
         {/* COLUMN 1: CONTACT US */}
         <div className="space-y-4">
@@ -208,7 +208,7 @@ export default function Footer() {
           
           <ul className="grid grid-cols-1 gap-2 text-xs font-mono text-brand-ink/80 font-bold">
             <li>
-              <Link href="/about" className="hover:text-brand-pink transition-colors">
+              <Link href="/#about" className="hover:text-brand-pink transition-colors">
                 About
               </Link>
             </li>
@@ -248,7 +248,12 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-brand-pink transition-colors">
+              <Link href="/rules" className="hover:text-brand-pink transition-colors">
+                Rules & Regulations
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-brand-pink transition-colors">
                 Contact Us
               </Link>
             </li>
@@ -266,33 +271,54 @@ export default function Footer() {
           
           <div className="flex gap-3">
             <a 
-              href="#" 
+              href="https://www.facebook.com/share/1Hsdb57Jcf/" 
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Facebook"
               className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-blue hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
             >
               <FacebookIcon size={18} />
             </a>
             <a 
-              href="#" 
+              href="https://x.com/jklujaipur" 
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="X (Twitter)"
               className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-pink hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
             >
               <XIcon size={16} />
             </a>
             <a 
-              href="#" 
+              href="https://www.instagram.com/aarambh_jklu?igsh=NmZzYjFrcDNtejMw" 
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
               className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-orange hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
             >
               <InstagramIcon size={18} />
             </a>
             <a 
-              href="#" 
+              href="https://www.linkedin.com/school/jklujaipur/" 
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="LinkedIn"
               className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-blue hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
             >
               <LinkedInIcon size={18} />
             </a>
+          </div>
+        </div>
+
+        {/* COLUMN 4: CAMPUS IMAGE */}
+        <div className="flex justify-start md:justify-end items-center">
+          <div className="relative border-4 border-brand-ink shadow-[6px_6px_0px_0px_#030404] rounded-xl overflow-hidden group w-full max-w-[280px] aspect-[4/3] bg-brand-cloud">
+            <Image
+              src="/footer_image.webp"
+              alt="JKLU Campus View"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, 280px"
+            />
           </div>
         </div>
 

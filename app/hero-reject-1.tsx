@@ -247,7 +247,7 @@ export default function Home() {
           >
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/40 border border-brand-ink/10 backdrop-blur-md mb-8 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-brand-orange animate-pulse" />
-              <span className="text-xs font-mono tracking-widest uppercase text-brand-ink/70">The Mega Induction Fest</span>
+              <span className="text-xs font-mono tracking-widest uppercase text-brand-ink/70">The Mega Welcome Fest</span>
             </div>
             
             <h1 className="font-display text-6xl sm:text-7xl lg:text-[8.5rem] font-black uppercase leading-[0.9] tracking-tight mb-8">
@@ -256,7 +256,7 @@ export default function Home() {
             </h1>
             
             <p className="text-lg sm:text-xl text-brand-ink/70 font-sans leading-relaxed max-w-xl mx-auto mb-10 text-center">
-              Where strangers become friends and dreams find direction. This is not just an induction—this is your first step toward the future.
+              Where strangers become friends and dreams find direction. This is not just a welcome—this is your first step toward the future.
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-6 w-full">

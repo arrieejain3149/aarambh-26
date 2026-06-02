@@ -57,24 +57,21 @@ export default function WhatIsAarambh() {
             className="space-y-6"
           >
             <div>
-              <span className="inline-block text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-2.5 sm:px-3.5 py-1 sm:py-1.5 border-comic bg-brand-blue text-brand-cloud rotate-0 sm:rotate-[-2deg] shadow-comic-sm mb-3 sm:mb-4">
-                THE SYNOPSIS
-              </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-brand-ink uppercase leading-none tracking-tight">
-                MORE THAN JUST<br />
-                <span className="text-brand-pink">AN ORIENTATION</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-brand-ink uppercase leading-none tracking-tight text-center lg:text-left">
+                ABOUT<br />
+                <span className="text-brand-pink">AARAMBH</span>
               </h2>
             </div>
 
             <div className="space-y-3 sm:space-y-4 border-comic bg-brand-cloud text-brand-ink p-4 sm:p-6 rounded-lg shadow-comic rotate-0 sm:rotate-1 bg-halftone-black">
-              <p className="font-bold text-xs sm:text-sm leading-relaxed uppercase">
-                AARAMBH IS THE OFFICIAL GATEWAY INTO YOUR COLLEGE JOURNEY — A METICULOUSLY CRAFTED MULTI-DAY INDUCTION FLOW BUILT FOR CREATIVE EXPRESSION!
+              <p className="font-bold text-base sm:text-lg leading-relaxed">
+                Aarambh is JKLU's orientation program, designed to help new students connect, explore, and confidently begin their university journey.
               </p>
-              <p className="font-bold text-xs sm:text-sm leading-relaxed text-brand-ink/80 uppercase">
-                FAR FROM TRADITIONAL ORIENTATION LECTURES, IT IS AN IMMERSIVE POP-ART FESTIVAL OF COLLABORATION, BRAINSTORMING WORKSHOPS, AND MENTORSHIP CAMPS.
+              <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-ink/80">
+                More than just an introduction to campus life, it brings together engaging workshops, mentorship sessions, creative activities, and opportunities to build meaningful friendships.
               </p>
-              <p className="font-bold text-xs sm:text-sm leading-relaxed text-brand-pink uppercase">
-                FROM HIGH-ENERGY DJ CULTURAL STAGES TO INNOVATIVE DESIGN CHALLENGES — AARAMBH SETS THE FOUNDATION FOR YOUR LIFELONG LEGACY.
+              <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-pink">
+                From Brush & Bond and vibrant DJ nights to team challenges and cultural experiences, Aarambh encourages you to think boldly, explore beyond the familiar, and make every moment count.
               </p>
             </div>
           </motion.div>
@@ -90,9 +87,7 @@ export default function WhatIsAarambh() {
             <div className="absolute inset-0 bg-brand-pink rounded-xl rotate-[3deg] border-comic shadow-comic" />
             <div className="relative border-comic bg-brand-ink p-2 rounded-xl shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
               {/* Halftone graphic frame border overlay */}
-              <div className="absolute top-4 left-4 bg-brand-orange text-brand-ink font-display text-xs font-black px-2.5 py-1 border-comic-thin uppercase shadow-comic-sm z-20">
-                ILLUSTRATION #4
-              </div>
+              
               <img 
                 src="/aarambh-2025-poster.jpg" 
                 alt="Aarambh Poster" 

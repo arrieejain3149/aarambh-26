@@ -65,7 +65,7 @@ export default function CustomCursor() {
     const hindiLetters = [
       'आरम्भ', 'सफ़र', 'उत्सव', 'कला', 'राग', 'सृजन', 'लक्ष्य', 'उमंग', 'ज्ञान', 'मंच', 'ध्वनि', 'स्वप्न',
       'JKLU', '2026', 'TECH', 'DESIGN', 'BIZ', 'SQUAD', 'FEST', 'LAUNCH', 'BOLD', 'BEYOND', 'CREATE', 
-      'DREAM', 'GROW', 'CONNECT', 'INDUCTION', 'PIONEER', 'LEAD', 'LEARN', 'UNITY', 'VIBES', 'START'
+      'DREAM', 'GROW', 'CONNECT', 'WELCOME', 'PIONEER', 'LEAD', 'LEARN', 'UNITY', 'VIBES', 'START'
     ];
     const colors = [
       '#FF188C', // Brand Pink
