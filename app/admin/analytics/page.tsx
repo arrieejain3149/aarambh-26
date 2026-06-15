@@ -130,7 +130,7 @@ const CustomWarningIcon = ({ className = '', size = 18 }: { className?: string; 
 // ============================================================================
 // DEFAULT QUESTIONS SEED GENERATOR
 // ============================================================================
-export function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
+function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
   const forms: Record<string, { questions: any[] }> = {};
   
   SCHEDULE_DATA.forEach((daySchedule) => {
@@ -494,13 +494,34 @@ export default function AdminFeedbackAnalytics() {
         }
       });
 
-      const XLSX = await import('xlsx');
-      const ws = XLSX.utils.json_to_sheet(excelRows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Dynamic Feedback');
-      
+      const ExcelJS = (await import('exceljs')).default;
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Dynamic Feedback');
+
+      if (excelRows.length > 0) {
+        worksheet.addRow(Object.keys(excelRows[0]));
+        excelRows.forEach((row) => worksheet.addRow(Object.values(row)));
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
       const fileDate = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(wb, `Aarambh26_Feedback_Dynamic_${fileDate}.xlsx`);
+      a.href = url;
+      a.download = `Aarambh26_Feedback_Dynamic_${fileDate}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      const performer = user?.email || user?.uid || 'Feedback Operator';
+      try {
+        const { logAdminAction } = await import('../../../lib/audit');
+        await logAdminAction('FEEDBACK_EXPORT_EXCEL', 'feedbacks', `Exported ${filteredSubmissions.length} feedback submissions to Excel`, performer);
+      } catch (err) {
+        console.error("Failed to log export action:", err);
+      }
     } finally {
       setExporting(false);
     }
@@ -668,7 +689,7 @@ export default function AdminFeedbackAnalytics() {
             <button
               onClick={handleExportExcel}
               disabled={feedbacks.length === 0 || exporting}
-              className="bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs shrink-0"
+              className="comic-btn-primary shrink-0"
             >
               <CustomDownloadIcon size={14} />
               <span>{exporting ? 'Exporting Report...' : 'Download Excel Sheets'}</span>
@@ -933,7 +954,7 @@ export default function AdminFeedbackAnalytics() {
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs shrink-0"
+                className="comic-btn-primary shrink-0"
               >
                 {savingSettings ? 'Saving...' : 'Save Changes'}
               </button>

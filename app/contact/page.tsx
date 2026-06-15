@@ -14,39 +14,24 @@ export const metadata = {
 export default function ContactPage() {
   const contactDirectory = [
     {
-      department: "Registrar",
-      phone: "+91 141 7107500",
-      email: "registrar@jklu.edu.in",
-      bgColor: "bg-brand-pink text-white"
-    },
-    {
-      department: "Admissions",
-      phone: "+91 830 222 3344",
-      email: "admissions@jklu.edu.in",
-      bgColor: "bg-brand-orange text-brand-ink"
-    },
-    {
-      department: "Placements",
-      phone: "+91 987 172 2735",
-      email: "placements@jklu.edu.in",
+      name: "Mr. Deepak Sogani",
+      department: "Head - Student Affairs",
+      phone: "+91 93140 72153",
+      email: "deepak.sogani@jklu.edu.in",
       bgColor: "bg-brand-blue text-white"
-    },
-    {
-      department: "Human Resources",
-      email: "hr@jklu.edu.in",
-      bgColor: "bg-brand-ink text-white"
-    },
-    {
-      department: "Media",
-      phone: "+91 830 222 3344",
-      email: "gokul.bhagabati@jklu.edu.in",
-      bgColor: "bg-brand-cloud text-brand-ink border-2 border-brand-ink"
     }
   ];
 
   return (
-    <div className="py-28 px-6 max-w-5xl mx-auto min-h-screen relative selection:bg-brand-ink selection:text-brand-cloud text-brand-ink bg-brand-cloud">
-      {/* Decorative layout elements */}
+    <div 
+      className="w-full min-h-screen bg-[#F5F1E5] selection:bg-brand-ink selection:text-brand-cloud text-brand-ink"
+      style={{ 
+        backgroundImage: 'radial-gradient(#030404 1px, transparent 1px)', 
+        backgroundSize: '64px 64px' 
+      }}
+    >
+      <div className="py-28 px-6 max-w-5xl mx-auto relative">
+        {/* Decorative layout elements */}
       <div className="absolute top-12 left-1/2 -translate-x-1/2 w-80 h-80 bg-brand-pink/5 rounded-full blur-[90px] pointer-events-none" />
 
       <header className="text-center mb-16 relative z-10">
@@ -91,17 +76,20 @@ export default function ContactPage() {
             <div className="w-16 h-1 bg-brand-ink mx-auto" />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
             {contactDirectory.map((contact, index) => (
               <div
                 key={index}
                 className="bg-white border-4 border-brand-ink rounded-lg shadow-[6px_6px_0px_0px_#030404] overflow-hidden flex flex-col h-full animate-fadeIn"
               >
                 {/* Department Header */}
-                <div className={`p-5 flex items-center justify-between border-b-4 border-brand-ink ${contact.bgColor}`}>
+                <div className={`p-5 border-b-4 border-brand-ink ${contact.bgColor}`}>
                   <h3 className="font-display font-black uppercase text-base tracking-wider">
-                    {contact.department}
+                    {contact.name}
                   </h3>
+                  <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">
+                    {contact.department}
+                  </span>
                 </div>
 
                 {/* Department Contact Details */}
@@ -260,8 +248,8 @@ export default function ContactPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
-                { name: "Pratigya Bomb", email: "pratigyabomb@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
-                { name: "Kartik Sharma", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
+                { name: "Pratigya Bomb", phone: "+91 62646 67506", email: "pratigyabomb@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
+                { name: "Kartik Sharma", phone: "+91 87693 29369", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -274,6 +262,19 @@ export default function ContactPage() {
                     <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">Discipline Team Leader</span>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center font-mono text-xs font-bold space-y-4">
+                    {head.phone && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
+                          <Phone size={14} />
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                            {head.phone}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
                         <Mail size={14} />
@@ -302,7 +303,7 @@ export default function ContactPage() {
 
             <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
               {[
-                { name: "Pulkit Dosi", email: "pulkitdosi@jklu.edu.in", bgColor: "bg-brand-ink text-white" }
+                { name: "Pulkit Dosi", phone: "+91 98877 88899", email: "pulkitdosi@jklu.edu.in", bgColor: "bg-brand-ink text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -315,6 +316,19 @@ export default function ContactPage() {
                     <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">Feedback & Registration Lead</span>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center font-mono text-xs font-bold space-y-4">
+                    {head.phone && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
+                          <Phone size={14} />
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                            {head.phone}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
                         <Mail size={14} />
@@ -335,6 +349,7 @@ export default function ContactPage() {
         </div>
 
       </div>
+    </div>
     </div>
   );
 }

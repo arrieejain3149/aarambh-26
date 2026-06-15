@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 
-import { verifyCashfreeSignature } from '@/lib/security';
+import { verifyCashfreeSignature, cashfreeSecretKey, isProd } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
@@ -13,23 +13,47 @@ export async function POST(req: Request) {
     const signature = req.headers.get('x-webhook-signature') || '';
     const timestamp = req.headers.get('x-webhook-timestamp') || '';
     
-    if (process.env.CASHFREE_SECRET_KEY) {
+    const isProduction = isProd || process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      if (!cashfreeSecretKey) {
+        console.error("CRITICAL SECURITY AUDIT: Webhook signature verification failed. Cashfree Secret Key is missing in production.");
+        return NextResponse.json({ error: 'Signature verification failed: Missing secret key' }, { status: 401 });
+      }
       if (!signature || !timestamp) {
-        console.warn("Unauthorized: Missing Cashfree signature headers on webhook!");
+        console.warn("Unauthorized: Missing Cashfree signature headers on webhook in production!");
         return NextResponse.json({ error: 'Missing security signature headers' }, { status: 401 });
       }
-      
       const isValid = verifyCashfreeSignature(signature, rawBody, timestamp);
       if (!isValid) {
-        console.error("CRITICAL SECURITY DANGER: Fake Cashfree Webhook signature mismatch detected!");
+        console.error("CRITICAL SECURITY DANGER: Fake Cashfree Webhook signature mismatch detected in production!");
         return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
       }
       console.log("Cashfree Webhook signature successfully verified.");
     } else {
-      console.warn("Bypassing webhook signature verification because CASHFREE_SECRET_KEY is missing in local environment.");
+      if (cashfreeSecretKey) {
+        if (!signature || !timestamp) {
+          console.warn("Unauthorized: Missing Cashfree signature headers on webhook!");
+          return NextResponse.json({ error: 'Missing security signature headers' }, { status: 401 });
+        }
+        const isValid = verifyCashfreeSignature(signature, rawBody, timestamp);
+        if (!isValid) {
+          console.error("Fake Cashfree Webhook signature mismatch detected!");
+          return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
+        }
+        console.log("Cashfree Webhook signature successfully verified.");
+      } else {
+        console.warn("Bypassing webhook signature verification because Cashfree Secret Key is missing in local environment.");
+      }
     }
 
-    const payload = JSON.parse(rawBody);
+    let payload;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch (err) {
+      console.warn("Invalid or empty webhook JSON payload received:", rawBody);
+      return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
+    }
     
     console.log("Cashfree Webhook Received:", payload.event);
 
@@ -44,25 +68,26 @@ export async function POST(req: Request) {
       console.log(`Processing payment success webhook for Order: ${orderId}, Payment ID: ${paymentId}`);
 
       if (orderId && paymentId) {
-        // Check if registration was already finalized
-        const q = query(collection(db, 'registrations'), where('orderId', '==', orderId));
-        const querySnapshot = await getDocs(q);
+        // Check if registration was already finalized using Admin SDK
+        const querySnapshot = await adminDb.collection('registrations')
+          .where('orderId', '==', orderId)
+          .get();
         
         if (querySnapshot.empty) {
           // Retrieve pending registration details from pendingRegistrations
-          const pendingRef = doc(db, 'pendingRegistrations', orderId);
-          const pendingSnap = await getDoc(pendingRef);
+          const pendingRef = adminDb.collection('pendingRegistrations').doc(orderId);
+          const pendingSnap = await pendingRef.get();
           
-          if (pendingSnap.exists()) {
+          if (pendingSnap.exists) {
             const pendingData = pendingSnap.data();
             const { finalizeRegistration } = await import('@/lib/registrationHelper');
             
             // Finalize registration and mark pending as completed
             console.log(`Finalizing registration from webhook for order ${orderId}`);
             await finalizeRegistration(pendingData.formData, paymentId.toString(), orderId);
-            await updateDoc(pendingRef, {
+            await pendingRef.update({
               status: 'completed',
-              completedAt: serverTimestamp()
+              completedAt: FieldValue.serverTimestamp()
             });
             console.log(`Successfully finalized pending registration for order ${orderId} via webhook.`);
           } else {
@@ -94,15 +119,16 @@ export async function POST(req: Request) {
         
         console.log(`Reconciling payment for Order: ${orderId}, UTR: ${paymentId}`);
         
-        // 1. Update Firestore registration document
+        // 1. Update Firestore registration document using Admin SDK
         let docId = "";
         try {
-          const q = query(collection(db, 'registrations'), where('orderId', '==', orderId));
-          const querySnapshot = await getDocs(q);
+          const querySnapshot = await adminDb.collection('registrations')
+            .where('orderId', '==', orderId)
+            .get();
           if (!querySnapshot.empty) {
             const docRef = querySnapshot.docs[0].ref;
             docId = querySnapshot.docs[0].id;
-            await updateDoc(docRef, {
+            await docRef.update({
               settlementId: settlementId
             });
             console.log(`Firestore registration updated for order ${orderId} with Settlement ID ${settlementId}.`);

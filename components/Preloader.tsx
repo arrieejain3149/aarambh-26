@@ -1,68 +1,37 @@
 'use client';
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 interface PreloaderProps {
   onComplete: () => void;
 }
 
 export default function Preloader({ onComplete }: PreloaderProps) {
-  // Automatically trigger completion after animation sequence
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 1500); // 1.5 seconds total preloader duration
-    return () => clearTimeout(timer);
-  }, [onComplete]);
 
   return (
-    <motion.div
-      initial={{ y: 0 }}
-      exit={{ y: '-100%' }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-      className="fixed inset-0 z-[9999] bg-brand-ink flex flex-col items-center justify-center overflow-hidden"
-    >
-      {/* Abstract Background Elements inside Preloader */}
-      <div className="absolute inset-0 bg-halftone-cloud opacity-10" />
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-        className="absolute w-[800px] h-[800px] border-[20px] border-brand-pink/20 rounded-full border-dashed"
-      />
-
-      {/* 3D Animated Logo Container */}
-      <motion.div
-        initial={{ scale: 0.5, rotateY: 90, opacity: 0 }}
-        animate={{ scale: 1, rotateY: 0, opacity: 1 }}
-        transition={{ duration: 1.2, type: 'spring', bounce: 0.5 }}
-        className="relative z-10"
-        style={{ perspective: 1000 }}
+    <div className="w-full h-full bg-[#040404] flex flex-col items-center justify-center overflow-hidden">
+      <button
+        onClick={onComplete}
+        className="absolute top-6 right-6 text-[10px] sm:text-xs font-mono font-bold tracking-[0.2em] uppercase bg-brand-ink/40 backdrop-blur-md text-brand-cloud border border-brand-cloud/20 px-4 py-2 rounded hover:border-brand-orange hover:text-brand-orange hover:shadow-[0_0_15px_rgba(255,154,0,0.2)] hover:bg-brand-orange/5 transition-all duration-300 z-[100] flex items-center gap-2"
       >
-        <div className="relative flex justify-center items-center">
-          <Image 
-            src="/aarambh_logo_removebg.png" 
-            alt="AARAMBH 26" 
-            width={600} 
-            height={300} 
-            className="w-[80vw] max-w-[600px] object-contain drop-shadow-[8px_8px_0px_#030404]"
-            priority
-          />
-        </div>
-      </motion.div>
+        <span>SKIP</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
 
-      {/* Loading Bar */}
-      <div className="absolute bottom-20 w-64 h-3 bg-brand-cloud/20 border-2 border-brand-cloud rounded-full overflow-hidden p-0.5">
-        <motion.div
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 2.2, ease: 'easeInOut' }}
-          className="h-full bg-brand-pink rounded-full"
+      <div className="relative w-full h-full flex items-center justify-center">
+        <video
+          src="/videos/loading%20screen.webm"
+          autoPlay
+          muted
+          playsInline
+          onEnded={onComplete}
+          onContextMenu={(e) => e.preventDefault()}
+          controlsList="nodownload"
+          disablePictureInPicture
+          className="w-[90%] h-[90%] object-contain md:w-4/5 md:h-4/5 pointer-events-none"
         />
       </div>
-      <div className="absolute bottom-12 font-display font-black text-brand-cloud uppercase tracking-widest text-lg">
-        आरंभ हो रहा है...
-      </div>
-    </motion.div>
+    </div>
   );
 }

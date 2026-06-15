@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { finalizeRegistration } from '@/lib/registrationHelper';
+import { validateRegistrationNumber } from '@/lib/utils';
 
-import { isRateLimited, sanitizeObject } from '@/lib/security';
+import { isRateLimited, sanitizeObject, isProd, cashfreeAppId, cashfreeSecretKey, formatPhoneNumber } from '@/lib/security';
 
 // Initialize Cashfree
 const cashfree = new Cashfree(
-  process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' 
-    ? CFEnvironment.PRODUCTION 
-    : CFEnvironment.SANDBOX,
-  process.env.CASHFREE_APP_ID || '',
-  process.env.CASHFREE_SECRET_KEY || ''
+  isProd ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+  cashfreeAppId,
+  cashfreeSecretKey
 );
 cashfree.XApiVersion = '2023-08-01';
 
@@ -25,16 +24,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Too many attempts. Please try again in a minute.' }, { status: 429 });
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (err) {
+      console.warn("Invalid or empty registration JSON body received:", err);
+      return NextResponse.json({ error: 'Invalid or empty JSON payload' }, { status: 400 });
+    }
     const { action, honeypot, ...rawData } = body;
     
-    // Standardize mobile numbers to always format as +91 1234567890
-    const formatPhoneNumber = (phone: string): string => {
-      if (!phone) return '';
-      return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
-        return `+91 ${digits}`;
-      });
-    };
     if (rawData.mobile) rawData.mobile = formatPhoneNumber(rawData.mobile);
     if (rawData.fatherMobile) rawData.fatherMobile = formatPhoneNumber(rawData.fatherMobile);
     if (rawData.motherMobile) rawData.motherMobile = formatPhoneNumber(rawData.motherMobile);
@@ -50,26 +48,27 @@ export async function POST(req: Request) {
 
     if (action === 'CREATE_ORDER') {
       try {
-        const orderId = `order_${Date.now()}`;
-        const orderAmount = data.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500;
-
-        console.log("Saving pending registration for order ID:", orderId);
-        if (!db) {
-          throw new Error("Firestore db is null inside CREATE_ORDER. Firebase may not be configured properly.");
+        if (!data.registrationNumber || !validateRegistrationNumber(data.registrationNumber)) {
+          console.warn("Invalid registration number received:", data.registrationNumber);
+          return NextResponse.json({ error: 'Invalid Application Number format (E.g. JKLU/BBA/2025/0310)' }, { status: 400 });
         }
 
-        // 1. Save pending registration details under pendingRegistrations
-        await setDoc(doc(db, 'pendingRegistrations', orderId), {
+        const orderId = `order_${Date.now()}`;
+        const orderAmount = (data.coupon?.toUpperCase() === 'TESTTEST') ? 1 : 2500;
+
+        console.log("Saving pending registration for order ID:", orderId);
+        // 1. Save pending registration details under pendingRegistrations using Admin SDK
+        await adminDb.collection('pendingRegistrations').doc(orderId).set({
           formData: data,
           orderId: orderId,
           amount: orderAmount,
-          createdAt: serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
           status: 'pending'
         });
         console.log("Pending registration saved.");
 
         // MOCK MODE: If no keys, return a mock session for testing
-        if (!process.env.CASHFREE_APP_ID) {
+        if (!cashfreeAppId) {
           return NextResponse.json({ 
             order_id: orderId,
             payment_session_id: "mock_session_id",
@@ -93,6 +92,18 @@ export async function POST(req: Request) {
           cleanPhone = '9999999999';
         }
 
+        let host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'aarambh.jklu.edu.in';
+        if (host.includes('0.0.0.0')) {
+          host = host.replace('0.0.0.0', 'localhost');
+        }
+        const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+        
+        // Prevent Host Header Injection: In production, strictly use the known safe domain.
+        // During local development, allow localhost.
+        const origin = isLocal 
+          ? ((isProd) ? `https://${host}` : `http://${host}`)
+          : (process.env.NEXT_PUBLIC_SITE_URL || 'https://aarambh.jklu.edu.in');
+
         const response = await cashfree.PGCreateOrder({
           order_id: orderId,
           order_amount: orderAmount,
@@ -104,7 +115,7 @@ export async function POST(req: Request) {
             customer_phone: cleanPhone,
           },
           order_meta: {
-            return_url: `${new URL(req.url).origin}/register?order_id={order_id}`.replace(/^http:\/\//i, 'https://'),
+            return_url: `${origin}/register?order_id={order_id}`,
           }
         });
         console.log("Cashfree order created successfully.");
@@ -114,19 +125,31 @@ export async function POST(req: Request) {
           payment_session_id: response.data.payment_session_id 
         });
       } catch (err: any) {
-        console.error("CREATE_ORDER error detail:", err);
-        return NextResponse.json({ error: `CREATE_ORDER failed: ${err.message || err}` }, { status: 500 });
+        console.error("CREATE_ORDER error detail:", err.response?.data || err);
+        return NextResponse.json({ error: `CREATE_ORDER failed: ${err.response?.data ? JSON.stringify(err.response.data) : err.message || err}` }, { status: 500 });
       }
     }
 
     if (action === 'VERIFY_PAYMENT') {
-      const { orderId, formData } = data;
-      console.log("Verifying payment for order:", orderId);
+      const { orderId } = data;
+      console.log("Verifying payment securely for order:", orderId);
       
+      // Fetch the secure pending registration details from Firestore using Admin SDK
+      const pendingRef = adminDb.collection('pendingRegistrations').doc(orderId);
+      const pendingSnap = await pendingRef.get();
+      if (!pendingSnap.exists) {
+        console.warn(`No pending registration details found in Firestore for order ${orderId}`);
+        return NextResponse.json({ error: 'Pending registration details not found' }, { status: 404 });
+      }
+
+      const pendingData = pendingSnap.data();
+      const dbFormData = pendingData.formData;
+
       // If we are in development and don't have keys, allow bypass for testing UI
-      if (!process.env.CASHFREE_APP_ID) {
-        console.warn("CASHFREE_APP_ID missing, bypassing verification for testing.");
-        const regId = await finalizeRegistration(formData, "mock_payment_id", orderId);
+      // If we are in development and don't have keys, allow bypass for testing UI
+      if (!cashfreeAppId) {
+        console.warn("Cashfree App ID missing, bypassing verification for testing.");
+        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", orderId);
         return NextResponse.json({ success: true, id: regId });
       }
 
@@ -140,7 +163,7 @@ export async function POST(req: Request) {
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      const regId = await finalizeRegistration(formData, successPayment.cf_payment_id.toString(), orderId);
+      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), orderId);
       return NextResponse.json({ success: true, id: regId });
     }
 

@@ -371,10 +371,12 @@ export default function LoginPage() {
               <Image 
                 src="/logo.svg" 
                 alt="AARAMBH '26" 
-                width={200} 
-                height={46} 
+                width={834} 
+                height={193} 
                 priority
+                unoptimized
                 className="h-10 w-auto object-contain"
+                style={{ width: 'auto' }}
               />
             </div>
             <h1 className="text-xl font-display font-black tracking-wider uppercase text-brand-ink">
@@ -453,7 +455,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               suppressHydrationWarning
-              className="w-full bg-brand-orange hover:bg-[#E68A00] text-brand-ink font-black py-4 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+              className="comic-btn-orange w-full py-4"
             >
               {loading ? (
                 <CustomLoaderIcon className="text-brand-ink" size={18} />

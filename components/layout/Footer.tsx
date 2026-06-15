@@ -313,7 +313,7 @@ export default function Footer() {
         <div className="flex justify-start md:justify-end items-center">
           <div className="relative border-4 border-brand-ink shadow-[6px_6px_0px_0px_#030404] rounded-xl overflow-hidden group w-full max-w-[280px] aspect-[4/3] bg-brand-cloud">
             <Image
-              src="/footer_image.webp"
+              src="/images/footer_image.webp"
               alt="JKLU Campus View"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -349,15 +349,15 @@ export default function Footer() {
       </div>
 
       {/* DESIGNED AND DEVELOPED BY */}
-      <div className="text-center text-xs md:text-sm font-mono text-brand-ink/65 tracking-wider font-bold mb-10 max-w-7xl mx-auto border-b-2 border-brand-ink/10 pb-6 flex items-center justify-center gap-1.5 uppercase">
+      <div className="relative z-20 text-center text-[10px] sm:text-xs md:text-sm font-mono text-brand-ink/65 tracking-wider font-bold mb-10 max-w-7xl mx-auto border-b-2 border-brand-ink/10 pb-6 flex flex-wrap items-center justify-center gap-1.5 uppercase">
         <Link 
           href="/credits" 
-          className="hover:text-brand-pink transition-colors flex items-center gap-1.5 cursor-pointer"
+          className="hover:text-brand-pink transition-colors flex flex-wrap items-center justify-center gap-1.5 cursor-pointer px-4 py-2 sm:p-0"
           id="tech-credits-link"
         >
-          Designed and Developed with{" "}
-          <HeartIcon className="text-brand-pink shrink-0 animate-pulse" size={14} />{" "}
-          by Tech Team
+          <span>Designed and Developed with</span>
+          <HeartIcon className="text-brand-pink shrink-0 animate-pulse" size={14} />
+          <span>by Tech Team</span>
         </Link>
       </div>
 
@@ -370,13 +370,13 @@ export default function Footer() {
         <div className="flex items-center gap-6">
           <Link href="/" className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex">
             <Image
-              src="/logo.svg"
+              src="/logos/Aarambh_new_logo.svg"
               alt="Aarambh '26 Logo"
-              width={834}
-              height={193}
-              className="h-10 w-auto opacity-95 object-contain"
-              style={{ width: 'auto', height: '40px' }}
-              priority
+              width={1222}
+              height={482}
+              unoptimized
+              className="h-20 w-auto opacity-95 object-contain"
+              style={{ width: 'auto', height: '80px' }}
             />
           </Link>
           <a 
@@ -386,13 +386,13 @@ export default function Footer() {
             className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex"
           >
             <Image
-              src="/jklu_logo.svg"
+              src="/logos/jklu_logo.svg"
               alt="JK Lakshmipat University Logo"
-              width={120}
-              height={40}
+              width={819}
+              height={916}
+              unoptimized
               className="h-12 w-auto opacity-95 object-contain"
               style={{ width: 'auto', height: '48px' }}
-              priority
             />
           </a>
           <button

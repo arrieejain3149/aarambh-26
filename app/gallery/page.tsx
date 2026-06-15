@@ -3,337 +3,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
 import ThemeBackground from '@/components/layout/ThemeBackground'
 
-// ── Photos from public/photos/web ──
-interface Photo {
-  id: number
-  src: string
-  label: string
-}
-
-const PHOTOS: Photo[] = [
-  {
-    "id": 1,
-    "src": "/photos/web/MCS00113.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 2,
-    "src": "/photos/web/MCS00486.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 3,
-    "src": "/photos/web/MCS00734.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 4,
-    "src": "/photos/web/MCS01361.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 5,
-    "src": "/photos/web/MCS01446.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 6,
-    "src": "/photos/web/MCS01565.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 7,
-    "src": "/photos/web/MCS01588.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 8,
-    "src": "/photos/web/MCS01598.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 9,
-    "src": "/photos/web/MCS01616.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 10,
-    "src": "/photos/web/MCS01619.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 11,
-    "src": "/photos/web/MCS01630.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 12,
-    "src": "/photos/web/MCS02240.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 13,
-    "src": "/photos/web/MCS02341.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 14,
-    "src": "/photos/web/MCS02351.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 15,
-    "src": "/photos/web/MCS02401.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 16,
-    "src": "/photos/web/MCS02551.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 17,
-    "src": "/photos/web/MCS02708.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 18,
-    "src": "/photos/web/MCS02747.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 19,
-    "src": "/photos/web/MCS03220.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 20,
-    "src": "/photos/web/MCS03237.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 21,
-    "src": "/photos/web/MCS03264.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 22,
-    "src": "/photos/web/MCS03277.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 23,
-    "src": "/photos/web/MCS03308.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 24,
-    "src": "/photos/web/MCS03352.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 25,
-    "src": "/photos/web/MCS03543.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 26,
-    "src": "/photos/web/MCS03615.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 27,
-    "src": "/photos/web/MCS03804.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 28,
-    "src": "/photos/web/MCS03882.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 29,
-    "src": "/photos/web/MCS04202.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 30,
-    "src": "/photos/web/MCS04213.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 31,
-    "src": "/photos/web/MCS04257.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 32,
-    "src": "/photos/web/MCS04925.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 33,
-    "src": "/photos/web/MCS05021.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 34,
-    "src": "/photos/web/MCS05036.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 35,
-    "src": "/photos/web/MCS05143.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 36,
-    "src": "/photos/web/MCS05159.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 37,
-    "src": "/photos/web/MCS05177.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 38,
-    "src": "/photos/web/MCS05226.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 39,
-    "src": "/photos/web/MCS05230.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 40,
-    "src": "/photos/web/MCS05344.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 41,
-    "src": "/photos/web/MCS05389.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 42,
-    "src": "/photos/web/MCS05430.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 43,
-    "src": "/photos/web/MCS05432.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 44,
-    "src": "/photos/web/MCS05434.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 45,
-    "src": "/photos/web/MCS05448.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 46,
-    "src": "/photos/web/MCS05466.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 47,
-    "src": "/photos/web/MCS05527.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 48,
-    "src": "/photos/web/MCS05585.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 49,
-    "src": "/photos/web/MCS05620.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 50,
-    "src": "/photos/web/MCS05702.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 51,
-    "src": "/photos/web/MCS05747.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 52,
-    "src": "/photos/web/MCS05754.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 53,
-    "src": "/photos/web/MCS05788.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 54,
-    "src": "/photos/web/MCS05795.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 55,
-    "src": "/photos/web/MCS05807.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 56,
-    "src": "/photos/web/1.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 57,
-    "src": "/photos/web/2.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 58,
-    "src": "/photos/web/3.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 59,
-    "src": "/photos/web/4.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 60,
-    "src": "/photos/web/5.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 61,
-    "src": "/photos/web/6.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 62,
-    "src": "/photos/web/7.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 63,
-    "src": "/photos/web/8.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 64,
-    "src": "/photos/web/9.webp",
-    "label": "Aarambh 26 Moment"
-  }
-];
+import { PHOTOS, type Photo } from '@/constants/photos'
 
 // Populate sliding banner lists with larger variety of photos
 const col1Images = PHOTOS.slice(0, 16).map(p => p.src)
@@ -408,20 +82,23 @@ export default function GalleryLanding() {
     y.set(0)
   }
 
-  const handleExitMagic = () => {
-    router.push('/#gallery-showcase')
-  }
-
   // ── Tunnel Setup and Animation Loop ──
   useEffect(() => {
     if (!mounted || !tunnelRef.current) return
 
+    const isMobile = window.innerWidth <= 768
+    const cardCount = isMobile ? 32 : CARD_COUNT
+    const zStep = isMobile ? 120 : BASE_Z_STEP
+    const zFar = isMobile ? -3840 : BASE_Z_FAR
+
+    recycleCounterRef.current = cardCount % PHOTOS.length
+
     const scene = tunnelRef.current
     scene.innerHTML = ''
 
-    for (let i = 0; i < CARD_COUNT; i++) {
+    for (let i = 0; i < cardCount; i++) {
       const wallIdx = i % WALL_POSITIONS.length
-      const baseZ = BASE_Z_FAR + (i * BASE_Z_STEP)
+      const baseZ = zFar + (i * zStep)
       const photoIdx = i % PHOTOS.length
       const photo = PHOTOS[photoIdx]
 
@@ -437,11 +114,9 @@ export default function GalleryLanding() {
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08"
-        card.style.boxShadow = '0 16px 48px rgba(255,154,0,0.4), 0 0 0 2px rgba(255,154,0,0.6)'
       }
       card.onmouseleave = () => {
         card.dataset.hoverScale = "1"
-        card.style.boxShadow = ''
       }
 
       card.style.left = '50%'
@@ -495,7 +170,7 @@ export default function GalleryLanding() {
 
           if (z > 300) {
             // Card flew past the viewer — send it to the far back
-            const newBaseZ = baseZ - (CARD_COUNT * BASE_Z_STEP)
+            const newBaseZ = baseZ - (cardCount * zStep)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
 
@@ -513,9 +188,9 @@ export default function GalleryLanding() {
               card.dataset.photoId = String(nextPhoto.id)
               card.dataset.photoSrc = nextPhoto.src
             }
-          } else if (z < BASE_Z_FAR - 100) {
+          } else if (z < zFar - 100) {
             // Card scrolled backward past the far end — bring it to the front
-            const newBaseZ = baseZ + (CARD_COUNT * BASE_Z_STEP)
+            const newBaseZ = baseZ + (cardCount * zStep)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
 
@@ -548,10 +223,21 @@ export default function GalleryLanding() {
           card.style.left = `${currentLeft}%`
           card.style.top = `${currentTop}%`
 
-          const scale = 800 / (800 - z)
-          const hS = parseFloat(card.dataset.hoverScale || "1")
+          const scale = 1400 / (1400 - z)
+          
+          let curHS = parseFloat(card.dataset.currentHoverScale || "1")
+          const targetHS = parseFloat(card.dataset.hoverScale || "1")
+          curHS += (targetHS - curHS) * 0.18
+          card.dataset.currentHoverScale = String(curHS)
 
-          card.style.transform = `translate(-50%, -50%) scale(${scale * hS})`
+          // Boost scale only for cards in the focal/foreground zone — tunnel cards stay original size
+          const isMobileViewport = window.innerWidth <= 768
+          const maxFocusScale = isMobileViewport ? 1.2 : 1.6
+          const focusScale = z > -100 ? maxFocusScale
+            : z > -400 ? 1 + ((z + 400) / 300) * (maxFocusScale - 1)
+            : 1
+
+          card.style.transform = `translate(-50%, -50%) scale(${scale * curHS * focusScale})`
 
           let opacity = 0.02
           if (z < -3600) {
@@ -633,7 +319,7 @@ export default function GalleryLanding() {
         if (lightboxId !== null) {
           setLightboxId(null)
         } else {
-          router.push('/')
+          router.push('/#gallery-showcase')
         }
       } else if (lightboxId !== null) {
         const currentIdx = PHOTOS.findIndex(p => p.id === lightboxId)
@@ -650,6 +336,8 @@ export default function GalleryLanding() {
 
   const currentIdx = lightboxId !== null ? PHOTOS.findIndex(p => p.id === lightboxId) : -1
   const currentPhoto = currentIdx >= 0 ? PHOTOS[currentIdx] : null
+
+
 
   return (
     <>
@@ -692,25 +380,24 @@ export default function GalleryLanding() {
         .gl-slider-column {
           position: absolute;
           top: -10%;
-          width: 145px;
+          width: 100px;
           height: 120%;
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          gap: 22px;
+          gap: 14px;
           z-index: 2;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.75;
         }
 
         .gl-slider-img-container {
           width: 100%;
-          height: 195px;
+          height: 130px;
           position: relative;
-          border: 3px solid #030404;
-          border-radius: 14px;
+          border: 1px solid #030404;
+          border-radius: 10px;
           overflow: hidden;
-          box-shadow: 5px 5px 0px 0px #030404;
           background: #030404;
         }
 
@@ -866,17 +553,14 @@ export default function GalleryLanding() {
           text-decoration: none;
           cursor: pointer;
           box-shadow: 5px 5px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: all 0.2s ease-in-out;
         }
         .gl-cta:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 8px 8px 0px 0px #030404;
           background: #FF9A00;
           color: #030404;
         }
         .gl-cta:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          opacity: 0.85;
         }
 
         .gl-corner-tag {
@@ -907,28 +591,44 @@ export default function GalleryLanding() {
           height: 100vh;
           position: absolute;
           inset: 0;
-          perspective: 800px;
+          perspective: 1400px;
           perspective-origin: 50% 50%;
           overflow: hidden;
         }
 
         .tunnel-card {
           position: absolute;
-          width: clamp(240px, 35vw, 500px);
-          aspect-ratio: 3 / 2;
-          border: 3.5px solid #030404;
+          border: 1px solid #030404;
           border-radius: 12px;
           overflow: hidden;
-          will-change: transform, opacity;
+          will-change: opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 6px 6px 0px 0px #030404;
-          transition: box-shadow 0.25s ease, opacity 0.25s ease;
+          transition: opacity 0.25s ease;
+          width: clamp(120px, 16vw, 260px);
+          aspect-ratio: 3 / 2;
         }
 
-        .tunnel-card:hover {
-          box-shadow: 10px 10px 0px 0px #FF9A00, 16px 16px 0px 0px #030404;
+        @media (max-width: 768px) {
+          .tunnel-card {
+            width: clamp(100px, 45vw, 180px);
+            aspect-ratio: 2 / 3;
+          }
+        }
+
+        .tunnel-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          pointer-events: none;
+          border-radius: 10px;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: auto;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          transform: translateZ(0);
         }
 
         /* Neo-Brutalism Exit the Magic button */
@@ -943,16 +643,13 @@ export default function GalleryLanding() {
           border-radius: 12px;
           cursor: pointer;
           box-shadow: 6px 6px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: all 0.2s ease-in-out;
         }
         .tunnel-exit-btn:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 9px 9px 0px 0px #030404;
           background: #FF188C;
         }
         .tunnel-exit-btn:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          opacity: 0.85;
         }
 
         /* Neo-Brutalism Scroll to Explore pill */
@@ -981,20 +678,18 @@ export default function GalleryLanding() {
         }
 
         .gp-lb-img {
-          max-width: 86vw;
-          max-height: 82vh;
+          max-width: 94vw;
+          max-height: 92vh;
           object-fit: contain;
-          border: 4px solid #030404;
+          border: 1px solid #030404;
           border-radius: 20px;
-          box-shadow: 16px 16px 0px 0px #030404;
         }
 
         @media (max-width: 768px) {
           .gp-lb-img {
-            max-width: 96vw;
-            max-height: 88vh;
+            max-width: 98vw;
+            max-height: 92vh;
             border-radius: 12px;
-            box-shadow: 8px 8px 0px 0px #030404;
           }
         }
 
@@ -1029,12 +724,10 @@ export default function GalleryLanding() {
           align-items: center;
           justify-content: center;
           box-shadow: 4px 4px 0px 0px #030404;
-          transition: all 0.1s;
+          transition: all 0.2s ease-in-out;
           z-index: 100000;
         }
         .gp-lb-arrow:hover { 
-          transform: translate(-2px, -2px);
-          box-shadow: 6px 6px 0px 0px #030404;
           background: #FF9A00;
         }
         .gp-lb-prev { left: 24px; }
@@ -1048,6 +741,20 @@ export default function GalleryLanding() {
             top: 90px;
             left: 50%;
             transform: translateX(-50%) translate(0, 0);
+          }
+          .gp-lb-arrow {
+            top: auto;
+            bottom: 24px;
+            transform: none;
+            width: 48px;
+            height: 48px;
+          }
+          .gp-lb-prev {
+            left: calc(50% - 60px);
+          }
+          .gp-lb-next {
+            right: calc(50% - 60px);
+            left: auto;
           }
         }
       `}} />
@@ -1081,14 +788,15 @@ export default function GalleryLanding() {
             }} />
 
             {/* Exit the Magic */}
-            <button 
-              onClick={handleExitMagic}
+            <Link 
+              href="/#gallery-showcase"
               className="tunnel-exit-btn"
+              style={{ textDecoration: 'none', display: 'inline-block' }}
             >
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: '#030404', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 800 }}>
                 Go Back
               </span>
-            </button>
+            </Link>
 
 
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, HelpCircle, MessageSquare } from 'lucide-react';
 import { FAQS_DATA, FAQ_CATEGORIES } from '@/constants/faqs';
+import PageGlowBackground from '@/components/ui/PageGlowBackground';
 
 export default function FAQPage() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -39,10 +40,7 @@ export default function FAQPage() {
       {/* Retro sketchbook grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
 
-      {/* Dynamic Ambient Gradient Spotlights (Rich Color Depths) */}
-      <div className="absolute top-0 left-0 w-[450px] h-[450px] rounded-full bg-brand-pink/15 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[550px] h-[550px] rounded-full bg-brand-orange/15 blur-[145px] pointer-events-none z-0" />
-      <div className="absolute top-[40%] left-[-100px] w-[400px] h-[400px] rounded-full bg-brand-blue/10 blur-[110px] pointer-events-none z-0" />
+      <PageGlowBackground />
 
       {/* Floating Dynamic Comic Props */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
@@ -286,16 +284,16 @@ export default function FAQPage() {
 
         {/* Support Section */}
         <section className="mt-20 text-center relative z-10">
-          <div className="border-comic bg-brand-ink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic-lg -rotate-1">
-            <h3 className="font-display font-black text-lg uppercase mb-2 text-brand-pink">STILL IN A CONFUSION?</h3>
-            <p className="text-xs uppercase tracking-wide opacity-90 mb-4 font-bold">
+          <div className="border-comic bg-white text-brand-ink max-w-xl mx-auto p-6 rounded-xl shadow-comic -rotate-1">
+            <h3 className="font-display font-black text-2xl uppercase mb-2 text-brand-pink drop-shadow-[2px_2px_0px_#030404]">STILL IN A CONFUSION?</h3>
+            <p className="text-xs uppercase tracking-wide text-brand-ink/80 mb-5 font-bold">
               Our support team and volunteer student council are active 24/7 to resolve your doubts!
             </p>
             <a
               href="https://jklu.edu.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-comic bg-brand-orange text-brand-ink px-4 py-2 font-display text-xs font-black uppercase tracking-wider shadow-comic-sm hover:scale-[1.03] transition-transform active:scale-[0.98]"
+              className="inline-flex items-center gap-2 border-comic bg-brand-pink text-brand-cloud px-5 py-2.5 font-display text-xs font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
             >
               CONTACT ADMISSIONS/STUDENT AFFAIRS OFFICE
             </a>

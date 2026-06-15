@@ -129,7 +129,7 @@ const LEADERS: TeamMember[] = [
     id: "1",
     name: "Devam Gupta",
     role: "CORE LEADER",
-    tagline: "Mastermind of Core Systems & Architecture",
+    tagline: "",
     bio: "Next.js mastermind crafting robust database layers and blazing-fast server systems.",
     detailedBio: "Devam is the primary architect behind Aarambh's server infrastructure and systems. He specializes in designing high-performance Next.js API routes, Firestore schemas, database integrity policies, and automated system scripts. When not writing clean code blocks, he's optimizing query response speeds and configuring server layers.",
     skills: ["React & Next.js", "TypeScript", "Node.js & Express", "Firestore & DB Rules", "Performance Eng."],
@@ -138,7 +138,7 @@ const LEADERS: TeamMember[] = [
       "Designed secure database rules & scan endpoint authentications",
       "Configured API protection routes and high-speed registration pipelines"
     ],
-    image: "/Team Photos/Tech Team/devam.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/devam.png",
     themeColor: "from-[#FF188C] via-pink-500 to-[#FF9A00]",
     glowColor: "rgba(139, 92, 246, 0.25)",
     accentColor: "#8b5cf6",
@@ -157,7 +157,7 @@ const LEADERS: TeamMember[] = [
     id: "2",
     name: "Yash Bansal",
     role: "CORE LEADER",
-    tagline: "Interaction Architect & Design Wizard",
+    tagline: "",
     bio: "Pixel-perfect designer creating high-fidelity interactive layouts and neobrutalist grids.",
     detailedBio: "Yash brings concepts to life with his bold, graphic layouts and tactile front-end systems. He architected the visual design guidelines, color spectrum tokens, custom typography grids, and micro-interactive page transitions that define Aarambh's unique brand representation.",
     skills: ["UI/UX System Design", "Tailwind CSS", "Framer Motion", "Interaction Engineering", "Responsive Grids"],
@@ -166,7 +166,7 @@ const LEADERS: TeamMember[] = [
       "Implemented responsive global component grids and animations",
       "Developed high-fidelity page transitions and micro-interaction states"
     ],
-    image: "/Team Photos/Team Leaders/yashbansal_standing.webp?v=5",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Team Leaders/yashbansal_standing.webp?v=5",
     themeColor: "from-[#FF9A00] via-orange-500 to-[#FF188C]",
     glowColor: "rgba(251, 191, 36, 0.25)",
     accentColor: "#fbbf24",
@@ -188,7 +188,7 @@ const VOLUNTEERS: TeamMember[] = [
     id: "3",
     name: "ASHUTOSH YADAV",
     role: "VOLUNTEER",
-    tagline: "Surgical Layout & Component Engineer",
+    tagline: "",
     bio: "Assembling responsive web components with surgical precision.",
     detailedBio: "Ashutosh is responsible for crafting high-fidelity components across the site. He ensures that complex layouts maintain proper grid alignment, responsive scaling, and click target sizes.",
     skills: ["React", "HTML5", "CSS Grid", "Component Architecture"],
@@ -197,7 +197,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Optimized responsive layout viewports for mobile screens",
       "Reviewed click target zones and alignment rules across the app"
     ],
-    image: "/Team Photos/Tech Team/ashutosh.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/ashutosh.png",
     themeColor: "from-[#0D21DD] to-[#FF188C]",
     glowColor: "rgba(236, 72, 153, 0.25)",
     accentColor: "#ec4899",
@@ -211,7 +211,7 @@ const VOLUNTEERS: TeamMember[] = [
     id: "4",
     name: "RASHI KATIYAR",
     role: "VOLUNTEER",
-    tagline: "Dialogue Crafter & Slogan Strategist",
+    tagline: "",
     bio: "Crafting bold copy and high-impact digital messaging.",
     detailedBio: "Rashi shapes Aarambh's visual dialogue. She is the creative copywriter behind all the snappy starburst slogans, system notifications, and descriptive details across the portal.",
     skills: ["Copywriting", "Branding", "Content Strategy", "SEO"],
@@ -220,21 +220,21 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed tone-of-voice directives for core messaging",
       "Refined SEO content properties to maximize discovery rates"
     ],
-    image: "/Team Photos/Tech Team/rashi.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/rashi.png",
     themeColor: "from-[#FF188C] to-[#FF9A00]",
     glowColor: "rgba(16, 185, 129, 0.25)",
     accentColor: "#10b981",
     icon: <Terminal className="w-4 h-4" />,
     socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:ananya@jklu.edu.in" },
-    imageScale: "scale(2.15)",
-    imagePosition: "translateY(-15px)",
+    imageScale: "scale(1.5)",
+    imagePosition: "translateY(-18px)",
     bgColor: "bg-[#10b981]"
   },
   {
     id: "5",
     name: "HERAMB SHARMA",
     role: "VOLUNTEER",
-    tagline: "Query Optimizer & Database Architect",
+    tagline: "",
     bio: "Optimizing queries and scaling backend structures.",
     detailedBio: "Heramb maintains the integrity of registration transactions and database triggers. He monitors system loads, coordinates bulk data uploads, and refactors storage operations for scalability.",
     skills: ["Firestore", "NoSQL", "Data Modeling", "API Testing"],
@@ -243,7 +243,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed scalable NoSQL schemas for bulk operations",
       "Coordinated automated registration payload checks"
     ],
-    image: "/Team Photos/Tech Team/heramb.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/heramb.png",
     themeColor: "from-[#FF9A00] to-[#0D21DD]",
     glowColor: "rgba(239, 68, 68, 0.25)",
     accentColor: "#ef4444",
@@ -262,7 +262,7 @@ const VOLUNTEERS: TeamMember[] = [
     id: "6",
     name: "AALAP GOSWAMI",
     role: "VOLUNTEER",
-    tagline: "Micro-Transition & SVG Physics Coder",
+    tagline: "",
     bio: "Bringing animations to life with micro-transitions.",
     detailedBio: "Aalap ensures the portal feels tactile and reactive. He develops spring-loaded buttons, custom scrollbar visual changes, and sliding animations that respond to touch.",
     skills: ["Framer Motion", "SVG Design", "CSS Physics", "Visual FX"],
@@ -271,19 +271,26 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed reactive custom scrollbars and transition sliders",
       "Configured high-performance vector path animations"
     ],
-    image: "/tech_placeholder.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/aalap.png",
     themeColor: "from-[#0D21DD] to-[#FF188C]",
     glowColor: "rgba(14, 165, 233, 0.25)",
     accentColor: "#0ea5e9",
     icon: <Flame className="w-4 h-4" />,
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:riya@jklu.edu.in" },
+    socials: {
+      github: "https://github.com/goswamiaalap-svg",
+      linkedin: "https://www.linkedin.com/in/aalap-goswami-1b9405377/",
+      instagram: "https://www.instagram.com/goswamiaalap/",
+      email: "mailto:aalapgoswami2025@jklu.edu.in"
+    },
+    imageScale: "scale(1.1)",
+    imagePosition: "translateY(8px)",
     bgColor: "bg-[#0ea5e9]"
   },
   {
     id: "7",
     name: "ARIHANT JAIN",
     role: "VOLUNTEER",
-    tagline: "Security Shield & Authentication Guardian",
+    tagline: "",
     bio: "Securing auth systems and validating token payloads.",
     detailedBio: "Arihant implements secure access patterns. He integrated Firebase Auth policies, built server-side JWT verification schemes, and audited security rules on scanning endpoints.",
     skills: ["Firebase Auth", "API Protection", "Data Encryption", "OAuth"],
@@ -292,7 +299,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Engineered server-side JSON Web Token validations",
       "Audited scan records to prevent double-entry exploits"
     ],
-    image: "/Team Photos/Tech Team/arihant.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/arihant.png",
     themeColor: "from-[#FF188C] to-[#0D21DD]",
     glowColor: "rgba(249, 115, 22, 0.25)",
     accentColor: "#f97316",
@@ -311,7 +318,7 @@ const VOLUNTEERS: TeamMember[] = [
     id: "8",
     name: "MANANT SRIVASTAVA",
     role: "VOLUNTEER",
-    tagline: "Cypress Sweeper & E2E Testing Officer",
+    tagline: "",
     bio: "Hunting down layout bugs and performance hiccups.",
     detailedBio: "Manant coordinates layout audits and user testing sweeps. He designs comprehensive Cypress integration tests and checks layout integrity across multiple mobile platforms.",
     skills: ["Cypress", "System Testing", "Bug Tracking", "Device Sweep"],
@@ -320,7 +327,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Audited screen rendering parameters across multiple resolutions",
       "Identified and cataloged frontend bottlenecks for speedup"
     ],
-    image: "/Team Photos/Tech Team/mananat.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/mananat.png",
     themeColor: "from-[#FF9A00] to-[#FF188C]",
     glowColor: "rgba(167, 139, 250, 0.25)",
     accentColor: "#a78bfa",
@@ -334,7 +341,7 @@ const VOLUNTEERS: TeamMember[] = [
     id: "9",
     name: "PRATHAM",
     role: "VOLUNTEER",
-    tagline: "Asset Speed & Performance Tuner",
+    tagline: "",
     bio: "Optimizing asset sizes and fast loading speeds.",
     detailedBio: "Pratham oversees speed optimization. He compressed and converted project vector images, configured page caching schemas, and verified bundle splitting rules for high performance.",
     skills: ["Next/Image", "Bundle Analysis", "Web Vitals", "Asset Compression"],
@@ -343,21 +350,21 @@ const VOLUNTEERS: TeamMember[] = [
       "Evaluated Next.js dynamic bundle division configurations",
       "Audited core web vitals and speed indexes across the portal"
     ],
-    image: "/Team Photos/Tech Team/pratham.png",
-    themeColor: "from-[#0D21DD] to-[#FF9A00]",
-    glowColor: "rgba(52, 211, 153, 0.25)",
-    accentColor: "#34d399",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/pratham.png",
+    themeColor: "from-[#d946ef] to-[#4f46e5]",
+    glowColor: "rgba(217, 70, 239, 0.25)",
+    accentColor: "#d946ef",
     icon: <Zap className="w-4 h-4" />,
     socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:rohan@jklu.edu.in" },
     imageScale: "scale(1.12)",
     imagePosition: "translateY(10px)",
-    bgColor: "bg-[#34d399]"
+    bgColor: "bg-[#d946ef]"
   },
   {
     id: "10",
     name: "UDIT MISHRA",
     role: "VOLUNTEER",
-    tagline: "DNS Overlord & Cloud Orchestrator",
+    tagline: "",
     bio: "Managing CI/CD build scripts and deployment pipelines.",
     detailedBio: "Udit runs our cloud integration pipelines. He coordinates deployment builds on Vercel, designs workflow triggers, and manages DNS properties to keep downtime to zero.",
     skills: ["Vercel", "GitHub Actions", "CI/CD Orchestration", "DNS Management"],
@@ -366,7 +373,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Maintained zero-downtime DNS routing patterns",
       "Optimized build script sizes on the Vercel edge runtime"
     ],
-    image: "/Team Photos/Tech Team/udit.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/udit.png",
     themeColor: "from-[#eab308] to-[#FF9A00]",
     glowColor: "rgba(251, 191, 36, 0.25)",
     accentColor: "#fbbf24",
@@ -380,6 +387,34 @@ const VOLUNTEERS: TeamMember[] = [
     imageScale: "scale(0.95)",
     imagePosition: "translateY(8px)",
     bgColor: "bg-[#fbbf24]"
+  },
+  {
+    id: "11",
+    name: "AMRIT AGRAWAL",
+    role: "VOLUNTEER",
+    tagline: "",
+    bio: "Refining user interfaces and packing checklist layouts.",
+    detailedBio: "Amrit focuses on frontend details and user experience. He spearheaded the checklist UI improvements and worked on local storage persistence mechanisms to enhance the usability of tools.",
+    skills: ["React", "TypeScript", "Tailwind CSS", "UI/UX Optimization"],
+    contributions: [
+      "Redesigned the packing checklist user interface",
+      "Implemented local storage persistence for user data",
+      "Polished layout aesthetics and interactive components"
+    ],
+    image: "https://storage.googleapis.com/aarambh-26-assets/images/amrit.png",
+    themeColor: "from-[#06b6d4] to-[#0D21DD]",
+    glowColor: "rgba(6, 182, 212, 0.25)",
+    accentColor: "#06b6d4",
+    icon: <Sparkles className="w-4 h-4" />,
+    socials: {
+      github: "https://github.com/amritagrawal12598-stack",
+      linkedin: "https://linkedin.com",
+      instagram: "https://instagram.com",
+      email: "mailto:amrit@jklu.edu.in"
+    },
+    imageScale: "scale(1.05)",
+    imagePosition: "translateY(5px)",
+    bgColor: "bg-[#06b6d4]"
   }
 ];
 
@@ -410,7 +445,7 @@ const getStaggerStyle = (index: number) => {
 
 function AnimatedBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#00a6e6]">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-[#00a6e6]">
       {/* Halftone texture */}
       <div
         className="absolute inset-0 opacity-[0.18] pointer-events-none mix-blend-multiply"
@@ -549,6 +584,7 @@ function TeamMemberCard({
   };
 
   const isLeader = member.role.includes("LEADER");
+  const isPratham = member.id === "9" || member.name === "PRATHAM";
 
   return (
     <motion.div
@@ -566,7 +602,7 @@ function TeamMemberCard({
         onMouseLeave={handleMouseLeave}
         className="relative aspect-[3/4.2] w-full cursor-pointer group select-none overflow-visible"
         style={{
-          transform: isHovered
+          transform: isHovered && !isPratham
             ? `perspective(1000px) rotateY(${coords.x * 12}deg) rotateX(${-coords.y * 12}deg) scale(1.025)`
             : 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)',
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)'
@@ -582,13 +618,31 @@ function TeamMemberCard({
 
         {/* Outer Tech Frame Overlay (Clipped to Angled Polygon) */}
         <div
-          className={`absolute inset-0 ${member.bgColor || 'bg-[#8b5cf6]'} border-[3px] border-[#030404] transition-all duration-300 overflow-hidden shadow-[4px_6px_0px_#030404] group-hover:shadow-[6px_10px_0px_#030404]`}
+          className={`absolute inset-0 ${member.bgColor || 'bg-[#8b5cf6]'} border-2 md:border-[3px] border-[#030404] transition-all duration-300 overflow-hidden shadow-[2.5px_4px_0px_#030404] md:shadow-[4px_6px_0px_#030404] md:group-hover:shadow-[6px_10px_0px_#030404]`}
           style={{
             clipPath: stagger.clip
           }}
         >
           {/* Simple, gorgeous graphic effects that replicate the movie poster panels */}
           {(() => {
+            if (isPratham) {
+              // Concentric Static Diamonds for Pratham
+              return (
+                <div className="absolute inset-0 opacity-[0.22] pointer-events-none flex items-center justify-center overflow-hidden">
+                  {[0.2, 0.45, 0.7, 0.95, 1.2, 1.45, 1.7].map((scale, i) => (
+                    <div
+                      key={i}
+                      className="absolute border-2 border-white"
+                      style={{
+                        width: '75%',
+                        height: '75%',
+                        transform: `rotate(45deg) scale(${scale})`,
+                      }}
+                    />
+                  ))}
+                </div>
+              );
+            }
             const effectIndex = index % 5;
             if (effectIndex === 0) {
               // Comic Sunburst Rays
@@ -621,37 +675,55 @@ function TeamMemberCard({
                 />
               );
             } else if (effectIndex === 3) {
-              // Action Focus Rings
+              // Action Focus Hearts - Concentric and Ripple Outwards
               return (
                 <div
-                  className="absolute inset-0 opacity-[0.15] group-hover:opacity-[0.24] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, transparent 40%, #fff 41%, #fff 45%, transparent 46%, transparent 70%, #fff 71%, #fff 75%, transparent 76%)'
-                  }}
-                />
+                  className="absolute inset-0 opacity-[0.2] group-hover:opacity-[0.32] transition-opacity duration-300 pointer-events-none flex items-center justify-center overflow-hidden"
+                >
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <motion.svg
+                      key={i}
+                      className="absolute text-white"
+                      style={{ width: '85%', height: '85%' }}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      initial={{ scale: 0.1, opacity: 0 }}
+                      animate={{
+                        scale: 1.8,
+                        opacity: [0, 0.85, 0.85, 0.4, 0]
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        delay: i * 0.8,
+                        ease: "linear"
+                      }}
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </motion.svg>
+                  ))}
+                </div>
               );
             } else {
-              // Halftone Action Grid Dots
+              // Cyber Grid Lines (replaces Halftone Action Grid Dots)
               return (
                 <div
-                  className="absolute inset-0 opacity-[0.18] group-hover:opacity-[0.28] transition-opacity duration-300 pointer-events-none"
+                  className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
                   style={{
-                    backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2px)',
-                    backgroundSize: '12px 12px'
+                    backgroundImage: `
+                      linear-gradient(to right, #fff 1.5px, transparent 1.5px),
+                      linear-gradient(to bottom, #fff 1.5px, transparent 1.5px)
+                    `,
+                    backgroundSize: '20px 20px'
                   }}
                 />
               );
             }
           })()}
 
-          {/* Subtle Halftone texture overlay inside card */}
-          <div
-            className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-multiply group-hover:opacity-[0.1] transition-opacity duration-300"
-            style={{
-              backgroundImage: `radial-gradient(circle, #030404 1.5px, transparent 1.5px)`,
-              backgroundSize: '8px 8px'
-            }}
-          />
+          {/* Subtle Halftone texture overlay removed to follow no-dots design */}
 
           {/* Dynamic lighting gradient overlay */}
           <div
@@ -682,7 +754,6 @@ function TeamMemberCard({
                 src={member.image}
                 alt={member.name}
                 fill
-                unoptimized
                 sizes="(max-w-768px) 100vw, 300px"
                 className="object-contain object-bottom filter drop-shadow-[0_8px_16px_rgba(3,4,4,0.22)] saturate-105 contrast-105"
                 priority={isLeader}
@@ -692,11 +763,11 @@ function TeamMemberCard({
         </div>
 
         {/* Character Title Capsules (Center-Bottom) */}
-        <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center justify-end w-full px-4 text-center pointer-events-none">
+        <div className="absolute bottom-3 min-[400px]:bottom-5 md:bottom-6 left-0 right-0 z-20 flex flex-col items-center justify-end w-full px-2 min-[400px]:px-4 text-center pointer-events-none">
           {/* Capsule Name Box - Styled as Bold Comic Sticker */}
-          <div className="relative transform transition-all duration-300 group-hover:scale-105 shadow-[2px_4px_0px_#030404] rounded-md">
-            <div className="relative bg-white border-[3px] border-[#030404] px-4 py-1.5 rounded-md">
-              <span className="font-display font-black text-[11px] md:text-xs tracking-wider uppercase text-[#030404] block">
+          <div className="relative transform transition-all duration-300 group-hover:scale-105 shadow-[1.5px_3px_0px_#030404] md:shadow-[2px_4px_0px_#030404] rounded-md">
+            <div className="relative bg-white border-2 md:border-[3px] border-[#030404] px-2 py-1 min-[400px]:px-4 min-[400px]:py-1.5 rounded-md">
+              <span className="font-display font-black text-[9px] min-[380px]:text-[11px] md:text-xs tracking-wider uppercase text-[#030404] block leading-none">
                 {member.name}
               </span>
             </div>
@@ -711,9 +782,9 @@ function TeamMemberCard({
               : (gitHandle && gitHandle !== "github" ? `@${gitHandle}` : `@${member.name.toLowerCase().replace(/\s+/g, '')}`);
 
             return (
-              <div className="relative mt-2 shadow-[1px_2px_0px_#030404] rounded-sm">
-                <div className="flex items-center gap-1.5 bg-white border-[2px] border-[#030404] px-2.5 py-0.5 rounded-sm text-[#030404] font-mono text-[8px] md:text-[9px] tracking-wide leading-none font-black">
-                  <InstagramIcon className="w-2.5 h-2.5" />
+              <div className="relative mt-1.5 min-[400px]:mt-2 shadow-[1px_2px_0px_#030404] rounded-sm">
+                <div className="flex items-center gap-1 bg-white border-2 border-[#030404] px-1.5 py-0.5 min-[400px]:px-2.5 rounded-sm text-[#030404] font-mono text-[7px] min-[400px]:text-[8px] md:text-[9px] tracking-wide leading-none font-black">
+                  <InstagramIcon className="w-2 h-2 min-[400px]:w-2.5 min-[400px]:h-2.5" />
                   <span>{displayId}</span>
                 </div>
               </div>
@@ -749,7 +820,7 @@ function ProfileModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6"
     >
       {/* Dim backdrop with blur */}
       <div
@@ -768,80 +839,163 @@ function ProfileModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-white border-2 border-[#030404] shadow-[1px_2px_0px_#030404] hover:bg-red-500 hover:text-white active:scale-95 transition-all flex justify-center items-center cursor-pointer text-[#030404]"
+          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-[#F5F1E5] border-2 border-[#030404] shadow-[1px_2px_0px_#030404] hover:bg-red-500 hover:text-white active:scale-95 transition-all flex justify-center items-center cursor-pointer text-[#030404]"
           aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Left: Giant Roster Image panel */}
-        <div
-          className="w-full md:w-[350px] shrink-0 border-b md:border-b-0 md:border-r-[4px] border-[#030404] relative overflow-hidden min-h-[260px] md:min-h-full flex items-end justify-center"
-          style={{
-            background: `radial-gradient(circle at center, ${member.glowColor} 0%, #F5F1E5 100%)`
-          }}
-        >
-          {/* Halftone texture inside modal left panel */}
+        <div className="w-full md:w-[350px] shrink-0 border-b md:border-b-0 md:border-r-[4px] border-[#030404] relative overflow-hidden min-h-[220px] md:min-h-full bg-[#030404] p-3.5 flex items-end justify-center">
+          {/* Inner Poster Card Frame */}
           <div
-            className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-multiply"
+            className="absolute inset-3.5 border-[3px] border-[#030404] rounded-xl overflow-hidden"
             style={{
-              backgroundImage: `radial-gradient(circle, #030404 1.5px, transparent 1.5px)`,
-              backgroundSize: '12px 12px'
+              background: `radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, ${member.accentColor} 100%)`
             }}
-          />
+          >
+            {/* Halftone texture inside modal left panel removed to follow no-dots design */}
 
-          {/* Cyber lighting backdrop lines */}
-          <div className="absolute top-1/4 inset-x-0 bottom-0 bg-gradient-to-t from-[#F5F1E5] to-transparent" />
+            {/* Retro Comic Background Words */}
+            <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none select-none overflow-hidden opacity-[0.14] font-display font-black leading-none text-[#030404] tracking-tighter z-0">
+              <span className="text-[52px] md:text-[62px] rotate-[-7deg] uppercase">CREATIVE</span>
+              <span className="text-[52px] md:text-[62px] rotate-[5deg] uppercase my-3">FRIENDSHIP</span>
+              <span className="text-[46px] md:text-[56px] rotate-[-5deg] uppercase">NEW BEGINNING</span>
+            </div>
 
-          {/* Large portrait character cutout */}
-          <div className="relative w-full h-[110%] bottom-[-5%] overflow-visible pointer-events-none">
-            {member.image === "/tech_placeholder.png" ? (
-              <HologramFallback themeColor={member.themeColor} roleIcon={member.icon} />
-            ) : (
-              <div
-                className="relative w-full h-full"
-                style={{
-                  transform: `${member.imageScale || 'scale(1)'} ${member.imagePosition || 'translateY(0px)'}`,
-                  transformOrigin: 'bottom center'
-                }}
-              >
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  unoptimized
-                  sizes="350px"
-                  className="object-contain object-bottom filter drop-shadow-[0_10px_20px_rgba(3,4,4,0.15)] animate-scaleUpSmall"
-                />
-              </div>
-            )}
+            {/* Cyber lighting backdrop lines */}
+            <div className="absolute top-1/4 inset-x-0 bottom-0 bg-gradient-to-t from-[#030404]/20 to-transparent" />
+
+            {/* Large portrait character cutout */}
+            <div className="absolute inset-x-0 bottom-0 h-[96%] overflow-visible pointer-events-none z-10">
+              {member.image === "/tech_placeholder.png" ? (
+                <HologramFallback themeColor={member.themeColor} roleIcon={member.icon} />
+              ) : (
+                (() => {
+                  const scaleVal = parseFloat(member.imageScale?.match(/scale\(([^)]+)\)/)?.[1] || '1');
+                  const modalScale = scaleVal > 1.5 ? scaleVal * 0.58 : Math.min(1.05, scaleVal * 0.95);
+
+                  return (
+                    <div
+                      className="relative w-full h-full"
+                      style={{
+                        transform: `scale(${modalScale})`,
+                        transformOrigin: 'bottom center'
+                      }}
+                    >
+                      {/* Silhouette 3 (B&W halftone / high contrast shadow - at the very back) */}
+                      <motion.div
+                        initial={{ x: 0, opacity: 0 }}
+                        animate={{ x: 42, opacity: 0.5 }}
+                        transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={member.image}
+                          alt=""
+                          fill
+                          sizes="350px"
+                          className="object-contain object-bottom select-none pointer-events-none"
+                          style={{
+                            filter: 'grayscale(100%) contrast(180%) brightness(55%)'
+                          }}
+                        />
+                      </motion.div>
+
+                      {/* Silhouette 2 (Pink/Red Pop shadow - in the middle) */}
+                      <motion.div
+                        initial={{ x: 0, opacity: 0 }}
+                        animate={{ x: 28, opacity: 0.7 }}
+                        transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={member.image}
+                          alt=""
+                          fill
+                          sizes="350px"
+                          className="object-contain object-bottom select-none pointer-events-none"
+                          style={{
+                            filter: 'sepia(100%) saturate(1000%) hue-rotate(300deg) brightness(0.65) contrast(1.4)'
+                          }}
+                        />
+                      </motion.div>
+
+                      {/* Silhouette 1 (Blue Pop shadow - closest to main) */}
+                      <motion.div
+                        initial={{ x: 0, opacity: 0 }}
+                        animate={{ x: 14, opacity: 0.8 }}
+                        transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={member.image}
+                          alt=""
+                          fill
+                          sizes="350px"
+                          className="object-contain object-bottom select-none pointer-events-none"
+                          style={{
+                            filter: 'sepia(100%) saturate(1000%) hue-rotate(200deg) brightness(0.65) contrast(1.4)'
+                          }}
+                        />
+                      </motion.div>
+
+                      {/* Main Portrait cut-out - in the front */}
+                      <motion.div
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          sizes="350px"
+                          className="object-contain object-bottom filter drop-shadow-[0_10px_20px_rgba(3,4,4,0.15)]"
+                        />
+                      </motion.div>
+                    </div>
+                  );
+                })()
+              )}
+            </div>
           </div>
-
-          {/* Dynamic accent color edge bar */}
-          <div className={`absolute bottom-0 inset-x-0 h-2 bg-gradient-to-r ${member.themeColor}`} />
         </div>
 
         {/* Right: Roster Info Details Pane */}
-        <div className="p-6 md:p-8 grow flex flex-col justify-center overflow-y-auto bg-white/40">
-          <div className="space-y-6">
+        <div
+          className="p-5 md:p-8 grow flex flex-col justify-start overflow-y-auto"
+          style={{
+            background: `radial-gradient(circle at top right, ${member.accentColor}1c 0%, #F5F1E5 100%)`
+          }}
+        >
+          <div className="space-y-4 md:space-y-6">
             {/* Header info */}
-            <div className="space-y-3 text-center md:text-left">
+            <div className="space-y-2 md:space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-2">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#030404] bg-white border-2 border-[#030404] shadow-[1px_2px_0px_#030404]`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#030404] bg-[#F5F1E5] border-2 border-[#030404] shadow-[1px_2px_0px_#030404]`}>
                   {member.icon}
                   <span>{member.role}</span>
                 </span>
               </div>
-              <h3 className="text-3.5xl md:text-5xl font-display font-black uppercase text-[#030404] tracking-tight leading-none">
-                {member.name}
-              </h3>
+
+              {/* Bold colored neobrutalist badge for the member's name */}
+              <div className="inline-block relative shadow-[3px_5px_0px_#030404] rounded-md my-1 transform hover:rotate-1 transition-transform">
+                <div className={`relative bg-gradient-to-r ${member.themeColor} border-[3px] border-[#030404] px-5 py-2 rounded-md`}>
+                  <h3 className="text-3xl md:text-4.5xl font-display font-black uppercase text-white tracking-tight leading-none filter drop-shadow-[1.5px_1.5px_0px_#030404]">
+                    {member.name}
+                  </h3>
+                </div>
+              </div>
+
               <p className="font-mono font-black text-sm uppercase tracking-wider text-[#030404]/60">
                 {member.tagline}
               </p>
             </div>
 
             {/* Social IDs Coordinate Grid */}
-            <div className="border-t-[3px] border-[#030404] pt-6 space-y-4">
+            <div className="border-t-[3px] border-[#030404] pt-4 md:pt-6 space-y-3 md:space-y-4">
               <h4 className="font-mono text-[10px] font-black uppercase text-[#030404] tracking-widest text-center md:text-left">
                 SYSTEM COORDINATES & IDS
               </h4>
@@ -852,7 +1006,7 @@ function ProfileModal({
                     href={member.socials.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-14 px-4 bg-white border-[3px] border-[#030404] hover:bg-[#FF188C] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
+                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#FF188C] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
                   >
                     <InstagramIcon className="w-5 h-5 shrink-0" />
                     <div className="flex flex-col items-start leading-tight">
@@ -867,7 +1021,7 @@ function ProfileModal({
                     href={member.socials.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-14 px-4 bg-white border-[3px] border-[#030404] hover:bg-[#FF9A00] hover:text-[#030404] text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
+                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#FF9A00] hover:text-[#030404] text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
                   >
                     <GithubIcon className="w-5 h-5 shrink-0" />
                     <div className="flex flex-col items-start leading-tight">
@@ -882,7 +1036,7 @@ function ProfileModal({
                     href={member.socials.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-14 px-4 bg-white border-[3px] border-[#030404] hover:bg-[#0D21DD] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
+                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#0D21DD] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
                   >
                     <LinkedinIcon className="w-5 h-5 shrink-0" />
                     <div className="flex flex-col items-start leading-tight">
@@ -895,7 +1049,7 @@ function ProfileModal({
                 {member.socials.email && (
                   <a
                     href={member.socials.email}
-                    className="h-14 px-4 bg-white border-[3px] border-[#030404] hover:bg-[#0ea5e9] hover:text-[#030404] text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
+                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#0ea5e9] hover:text-[#030404] text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
                   >
                     <Mail className="w-5 h-5 shrink-0" />
                     <div className="flex flex-col items-start leading-tight">
@@ -942,122 +1096,105 @@ export default function CreditsPage() {
   const closeModal = useCallback(() => setActiveMember(null), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] p-4 md:p-8 lg:p-12 font-sans select-none text-[#030404] z-10">
-      {/* Futuristic Background layers */}
+    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] font-sans select-none text-[#030404]">
+      {/* Futuristic Background layers wrapping the entire page */}
       <AnimatedBackground />
 
-      {/* Navigation - Pinned to top-left of the screen */}
-      <div className="absolute top-6 left-6 md:left-8 z-50">
-        <Link
-          href="/"
-          className="group flex items-center gap-2 bg-white border-[3px] border-[#030404] text-[#030404] px-4 py-2 rounded-md font-mono text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-[3px_3px_0px_#030404] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[5px_5px_0px_#030404] active:translate-y-0 active:translate-x-0 active:shadow-[1px_1px_0px_#030404]"
-          id="credits-back-to-home"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform stroke-[3]" />
-          <span>Back to Home</span>
-        </Link>
+      <div className="relative w-full pt-24 min-[400px]:pt-28 md:pt-32 px-4 md:px-8 lg:px-12 pb-10 relative z-10">
+        <div className="w-full max-w-7xl mx-auto">
+          <div className="h-10 md:h-6" />
+
+          {/* ================================================================ */}
+          {/* HERO HEADER SECTION */}
+          {/* ================================================================ */}
+          <div className="text-center py-6 md:py-10 max-w-2xl mx-auto space-y-3 relative mb-12">
+            {/* Light Streak Background */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[3px] bg-gradient-to-r from-transparent via-[#FF188C]/20 to-transparent blur-[4px]" />
+
+            <h1
+              className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-[#030404] leading-none relative z-10"
+              style={{ fontFamily: 'var(--font-devanagari)' }}
+            >
+              THE TECH TEAM
+            </h1>
+          </div>
+
+          {/* ================================================================ */}
+          {/* ASYMMETRICAL COMIC GRID LAYOUT (Direct on global sky-blue background) */}
+          {/* ================================================================ */}
+
+          {/* SECTION 1: LEADERS (2 large centered panels) */}
+          <div className="mb-20 relative">
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <div className="h-[2px] w-12 bg-[#030404]" />
+              <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
+                LEADERS
+              </span>
+              <div className="h-[2px] w-12 bg-[#030404]" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 min-[400px]:gap-4 md:gap-6 max-w-4xl mx-auto overflow-visible relative z-10">
+              {LEADERS.map((leader, i) => (
+                <TeamMemberCard
+                  key={leader.id}
+                  member={leader}
+                  index={i}
+                  onClick={() => setActiveMember(leader)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* SECTION 2: VOLUNTEERS (8 staggered overlapping panels) */}
+          <div className="mb-24 relative">
+            {/* Floating magazine-style background decorations to enhance collage depth */}
+            <div className="absolute top-1/4 left-[-10%] w-56 h-56 rounded-full bg-[#0D21DD]/10 blur-3xl pointer-events-none hidden md:block" />
+            <div className="absolute bottom-1/4 right-[-10%] w-64 h-64 rounded-full bg-[#FF188C]/10 blur-3xl pointer-events-none hidden md:block" />
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.08 }}
+              viewport={{ once: true }}
+              className="absolute -top-12 right-1/4 pointer-events-none font-mono text-[80px] font-black leading-none text-[#030404] tracking-tighter select-none hidden lg:block"
+            >
+              CREATIVE
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.08 }}
+              viewport={{ once: true }}
+              className="absolute -bottom-16 left-1/4 pointer-events-none font-mono text-[80px] font-black leading-none text-[#030404] tracking-tighter select-none hidden lg:block"
+            >
+              ROSTER
+            </motion.div>
+
+            <div className="flex items-center justify-center gap-3 mb-16 mt-20">
+              <div className="h-[2px] w-12 bg-[#030404]" />
+              <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
+                VOLUNTEERS
+              </span>
+              <div className="h-[2px] w-12 bg-[#030404]" />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 min-[400px]:gap-x-4 md:gap-x-8 gap-y-12 min-[400px]:gap-y-16 md:gap-y-28 max-w-6xl mx-auto overflow-visible relative z-10">
+              {VOLUNTEERS.map((volunteer, i) => (
+                <TeamMemberCard
+                  key={volunteer.id}
+                  member={volunteer}
+                  index={i + 2}
+                  onClick={() => setActiveMember(volunteer)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto relative z-10">
-        <div className="h-10 md:h-6" />
-
-        {/* ================================================================ */}
-        {/* HERO HEADER SECTION */}
-        {/* ================================================================ */}
-        <div className="text-center py-6 md:py-10 max-w-2xl mx-auto space-y-3 relative mb-12">
-          {/* Light Streak Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[3px] bg-gradient-to-r from-transparent via-[#FF188C]/20 to-transparent blur-[4px]" />
-
-          <div className="relative z-10 flex items-center justify-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF188C] animate-pulse" />
-            <span className="font-mono text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#FF188C]">
-              AARAMBH &apos;26 SYSTEM CREDITS
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF188C] animate-pulse" />
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-display font-black uppercase tracking-tighter text-[#030404] leading-none relative z-10">
-            THE <span className="bg-gradient-to-r from-[#FF188C] via-[#FF9A00] to-[#0D21DD] bg-clip-text text-transparent">TECH</span> TEAM
-          </h1>
-
-          <p className="font-mono text-[10px] md:text-xs text-[#030404]/60 font-bold uppercase tracking-widest relative z-10">
-            The Digital Architects Behind The Roster Reveal
-          </p>
-        </div>
-
-        {/* ================================================================ */}
-        {/* ASYMMETRICAL COMIC GRID LAYOUT (Direct on global sky-blue background) */}
-        {/* ================================================================ */}
-
-        {/* SECTION 1: LEADERS (2 large centered panels) */}
-        <div className="mb-20 relative">
-          <div className="flex items-center justify-center gap-3 mb-12">
-            <div className="h-[2px] w-12 bg-[#030404]" />
-            <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
-              CORE LEADERS
-            </span>
-            <div className="h-[2px] w-12 bg-[#030404]" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-6 max-w-4xl mx-auto overflow-visible relative z-10">
-            {LEADERS.map((leader, i) => (
-              <TeamMemberCard
-                key={leader.id}
-                member={leader}
-                index={i}
-                onClick={() => setActiveMember(leader)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* SECTION 2: VOLUNTEERS (8 staggered overlapping panels) */}
-        <div className="mb-24 relative">
-          {/* Floating magazine-style background decorations to enhance collage depth */}
-          <div className="absolute top-1/4 left-[-10%] w-56 h-56 rounded-full bg-[#0D21DD]/10 blur-3xl pointer-events-none hidden md:block" />
-          <div className="absolute bottom-1/4 right-[-10%] w-64 h-64 rounded-full bg-[#FF188C]/10 blur-3xl pointer-events-none hidden md:block" />
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.08 }}
-            viewport={{ once: true }}
-            className="absolute -top-12 right-1/4 pointer-events-none font-mono text-[80px] font-black leading-none text-[#030404] tracking-tighter select-none hidden lg:block"
-          >
-            CREATIVE
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.08 }}
-            viewport={{ once: true }}
-            className="absolute -bottom-16 left-1/4 pointer-events-none font-mono text-[80px] font-black leading-none text-[#030404] tracking-tighter select-none hidden lg:block"
-          >
-            ROSTER
-          </motion.div>
-
-          <div className="flex items-center justify-center gap-3 mb-16 mt-20">
-            <div className="h-[2px] w-12 bg-[#030404]" />
-            <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
-              DEVELOPMENT VOLUNTEERS
-            </span>
-            <div className="h-[2px] w-12 bg-[#030404]" />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20 md:gap-y-28 max-w-6xl mx-auto overflow-visible relative z-10">
-            {VOLUNTEERS.map((volunteer, i) => (
-              <TeamMemberCard
-                key={volunteer.id}
-                member={volunteer}
-                index={i + 2}
-                onClick={() => setActiveMember(volunteer)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Footer info text */}
-        <div className="text-center py-10 mt-6 border-t border-[#030404]/10 max-w-2xl mx-auto">
-          <p className="text-[#030404]/40 font-mono text-[9px] font-black uppercase tracking-widest">
-            TAP ANY ROSTER CARD TO INTERACT & VIEW CORRESPONDING SYSTEM PROFILE
+      {/* Bottom text block centered directly on blue background just above the dividing line */}
+      <div className="w-full pb-16 text-center relative z-10">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-[#030404]/80 font-mono text-[9px] min-[400px]:text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed px-4">
+            TAP ANY CARD TO INTERACT & VIEW CORRESPONDING PROFILE
           </p>
         </div>
       </div>

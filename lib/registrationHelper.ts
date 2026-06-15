@@ -1,9 +1,13 @@
-import { db } from './firebase';
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, getCountFromServer } from 'firebase/firestore';
+import { adminDb } from './firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { PDFDocument, rgb } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs/promises';
 import path from 'path';
+import { after } from 'next/server';
+import { formatPhoneNumber, maskEmail } from './security';
+
+
 
 // ============================================================================
 // PDF RECEIPT GENERATOR helper (A4 Layout with dynamic aspect scaling)
@@ -27,6 +31,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     const jkluLogoPath = path.join(
       process.cwd(), 
       'public', 
+      'logos',
       'jklu_logo.png'
     );
     const jkluLogoBytes = await fs.readFile(jkluLogoPath);
@@ -47,11 +52,12 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     const aarambhLogoPath = path.join(
       process.cwd(), 
       'public', 
-      'aarambh_logo_removebg.png'
+      'logos',
+      'Aarambh_new_logo.png'
     );
     const aarambhLogoBytes = await fs.readFile(aarambhLogoPath);
     aarambhLogoImage = await pdfDoc.embedPng(aarambhLogoBytes);
-    const targetHeight = 44;
+    const targetHeight = 50;
     const scaleFactor = targetHeight / aarambhLogoImage.height;
     aarambhScaledWidth = aarambhLogoImage.width * scaleFactor;
     aarambhScaledHeight = aarambhLogoImage.height * scaleFactor;
@@ -168,12 +174,12 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   drawField('Branch / Programme', data.course || 'B.Tech', 40, 469);
   
   drawField('Email Address', data.email || 'N/A', 40, 436);
-  drawField('Mobile Number', data.phone || data.mobile || 'N/A', 300, 436);
+  drawField('Mobile Number', formatPhoneNumber(data.phone || data.mobile || ''), 300, 436);
 
   // 2. PARENT DETAILS Section
   drawSectionHeader('PARENT DETAILS', 395);
   drawField('Parent Name', data.parentName || data.fatherName || 'N/A', 40, 372);
-  drawField('Parent Phone', data.parentPhone || data.fatherMobile || 'N/A', 300, 372);
+  drawField('Parent Phone', formatPhoneNumber(data.parentPhone || data.fatherMobile || ''), 300, 372);
   
   drawField('Parent Email', data.parentEmail || data.fatherEmail || 'N/A', 40, 339);
 
@@ -243,6 +249,9 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
 export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) {
   const nodemailer = await import('nodemailer');
 
+  const isProduction = process.env.NODE_ENV === 'production' || 
+                       (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.office365.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -251,8 +260,9 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
       user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || '',
     },
-    tls: {
-      ciphers: 'SSLv3',
+    tls: isProduction ? {
+      rejectUnauthorized: true
+    } : {
       rejectUnauthorized: false
     }
   });
@@ -264,19 +274,30 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
       <meta charset="utf-8">
       <style>
         .container { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
-        .header { background-color: #1a1a1a; padding: 40px 20px; text-align: center; }
+        .header { background-color: #ffffff; padding: 40px 20px 20px 20px; text-align: center; border-bottom: 1px solid #eeeeee; }
         .logo-text { color: #FACC15; font-size: 32px; font-weight: bold; margin: 0; letter-spacing: 2px; }
         .content { padding: 40px 30px; background-color: #ffffff; color: #333; line-height: 1.6; }
         .success-badge { display: inline-block; padding: 6px 12px; background-color: #dcfce7; color: #166534; border-radius: 4px; font-weight: bold; font-size: 14px; margin-bottom: 20px; }
-        .footer { background-color: #f9f9f9; padding: 20px; text-align: center; color: #777; font-size: 12px; border-top: 1px solid #eeeeee; }
+        .footer { background-color: #f9f9f9; padding: 30px 20px; text-align: center; color: #777; font-size: 13px; border-top: 1px solid #eeeeee; }
+        .social-icons { margin: 15px 0; }
+        .social-icons a { display: inline-block; margin: 0 6px; color: #555; text-decoration: none; font-weight: bold; font-size: 12px; }
+        .footer-link { color: #FF188C; text-decoration: none; font-weight: bold; }
         .button { display: inline-block; padding: 12px 24px; background-color: #FACC15; color: #1a1a1a; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; }
       </style>
     </head>
     <body>
       <div class="container">
-        <div class="header">
-          <h1 class="logo-text">AARAMBH '26</h1>
-          <p style="color: #fff; margin: 5px 0 0 0; opacity: 0.8;">The Awakening of Future</p>
+        <div class="header" style="text-align: center;">
+          <table align="center" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+            <tr>
+              <td align="center" valign="middle" style="padding-right: 20px;">
+                <img src="cid:jklu_logo" alt="JKLU Logo" style="max-height: 55px; width: auto; display: block;" />
+              </td>
+              <td align="center" valign="middle" style="padding-left: 20px; border-left: 1px solid rgba(0,0,0,0.1);">
+                <img src="cid:aarambh_logo" alt="Aarambh '26 Logo" style="max-height: 70px; width: auto; display: block;" />
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="content">
           <div class="success-badge">✓ Registration Confirmed</div>
@@ -297,15 +318,47 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
           <p>Best Regards,<br/><strong>Team Aarambh</strong></p>
         </div>
         <div class="footer">
-          <p>JK Lakshmipat University, Jaipur</p>
-          <p>&copy; 2026 Aarambh Event Management System</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/aarambh_jklu?igsh=NmZzYjFrcDNtejMw">Instagram</a> &bull; 
+            <a href="https://www.linkedin.com/school/jklujaipur/">LinkedIn</a> &bull; 
+            <a href="https://x.com/jklujaipur">X (Twitter)</a> &bull; 
+            <a href="https://www.facebook.com/share/1Hsdb57Jcf/">Facebook</a>
+          </div>
+          <p style="margin-bottom: 5px;">JK Lakshmipat University, Jaipur</p>
+          <p style="margin-top: 0;"><a href="https://aarambh.jklu.edu.in" class="footer-link">aarambh.jklu.edu.in</a></p>
+          <p style="margin-top: 15px; font-size: 11px; opacity: 0.7;">&copy; 2026 Aarambh Event Management System</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-  await transporter.sendMail({
+  let logoAttachment: any = null;
+  let jkluAttachment: any = null;
+  try {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    
+    const logoPath = path.join(process.cwd(), 'public', 'logos', 'Aarambh_new_logo.png');
+    const logoBytes = await fs.readFile(logoPath);
+    logoAttachment = {
+      filename: 'Aarambh_new_logo.png',
+      content: logoBytes,
+      cid: 'aarambh_logo' // same cid value as in the html img src
+    };
+
+    const jkluPath = path.join(process.cwd(), 'public', 'logos', 'jklu_logo.png');
+    const jkluBytes = await fs.readFile(jkluPath);
+    jkluAttachment = {
+      filename: 'jklu_logo.png',
+      content: jkluBytes,
+      cid: 'jklu_logo'
+    };
+  } catch (err) {
+    console.warn("Failed to load logo for email attachment:", err);
+  }
+
+  const mailOptions: any = {
     from: `"Aarambh Team" <${process.env.SMTP_FROM || ''}>`,
     to: to,
     subject: "Aarambh'26 | Your Registration is Confirmed!",
@@ -317,7 +370,16 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
         contentType: 'application/pdf'
       }
     ]
-  });
+  };
+
+  if (logoAttachment) {
+    mailOptions.attachments.push(logoAttachment);
+  }
+  if (jkluAttachment) {
+    mailOptions.attachments.push(jkluAttachment);
+  }
+
+  await transporter.sendMail(mailOptions);
 }
 
 // ============================================================================
@@ -334,14 +396,6 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   
   const dateOfPayment = `${day}-${month}-${year}`; // e.g., "24-May-26"
   const dateGroup = `${day}-${month}`; // e.g., "24-May"
-
-  const formatPhoneNumber = (phone: string): string => {
-    if (!phone) return '';
-    return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
-      return `+91 ${digits}`;
-    });
-  };
-
   if (formData.mobile) formData.mobile = formatPhoneNumber(formData.mobile);
   if (formData.fatherMobile) formData.fatherMobile = formatPhoneNumber(formData.fatherMobile);
   if (formData.motherMobile) formData.motherMobile = formatPhoneNumber(formData.motherMobile);
@@ -358,9 +412,8 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   const parentPhone = formData.parentPhone || `Father: ${fatherMobile} | Mother: ${motherMobile}`;
   const parentEmail = formData.parentEmail || `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
   
-  // 1. Save data to Firestore Registration Collection
-  const registrationsRef = collection(db, 'registrations');
-  const docRef = await addDoc(registrationsRef, {
+  // 1. Save data to Firestore Registration Collection using Admin SDK
+  const docRef = await adminDb.collection('registrations').add({
     ...formData,
     name: formData.name,
     email: formData.email,
@@ -379,56 +432,79 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     hasEntered: false,
     paymentId: paymentId,
     orderId: orderId,
-    registeredAt: serverTimestamp(),
+    registeredAt: FieldValue.serverTimestamp(),
   });
   console.log("Registration saved. Firestore ID:", docRef.id);
 
-  // Run slow operations (Excel sync, PDF generation, email notification, audit logs)
-  // in the background asynchronously so the client HTTP request completes instantly.
-  (async () => {
+  // Schedule all heavy post-registration tasks to run after the HTTP response has been sent to the client.
+  // This uses Next.js 15 after() API which keeps the server instance active in Cloud Run but responds to the user instantly.
+  after(async () => {
     try {
-      // 1.5 Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
+      console.log("Starting post-registration tasks in Next.js after() callback...");
+      
       const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
-      if (excelWebhook) {
-        console.log("Background Task: Syncing registration details to Microsoft Excel...");
-        try {
-          let lastDate = "";
-          try {
-            const q = query(collection(db, 'registrations'), orderBy('registeredAt', 'desc'), limit(2));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.docs.length > 1) {
-              const lastDoc = querySnapshot.docs[1].data();
-              lastDate = lastDoc.dateOfPayment || "";
-            }
-          } catch (err) {
-            console.warn("Could not query last registration date:", err);
-          }
 
-          let studentIndex = 1;
-          try {
-            const countSnapshot = await getCountFromServer(collection(db, 'registrations'));
-            studentIndex = countSnapshot.data().count;
-          } catch (err) {
-            console.warn("Could not count registrations:", err);
+      // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
+      const excelSyncPromise = (async () => {
+        if (!excelWebhook) {
+          console.log("Skipping Excel sync: EXCEL_SYNC_WEBHOOK_URL is not defined.");
+          return;
+        }
+        console.log("Syncing registration details to Microsoft Excel...");
+        try {
+        let lastDate = "";
+        try {
+          const querySnapshot = await adminDb.collection('registrations')
+            .orderBy('registeredAt', 'desc')
+            .limit(5)
+            .get();
+          for (const docSnap of querySnapshot.docs) {
+            if (docSnap.id !== docRef.id) {
+              lastDate = docSnap.data().dateOfPayment || "";
+              break;
+            }
           }
+        } catch (err) {
+          console.warn("Could not query last registration date:", err);
+        }
+
+        let studentIndex = 1;
+        try {
+          const countSnapshot = await adminDb.collection('registrations').count().get();
+          studentIndex = countSnapshot.data().count;
+        } catch (err) {
+          console.warn("Could not count registrations:", err);
+        }
 
           if (lastDate && lastDate !== dateOfPayment) {
             console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
-            await fetch(excelWebhook, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: dateGroup,
-                name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
-                gender: '', course: '',
-                parentName: '', parentPhone: '', parentEmail: '',
-                address: '', pincode: '',
-                paymentAmount: 0, receivedAmount: 0,
-                dateOfPayment: '', dateGroup: dateGroup,
-                paymentId: '', orderId: ''
-              })
-            });
+            try {
+              await fetch(excelWebhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: dateGroup,
+                  isSeparator: true,
+                  name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
+                  gender: '', course: '',
+                  parentName: '', parentPhone: '', parentEmail: '',
+                  address: '', pincode: '',
+                  paymentAmount: 0, receivedAmount: 0,
+                  dateOfPayment: '', dateGroup: dateGroup,
+                  paymentId: '', orderId: ''
+                })
+              });
+            } catch (sepErr) {
+              console.warn("Failed to send separator to Excel:", sepErr);
+            }
           }
+
+          const escapeForSheets = (val: string) => {
+            if (typeof val === 'string' && val.startsWith('+')) {
+              return `'${val}`;
+            }
+            return val;
+          };
 
           await fetch(excelWebhook, {
             method: 'POST',
@@ -439,19 +515,19 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
               id: studentIndex.toString(),
               name: formData.name,
               email: formData.email,
-              phone: formData.mobile,
+              phone: escapeForSheets(formData.mobile),
               rollNumber: formData.registrationNumber,
               registeredAt: new Date().toISOString(),
               gender: formData.gender || 'N/A',
               course: formData.course || 'N/A',
               parentName: parentName,
-              parentPhone: parentPhone,
+              parentPhone: escapeForSheets(parentPhone),
               parentEmail: parentEmail,
               fatherName: fatherName || formData.parentName || 'N/A',
-              fatherMobile: fatherMobile || formData.parentPhone || 'N/A',
+              fatherMobile: escapeForSheets(fatherMobile || formData.parentPhone || 'N/A'),
               fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
               motherName: motherName || 'N/A',
-              motherMobile: motherMobile || 'N/A',
+              motherMobile: escapeForSheets(motherMobile || 'N/A'),
               motherEmail: motherEmail || 'N/A',
               address: formData.address || 'N/A',
               pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
@@ -463,44 +539,53 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
               orderId: orderId
             })
           });
-          console.log("Background Task: Excel sync webhook fired successfully.");
+          console.log("Excel sync webhook fired successfully.");
         } catch (excelError) {
-          console.error("Background Task: Excel sync webhook failed:", excelError);
+          console.error("Excel sync webhook failed:", excelError);
         }
-      }
+      })();
 
-      // 2. Generate PDF Receipt
-      console.log("Background Task: Generating PDF receipt...");
-      const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
-      console.log("Background Task: PDF receipt generated.");
+      // 2. Generate PDF Receipt & Send Email using SMTP
+      const emailAndPdfPromise = (async () => {
+        try {
+          console.log("Generating PDF receipt...");
+          const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
+          console.log("PDF receipt generated.");
 
-      // 3. Send Email using SMTP
-      console.log("Background Task: Attempting to send confirmation email to:", formData.email);
-      try {
-        await sendEmail(formData.email, formData.name, pdfBytes);
-        console.log("Background Task: Email sent successfully.");
-      } catch (emailError) {
-        console.error("Background Task: Email delivery failed:", emailError);
-      }
+          const isProduction = process.env.NODE_ENV === 'production' || 
+                               (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+          console.log("Attempting to send confirmation email to:", isProduction ? maskEmail(formData.email) : formData.email);
+          await sendEmail(formData.email, formData.name, pdfBytes);
+          console.log("Email sent successfully.");
+        } catch (emailError) {
+          console.error("Email generation/delivery failed:", emailError);
+        }
+      })();
 
-      // 4. Create Audit Log
-      console.log("Background Task: Recording audit log...");
-      try {
-        await addDoc(collection(db, 'auditLogs'), {
-          timestamp: serverTimestamp(),
-          action: 'REGISTRATION_COMPLETE',
-          performedBy: formData.email,
-          targetEntity: `registration/${docRef.id}`,
-          details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
-        });
-        console.log("Background Task: Audit log recorded.");
-      } catch (auditError) {
-        console.error("Background Task: Audit logging failed:", auditError);
-      }
+      // 3. Create Audit Log using Admin SDK
+      const auditLogPromise = (async () => {
+        try {
+          console.log("Recording audit log...");
+          await adminDb.collection('auditLogs').add({
+            timestamp: FieldValue.serverTimestamp(),
+            action: 'REGISTRATION_COMPLETE',
+            performedBy: formData.email,
+            targetEntity: `registration/${docRef.id}`,
+            details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
+          });
+          console.log("Audit log recorded.");
+        } catch (auditError) {
+          console.error("Audit logging failed:", auditError);
+        }
+      })();
+
+      // Wait for all concurrent pipelines to resolve in the background
+      await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
+      console.log("All background post-registration tasks resolved.");
     } catch (bgError) {
-      console.error("Background Task Manager encountered critical error:", bgError);
+      console.error("Critical error inside Next.js after() callback:", bgError);
     }
-  })().catch(err => console.error("Background wrapper runtime failure:", err));
+  });
 
   return docRef.id;
 }

@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldCheck, Home as HomeIcon, Lock, Unlock, Check } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { load } from "@cashfreepayments/cashfree-js";
 import Image from 'next/image';
 import ComicBackground from '@/components/ComicBackground';
+import { validateRegistrationNumber, formatRegistrationNumber } from '@/lib/utils';
 
 function RegisterContent() {
   const router = useRouter();
@@ -37,11 +37,12 @@ function RegisterContent() {
     email: false,
     parentPhone: false,
     parentEmail: false,
+    registrationNumber: false,
   });
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const name = e.target.name as keyof typeof touched;
-    if (name === 'mobile' || name === 'email' || name === 'parentPhone' || name === 'parentEmail') {
+    if (name === 'mobile' || name === 'email' || name === 'parentPhone' || name === 'parentEmail' || name === 'registrationNumber') {
       setTouched(prev => ({ ...prev, [name]: true }));
     }
   };
@@ -66,8 +67,17 @@ function RegisterContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'VERIFY_PAYMENT', orderId: oId, formData: data })
       });
-      
-      const result = await res.json();
+
+      const text = await res.text();
+      let result: any;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        console.error('Verification response is not valid JSON:', text);
+        alert(`Server error during verification. Please contact support. (${res.status})`);
+        return;
+      }
+
       if (result.success) {
         setIsSuccess(true);
         setRegId(result.id);
@@ -83,10 +93,23 @@ function RegisterContent() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'course') {
+      setFormData(prev => {
+        const updated = { ...prev, course: value };
+        if (!prev.registrationNumber || prev.registrationNumber === 'JKLU' || prev.registrationNumber === 'JKLU/') {
+          const courseCode = value.toUpperCase().replace(/\./g, '');
+          updated.registrationNumber = `JKLU/${courseCode}/2025/`;
+        }
+        return updated;
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleApplyCoupon = () => {
+    const isProduction = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
     if (couponInput.toUpperCase() === 'TESTTEST') {
       setFormData(prev => ({ ...prev, coupon: couponInput.toUpperCase() }));
       setCouponMessage('Coupon applied successfully!');
@@ -108,8 +131,19 @@ function RegisterContent() {
           ...formData 
         })
       });
-      
-      const order = await res.json();
+
+      const text = await res.text();
+      let order: any;
+      try {
+        order = JSON.parse(text);
+      } catch {
+        console.error('CREATE_ORDER response is not valid JSON:', text);
+        throw new Error(`Server error (${res.status}): ${text.slice(0, 200)}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(order?.error || `Server returned ${res.status}`);
+      }
       if (!order.payment_session_id) throw new Error('Failed to create payment session');
 
       localStorage.setItem('pending_registration_data', JSON.stringify(formData));
@@ -120,13 +154,14 @@ function RegisterContent() {
         return;
       }
 
+      const { load } = await import("@cashfreepayments/cashfree-js");
       const cashfree = await load({ 
         mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? "production" : "sandbox" 
       });
       
       cashfree.checkout({
         paymentSessionId: order.payment_session_id,
-        redirectTarget: "_modal",
+        redirectTarget: "_self",
       }).then((result: any) => {
         if (result.error) {
           console.error("Payment failed or cancelled:", result.error);
@@ -176,6 +211,7 @@ function RegisterContent() {
   const isStudentValid = 
     formData.name.trim() !== '' &&
     formData.registrationNumber.trim() !== '' &&
+    validateRegistrationNumber(formData.registrationNumber) &&
     formData.mobile.trim() !== '' &&
     validateMobile(formData.mobile) &&
     formData.email.trim() !== '' &&
@@ -200,12 +236,12 @@ function RegisterContent() {
 
   if (isSuccess) {
     return (
-      <div className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
+      <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-28 pb-12 sm:p-6 sm:pt-32 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
         <ComicBackground />
 
         <div className="max-w-md w-full bg-brand-cloud border-comic p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl shadow-comic-lg relative z-10">
           
-          <h1 className="text-3xl md:text-4xl font-vanilla text-brand-ink mb-4">
+          <h1 className="text-3xl md:text-4xl font-bricks text-brand-ink mb-4">
             Registration Successful!
           </h1>
           <p className="font-sans font-medium text-sm text-brand-ink/70 mb-6 leading-relaxed">
@@ -226,22 +262,41 @@ function RegisterContent() {
   }
 
   return (
-    <div className="relative w-full min-h-screen py-8 sm:py-16 md:py-24 px-3 sm:px-4 flex flex-col items-center selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
+    <div className="relative w-full min-h-screen pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-40 md:pb-24 px-3 sm:px-4 flex flex-col items-center selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
       <ComicBackground />
 
       <div className="w-full max-w-3xl relative z-10">
-        <div className="mb-6 sm:mb-8 md:mb-12 text-center flex flex-col items-center">
-          <Image 
-            src="/aarambh-registration.svg" 
-            alt="Aarambh '26 Registration" 
-            width={800} 
-            height={231} 
-            priority
-            className="w-full max-w-2xl h-auto object-contain select-none"
-            style={{ 
-              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404) drop-shadow(6px 6px 0px #FF188C)" 
+        <div className="relative mb-8 sm:mb-10 md:mb-14 flex flex-col items-center justify-center gap-4 text-center">
+          <h1 
+            className="text-5xl sm:text-7xl md:text-8xl font-bricks font-black uppercase leading-[0.9] text-center tracking-tight select-none py-2"
+            style={{
+              color: '#FF9A00',
+              WebkitTextStroke: '2.5px #030404',
             }}
-          />
+          >
+            Aarambh &apos;26 <br />
+            Registration
+          </h1>
+
+          <p className="text-lg sm:text-xl md:text-2xl font-sans font-bold text-brand-ink/80 max-w-2xl px-4 leading-relaxed">
+            Register yourself and be a part of the Aarambh&apos;26 journey
+          </p>
+
+          {/* Visit Link Button */}
+          <motion.div 
+            className="z-20 mt-2 xl:mt-0 xl:fixed xl:left-[calc(50vw+384px+70px)] xl:top-[190px] xl:translate-y-0"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <a 
+              href="https://google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-5 py-3 bg-brand-pink hover:bg-brand-pink/90 text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95"
+            >
+              Visit Site
+            </a>
+          </motion.div>
         </div>
 
         <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
@@ -261,24 +316,24 @@ function RegisterContent() {
 
               {/* SECTION 1. STUDENT DETAILS */}
               <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
+                <div className="flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
                   <div className="flex items-center gap-3 text-brand-pink">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Student Details</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bricks text-brand-ink">Student Details</h2>
                   </div>
                   {isStudentValid ? (
-                    <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                      <Check size={12} className="stroke-[4] shrink-0" />
-                      <span className="flex flex-col text-left leading-tight">
+                    <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                      <Check size={10} className="stroke-[4] shrink-0" />
+                      <span className="flex flex-col text-right leading-tight">
                         <span>Requirement</span>
                         <span>Fulfilled</span>
                       </span>
                     </span>
                   ) : studentStarted ? (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                       IN PROGRESS
                     </span>
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                       ACTIVE
                     </span>
                   )}
@@ -298,16 +353,29 @@ function RegisterContent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Registration Number *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Application Number *</label>
                     <input 
                       required 
                       name="registrationNumber" 
                       value={formData.registrationNumber} 
-                      onChange={handleChange} 
-                      className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
-                      placeholder="20230001" 
+                      onChange={(e) => {
+                        const formatted = formatRegistrationNumber(e.target.value, formData.registrationNumber);
+                        setFormData({ ...formData, registrationNumber: formatted });
+                      }}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                        touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber)
+                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          : 'border-comic-thin focus:border-brand-ink'
+                      }`}
+                      placeholder="JKLU/BBA/2025/0310" 
                       suppressHydrationWarning 
                     />
+                    {touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber) && (
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                        PLEASE ENTER A VALID APPLICATION NUMBER (E.G. JKLU/BBA/2025/0310)
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-brand-ink/75 block mb-1">Mobile Number *</label>
@@ -406,30 +474,30 @@ function RegisterContent() {
 
               {/* SECTION 2. PARENTS DETAILS (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-blue">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Parents Details</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bricks text-brand-ink">Parents Details</h2>
                   </div>
                   {isStudentValid ? (
                     isParentsValid ? (
-                      <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                        <Check size={12} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-left leading-tight">
+                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                        <Check size={10} className="stroke-[4] shrink-0" />
+                        <span className="flex flex-col text-right leading-tight">
                           <span>Requirement</span>
                           <span>Fulfilled</span>
                         </span>
                       </span>
                     ) : parentsStarted ? (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         ACTIVE
                       </span>
                     )
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[9px] font-black uppercase rounded shadow-comic-sm">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
                       🔒 LOCKED
                     </span>
                   )}
@@ -509,30 +577,30 @@ function RegisterContent() {
 
               {/* SECTION 3. ADDRESS & PAYMENT (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-orange">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Address & Verification</h2>
+                    <h2 className="text-xl sm:text-3xl font-bricks text-brand-ink">Address & Verification</h2>
                   </div>
                   {isStudentValid && isParentsValid ? (
                     isAddressValid ? (
-                      <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                        <Check size={12} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-left leading-tight">
+                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                        <Check size={10} className="stroke-[4] shrink-0" />
+                        <span className="flex flex-col text-right leading-tight">
                           <span>Requirement</span>
                           <span>Fulfilled</span>
                         </span>
                       </span>
                     ) : formData.address.trim().length > 0 ? (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         ACTIVE
                       </span>
                     )
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[9px] font-black uppercase rounded shadow-comic-sm">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
                       🔒 LOCKED
                     </span>
                   )}
@@ -575,34 +643,7 @@ function RegisterContent() {
                             suppressHydrationWarning 
                           />
                         </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Coupon Code (Optional)</label>
-                          <div className="flex gap-2">
-                            <input 
-                              name="couponInput" 
-                              value={couponInput} 
-                              onChange={(e) => setCouponInput(e.target.value)} 
-                              className="flex-grow px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl uppercase" 
-                              placeholder="Enter coupon code" 
-                              suppressHydrationWarning 
-                            />
-                            <button 
-                              type="button" 
-                              onClick={handleApplyCoupon} 
-                              className="px-6 py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer whitespace-nowrap"
-                            >
-                              Apply
-                            </button>
-                          </div>
-                        </div>
                       </div>
-
-                      {couponMessage && (
-                        <p className={`text-xs font-black uppercase tracking-wider mt-1 ${couponMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
-                          {couponMessage}
-                        </p>
-                      )}
 
                       <div className="border-comic bg-brand-pink/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
                         <div>

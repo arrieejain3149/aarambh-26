@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Compass, Download, Users } from 'lucide-react';
 import { SCHEDULE_DATA, DaySchedule, ScheduleItem } from '@/constants/events';
+import PageGlowBackground from '@/components/ui/PageGlowBackground';
 
 const dayColors = [
   'border-brand-orange hover:shadow-solid-orange',
-  'border-brand-pink hover:shadow-solid-pink',
+  'border-brand-blue hover:shadow-solid-blue',
 ];
 
-const accentBgs = ['bg-brand-orange', 'bg-brand-pink'];
+const accentBgs = ['bg-brand-orange', 'bg-[#b4bef4]'];
 
 export default function SchedulePage() {
   const [activeDayIdx, setActiveDayIdx] = useState(0);
@@ -40,10 +41,7 @@ export default function SchedulePage() {
       {/* Retro sketchbook grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
 
-      {/* Dynamic Ambient Gradient Spotlights (Rich Color Depths) */}
-      <div className="absolute top-0 left-0 w-[450px] h-[450px] rounded-full bg-brand-pink/15 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[550px] h-[550px] rounded-full bg-brand-orange/15 blur-[145px] pointer-events-none z-0" />
-      <div className="absolute top-[40%] left-[-100px] w-[400px] h-[400px] rounded-full bg-brand-blue/10 blur-[110px] pointer-events-none z-0" />
+      <PageGlowBackground />
 
       {/* Floating Dynamic Comic Props */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
@@ -63,7 +61,7 @@ export default function SchedulePage() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-[10%] left-[5%] text-brand-pink/25 text-6xl hidden md:block"
+          className="absolute top-[10%] left-[5%] text-brand-blue/25 text-6xl hidden md:block"
         >
           ★
         </motion.div>
@@ -125,7 +123,7 @@ export default function SchedulePage() {
             ease: "easeInOut",
             delay: 0.5,
           }}
-          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-pink/20 bg-brand-pink/8 flex items-center justify-center font-display font-black text-brand-pink/25 text-lg hidden md:block"
+          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-blue/20 bg-brand-blue/8 flex items-center justify-center font-display font-black text-brand-blue/25 text-lg hidden md:block"
         >
           !
         </motion.div>
@@ -182,15 +180,15 @@ export default function SchedulePage() {
 
         {/* Retro comic header panel */}
         <header className="text-center mb-8 relative z-10 flex flex-col items-center gap-6">
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C]">
-            AARAMBH SCHEDULE
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tight text-brand-ink text-center drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
+            SCHEDULE
           </h1>
           <a
             href="/schedule.pdf"
             download
-            className="inline-flex items-center gap-2.5 border-comic bg-brand-ink text-brand-cloud px-5 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+            className="inline-flex items-center gap-2.5 border-comic bg-white text-brand-ink px-8 py-3.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
           >
-            <Download size={16} />
+            <Download size={18} />
             DOWNLOAD SCHEDULE
           </a>
         </header>
@@ -219,8 +217,8 @@ export default function SchedulePage() {
         </div>
 
         {/* Horizontal Scrollable Neo-Brutalist Tabs */}
-        <div className="relative z-20 mb-12 w-full">
-          <div className="flex overflow-x-auto gap-3 py-5 px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud">
+        <div className="relative z-20 mb-8 w-full">
+          <div className="flex overflow-x-auto gap-3 py-5 px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-blue scrollbar-track-brand-cloud">
             {SCHEDULE_DATA.map((day, idx) => {
               const isActive = activeDayIdx === idx;
               const rotation = idx % 2 === 0 ? 'rotate-1' : '-rotate-1';
@@ -231,22 +229,26 @@ export default function SchedulePage() {
                   onClick={() => setActiveDayIdx(idx)}
                   className={`comic-interactive border-comic-thin px-4 py-3 rounded-lg font-display shrink-0 transition-all select-none min-w-[120px] ${
                     isActive
-                      ? 'bg-brand-pink text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black'
+                      ? 'bg-[#b4bef4] text-brand-ink shadow-solid-ink scale-105 -rotate-2 font-black'
                       : 'bg-white text-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink font-bold ' + rotation
                   }`}
                 >
                   <div className="text-sm md:text-base tracking-tighter uppercase">{day.day}</div>
                   <div className="text-[10px] md:text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
-                  {day.theme && (
-                    <div className="mt-2 text-[10px] leading-tight max-w-[100px] mx-auto opacity-90">
-                      {day.theme}
-                    </div>
-                  )}
                 </button>
               );
             })}
           </div>
         </div>
+
+        {/* Selected Day Theme Banner */}
+        {activeDay.theme && (
+          <div className="w-full max-w-4xl mx-auto mb-10 text-center relative z-20">
+            <h2 className="font-display font-black text-xl sm:text-2xl uppercase tracking-wider text-brand-ink">
+              THEME: <span className="text-brand-blue">{activeDay.theme}</span>
+            </h2>
+          </div>
+        )}
 
         {/* Detailed Itinerary Timeline */}
         <div className="relative z-10 max-w-4xl mx-auto">
@@ -273,11 +275,11 @@ export default function SchedulePage() {
                       key={idx}
                       className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic text-center relative overflow-hidden my-8"
                     >
-                      <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-brand-pink/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
+                      <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-[#b4bef4]/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
                         LEVEL 5 • COHORT EXCURSION
                       </div>
                       
-                      <div className="relative p-6 mb-6 bg-brand-pink border-comic shadow-comic-sm rounded-lg text-brand-cloud inline-block rotate-[-3deg]">
+                      <div className="relative p-6 mb-6 bg-[#b4bef4] border-comic shadow-comic-sm rounded-lg text-brand-ink inline-block rotate-[-3deg]">
                         <Compass size={48} className="animate-spin-slow" />
                       </div>
 
@@ -294,6 +296,8 @@ export default function SchedulePage() {
                   );
                 }
 
+                const badgeTextColor = 'text-brand-ink';
+
                 return (
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
@@ -304,7 +308,7 @@ export default function SchedulePage() {
                   >
                     {/* Time Badge */}
                     <div
-                      className={`border-2 border-brand-ink px-4 py-2 font-display font-black text-xs shadow-comic-sm shrink-0 w-full sm:w-48 text-center rounded-md whitespace-nowrap ${accentColor} text-brand-ink ${idx % 2 === 0 ? '-rotate-1' : 'rotate-1'}`}
+                      className={`border-2 border-brand-ink px-4 py-2.5 font-display font-black text-sm shadow-comic-sm shrink-0 w-full sm:w-48 text-center rounded-md whitespace-nowrap ${accentColor} ${badgeTextColor} ${idx % 2 === 0 ? '-rotate-1' : 'rotate-1'}`}
                     >
                       <div className="flex items-center justify-center whitespace-nowrap">
                         <span className="tracking-wide uppercase font-mono whitespace-nowrap">{event.time}</span>

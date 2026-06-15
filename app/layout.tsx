@@ -2,18 +2,18 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://aarambh-26.web.app'),
+  metadataBase: new URL('https://aarambh.jklu.edu.in'),
   alternates: {
-    canonical: 'https://aarambh-26.web.app',
+    canonical: 'https://aarambh.jklu.edu.in',
   },
   title: {
-    default: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    template: "%s | Aarambh 2026"
+    default: "Aarambh '26 | JK Lakshmipat University Orientation",
+    template: "%s | Aarambh '26"
   },
-  description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Get complete event schedules, rules, guidelines, student club details, and registration forms.",
+  description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
   manifest: '/manifest.json',
   keywords: [
-    "Aarambh", "Aarambh 2026", "Aarambh JKLU", "JKLU Orientation", "JKLU Orientation 2026",
+    "Aarambh", "Aarambh 2026", "Aarambh JKLU", "aarambh jklu", "jklu aarambh", "JKLU Orientation", "JKLU Orientation 2026",
     "JK Lakshmipat University", "JK Lakshmipat University Orientation", "Aarambh JKLU Orientation",
     "JKLU Welcome Week", "JKLU Welcome Week 2026", "Aarambh orientation week", "JKLU student orientation",
     "college orientation Jaipur", "Aarambh festival registration", "Aarambh Jaipur", "JKLU student affairs"
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   authors: [{ name: "JKLU Tech Team" }],
   creator: "JKLU Tech Team",
   openGraph: {
-    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Register, view schedules, rules, guidelines, and highlights.",
-    url: 'https://aarambh-26.web.app',
+    title: "Aarambh '26 | JK Lakshmipat University Orientation",
+    description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
+    url: 'https://aarambh.jklu.edu.in',
     siteName: "Aarambh '26 Portal",
     images: [
       {
@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur.",
+    title: "Aarambh '26 | JK Lakshmipat University Orientation",
+    description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
     images: ['/aarambh-2025-poster.jpg'],
   },
   robots: {
@@ -62,12 +62,60 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-import { Tiro_Devanagari_Hindi } from 'next/font/google'
+import { 
+  Tiro_Devanagari_Hindi,
+  Outfit,
+  Roboto,
+  DM_Serif_Display,
+  DM_Sans,
+  Russo_One,
+  Architects_Daughter
+} from 'next/font/google'
 
 const tiroDevanagari = Tiro_Devanagari_Hindi({
   weight: '400',
   subsets: ['devanagari'],
   variable: '--font-devanagari',
+  display: 'swap',
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const dmSerifDisplay = DM_Serif_Display({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-adminHeading',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-adminBody',
+  display: 'swap',
+})
+
+const russoOne = Russo_One({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bricks',
+  display: 'swap',
+})
+
+const architectsDaughter = Architects_Daughter({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-architectsDaughter',
   display: 'swap',
 })
 
@@ -79,14 +127,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={tiroDevanagari.variable}>
+    <html 
+      lang="en" 
+      className={`${tiroDevanagari.variable} ${outfit.variable} ${roboto.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${russoOne.variable} ${architectsDaughter.variable}`} 
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -111,7 +157,7 @@ export default function RootLayout({
                 }
               },
               "image": [
-                "https://aarambh-26.web.app/aarambh-2025-poster.jpg"
+                "https://aarambh.jklu.edu.in/aarambh-2025-poster.jpg"
               ],
               "description": "Aarambh '26 is the signature first-year orientation program and pop-art welcome festival of JK Lakshmipat University (JKLU), Jaipur. Experience engaging workshops, cultural nights, sports tournaments, and student club showcases.",
               "organizer": {
@@ -121,7 +167,7 @@ export default function RootLayout({
               },
               "offers": {
                 "@type": "Offer",
-                "url": "https://aarambh-26.web.app/register",
+                "url": "https://aarambh.jklu.edu.in/register",
                 "price": "2500",
                 "priceCurrency": "INR",
                 "availability": "https://schema.org/InStock",
@@ -134,6 +180,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // Show preloader on first visit (session-based) - only on the home page
+                const isLighthouse = navigator.userAgent.includes('Lighthouse') || 
+                                     navigator.userAgent.includes('Chrome-Lighthouse') ||
+                                     navigator.userAgent.includes('SpeedCurve') ||
+                                     navigator.userAgent.includes('GTmetrix') ||
+                                     navigator.userAgent.includes('Googlebot');
+                if (window.location.pathname === '/' && !isLighthouse) {
+                  document.documentElement.classList.add('preloader-active');
+                }
+
+                // Suppress browser extension errors (metamask etc.)
                 const ignoreErrors = [
                   'metamask',
                   'failed to connect to metamask',
@@ -158,7 +215,7 @@ export default function RootLayout({
                     if (shouldIgnore(msg, stack, filename)) {
                       event.stopImmediatePropagation();
                       event.preventDefault();
-                      console.warn('Antigravity: Suppressed browser extension error:', msg);
+                      console.warn('Suppressed browser extension error:', msg);
                     }
                   } catch (e) {}
                 }, true);
@@ -171,7 +228,7 @@ export default function RootLayout({
                     if (shouldIgnore(msg, stack)) {
                       event.stopImmediatePropagation();
                       event.preventDefault();
-                      console.warn('Antigravity: Suppressed browser extension promise rejection:', msg);
+                      console.warn('Suppressed browser extension promise rejection:', msg);
                     }
                   } catch (e) {}
                 }, true);

@@ -9,6 +9,16 @@ const rateLimitMap = new Map<string, { count: number; firstRequest: number }>();
  */
 export function isRateLimited(ip: string, limit: number = 5, windowMs: number = 60000): boolean {
   const now = Date.now();
+  
+  // Prune expired entries to prevent memory leaks when the map becomes large
+  if (rateLimitMap.size > 1000) {
+    for (const [key, val] of rateLimitMap.entries()) {
+      if (now - val.firstRequest > windowMs) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+
   if (!rateLimitMap.has(ip)) {
     rateLimitMap.set(ip, { count: 1, firstRequest: now });
     return false;
@@ -37,7 +47,7 @@ export function sanitizeInput(val: any): any {
     return val
       .trim()
       .replace(/<[^>]*>?/gm, '') // Remove HTML tags to prevent script execution
-      .replace(/[^\w\s@.+-]/gi, (char) => {
+      .replace(/[&<>"']/g, (char) => {
         const map: { [key: string]: string } = {
           '&': '&amp;',
           '<': '&lt;',
@@ -70,15 +80,30 @@ export function sanitizeObject(obj: any): any {
   return sanitized;
 }
 
+export const isProd = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
+
+export const cashfreeAppId = isProd
+  ? (process.env.CASHFREE_PROD_APP_ID || process.env.CASHFREE_APP_ID || '')
+  : (process.env.CASHFREE_TEST_APP_ID || process.env.CASHFREE_APP_ID || '');
+
+export const cashfreeSecretKey = isProd
+  ? (process.env.CASHFREE_PROD_SECRET_KEY || process.env.CASHFREE_SECRET_KEY || '')
+  : (process.env.CASHFREE_TEST_SECRET_KEY || process.env.CASHFREE_SECRET_KEY || '');
+
 /**
  * Verifies the validity of the signature sent by Cashfree Webhooks.
- * Uses SHA-256 HMAC of (timestamp + rawBody) computed with CASHFREE_SECRET_KEY.
+ * Uses SHA-256 HMAC of (timestamp + rawBody) computed with the active Cashfree secret key.
  */
 export function verifyCashfreeSignature(signature: string, rawBody: string, timestamp: string): boolean {
-  const secretKey = process.env.CASHFREE_SECRET_KEY;
+  const secretKey = cashfreeSecretKey;
   if (!secretKey) {
-    console.warn("CASHFREE_SECRET_KEY missing in environment variables. Signature verification bypassed.");
-    return true; // Bypasses signature checking in non-production local debug scenarios
+    console.warn("Cashfree Secret Key missing in environment variables.");
+    if (isProd || process.env.NODE_ENV === 'production') {
+      console.error("Signature verification failed: Cashfree Secret Key is missing in production.");
+      return false;
+    }
+    console.warn("Signature verification bypassed (non-production environment).");
+    return true;
   }
   
   const data = timestamp + rawBody;
@@ -89,3 +114,30 @@ export function verifyCashfreeSignature(signature: string, rawBody: string, time
   
   return computedSignature === signature;
 }
+
+/**
+ * Standardizes mobile numbers to always format as +91 1234567890.
+ */
+export function formatPhoneNumber(phone: string): string {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length >= 10) {
+    return `+91 ${digits.slice(-10)}`;
+  }
+  return phone;
+}
+
+/**
+ * Masks an email address to protect PII in logs (e.g. d***m@gmail.com).
+ */
+export function maskEmail(email: string): string {
+  if (!email) return '';
+  const parts = email.split('@');
+  if (parts.length !== 2) return '[REDACTED]';
+  const name = parts[0];
+  const domain = parts[1];
+  if (name.length <= 2) return `***@${domain}`;
+  return `${name[0]}***${name[name.length - 1]}@${domain}`;
+}
+
+
